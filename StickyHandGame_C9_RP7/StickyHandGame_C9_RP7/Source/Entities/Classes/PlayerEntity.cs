@@ -13,13 +13,19 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 {
     public class PlayerEntity : Entity
     {
-        int[] framNumber = new int[] { 4,6,4};
-        int[] playSpeed = new int[] { 500, 500, 500 };
-        String[] Names = new string[] { "Idle", "Run", "Attack" };
+        int[] framNumber = RenderManager.PlayerAnimatedAttribute.framNumber;
+        int[] playSpeed = RenderManager.PlayerAnimatedAttribute.playSpeed;
+        String[] Names = RenderManager.PlayerAnimatedAttribute.Names;
         AnimationComponent myAnimationComponent;
         public PlayerEntity(Game1 g) : base(g)
         {
-            myAnimationComponent = new AnimationComponent("Animation", g, this, framNumber, playSpeed, Names,36,36,new Vector2(4,4));
+            myAnimationComponent = new AnimationComponent("Animation", g, this, 
+                framNumber,
+                playSpeed,
+                Names,
+                RenderManager.PlayerAnimatedAttribute.Width
+                , RenderManager.PlayerAnimatedAttribute.Hight
+                , RenderManager.PlayerAnimatedAttribute.Scale);
         }
 
         public override void Draw(GameTime gameTime)

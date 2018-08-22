@@ -28,6 +28,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         int currentPlaySpeed = 0; // int in Millionseconds
         int currentlength = 0;
         Vector2 scale;
+        //Vector2 origin;
         public AnimationComponent(string assetName, Game1 g, Entity entity,int[] framNumber,int[] playSpeed,String[] Names,int FrameX,int FrameY,Vector2 scale) : base(assetName, g, entity)
         {
             this.scale = scale; 
@@ -38,7 +39,8 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
             this.Names = Names;
             Debug.Assert(framNumber.Length == playSpeed.Length&& framNumber.Length == Names.Length, "inconsistent length in animation");
             this.BuildDictionary();
-            SetAnimation(Names[2], 0);
+            SetAnimation(Names[0], 0);
+
         }
 
         public override void Update(GameTime gameTime)
@@ -52,7 +54,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         }
         public override void Draw(GameTime gameTime)
         {
-            g.spriteBatch.Draw(texture: texture, origin: new Vector2(FrameX / 2, FrameY / 2), position: e.position,sourceRectangle:GetFrame(currentAnimation,currentFrame),scale: scale);
+            g.spriteBatch.Draw(texture: texture,position: e.position,sourceRectangle:GetFrame(currentAnimation,currentFrame),scale: scale,origin:new Vector2(FrameX/2,FrameY/2));
         }
         private void BuildDictionary() {
             // for every row

@@ -9,6 +9,34 @@ using StickyHandGame_C9_RP7.Source.Components.Render;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Core
 {
+    //
+    public struct EntityAttribute{
+        public Vector2 Origin;
+        public int Width;
+        public int Hight;
+        public Vector2 Scale;
+        public CollisionLayers collisionLayer;
+        public EntityAttribute(int X, int Y, Vector2 Scale,CollisionLayers cl) {
+            this.Scale = Scale;
+            this.Width = (int)(X * Scale.X);
+            this.Hight = (int)(Y * Scale.Y);
+            this.Origin = new Vector2((X*Scale.X)/2,(Y*Scale.Y)/2);
+            this.collisionLayer = cl;
+        }
+    }
+    public struct AnimatedEntityAttribute {
+        public EntityAttribute ea;
+        public int[] framNumber;
+        public int[] playSpeed;
+        public String[] Names;
+        public AnimatedEntityAttribute(int[] framNumber, int[] playSpeed, String[] Names, EntityAttribute ea) {
+            this.ea = ea;
+            this.framNumber = framNumber;
+            this.playSpeed = playSpeed;
+            this.Names = Names;
+        }
+    }
+
     public abstract class Entity
     {
         protected int id = 0;
