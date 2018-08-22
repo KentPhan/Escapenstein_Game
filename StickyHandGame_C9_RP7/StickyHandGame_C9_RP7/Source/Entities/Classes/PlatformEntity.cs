@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 {
-    public class PlatformEntity : IEntity
+    public class PlatformEntity : Entity
     {
     }
 }

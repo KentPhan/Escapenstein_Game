@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Core
 {
-    public interface IEntity
+    public abstract class Entity
     {
     }
 }
