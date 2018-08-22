@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using StickyHandGame_C9_RP7.Source.Components.Collision;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 {
     public class PlatformEntity : Entity
     {
         public RenderComponent renderComponent;
-        public PlatformEntity(Game1 g,String assetName):base(g) {
+        public PlatformEntity(GameManager g,String assetName):base(g) {
             renderComponent = new RenderComponent(assetName, g, this);
         }
         public override void Draw(GameTime gameTime)
@@ -22,7 +23,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
         public override void Initialize()
         {
-            //throw new NotImplementedException();
+            this.CollisionComponent = new BoxColliderComponent(this, position, (float)RenderManager.PlayerAnimatedAttribute.Width, (float)RenderManager.PlayerAnimatedAttribute.Height, CollisionLayers.Platform);
         }
 
         public override void LoadContent()

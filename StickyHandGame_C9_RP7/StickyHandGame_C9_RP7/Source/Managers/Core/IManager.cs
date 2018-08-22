@@ -10,7 +10,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers
 {
     public abstract class Manager
     {
-        public abstract void Initialize(Entity[] entities);
+        public abstract void Initialize(List<Entity> entities);
         public abstract void Update(GameTime time);
     }
 }

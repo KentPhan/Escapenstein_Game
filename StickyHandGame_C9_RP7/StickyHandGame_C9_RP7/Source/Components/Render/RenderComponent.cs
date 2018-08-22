@@ -14,9 +14,9 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
     {
         public String assetName;
         protected Texture2D texture;
-        protected Game1 g;
+        protected GameManager g;
         protected Entity e;
-        public RenderComponent(String assetName, Game1 g,Entity entity) {
+        public RenderComponent(String assetName, GameManager g,Entity entity) {
             this.assetName = assetName;
             this.g = g;
             this.e = entity;
@@ -30,7 +30,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         }
 
         public virtual void Draw(GameTime gameTime) {
-            g.spriteBatch.Draw(texture: texture, origin: new Vector2(texture.Width / 2, texture.Height / 2),position:e.position);
+            g.SpriteBatch.Draw(texture: texture, origin: new Vector2(texture.Width / 2, texture.Height / 2),position:e.position);
         }
 
     }

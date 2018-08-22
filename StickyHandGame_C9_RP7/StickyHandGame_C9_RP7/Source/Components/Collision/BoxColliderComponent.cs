@@ -3,41 +3,65 @@ using StickyHandGame_C9_RP7.Source.Entities.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using StickyHandGame_C9_RP7.Source.Entities.Core;
 
 namespace StickyHandGame_C9_RP7.Source.Components.Collision
 {
+
+    
+
     public class BoxColliderComponent : CollisionComponent
     {
-        private Vector2 _center;
+        public Vector2 Origin { get; }
 
-        private float _width;
+        public float Width { get; }
 
-        private float _height;
+        public float Height { get; }
 
+        public CollisionLayers Layer { get; }
+        
 
-        public BoxColliderComponent(Vector2 center, float width, float height)
+        public BoxColliderComponent(Entity entity,Vector2 origin, float width, float height, CollisionLayers layer)
         {
-            _center = center;
-            _width = width;
-            _height = height;
+            this.Entity = entity;
+            this.Origin = origin;
+            this.Width = width;
+            this.Height = height;
+            this.Layer = layer;
+            this.CollidedWith = new List<CollisionComponent>();
         }
 
-        public bool DoesCollide(BoxColliderComponent otherBox)
+        /// <summary>
+        /// Checks the does collide with box.
+        /// </summary>
+        /// <param name="otherBox">The other box.</param>
+        public void CheckDoesCollideWithBox(BoxColliderComponent otherBox)
         {
-            float halfWidth = _width / 2;
-            float halfHeight = _height / 2;
-            Vector2 BLeft = new Vector2(_center.X - halfWidth, _center.Y + halfHeight);
-            Vector2 BRight = new Vector2(_center.X + halfWidth, _center.Y + halfHeight);
-            Vector2 TLeft = new Vector2(_center.X - halfWidth, _center.Y - halfHeight);
-            Vector2 TRight = new Vector2(_center.X + halfWidth, _center.Y - halfHeight);
+            if(this.Origin.X - (this.Width / 2) < otherBox.Origin.X + (otherBox.Width / 2) &&
+                                this.Origin.X + (this.Width / 2) > otherBox.Origin.X - (otherBox.Width / 2) &&
+                                this.Origin.Y - (this.Height / 2) < otherBox.Origin.Y + (otherBox.Height / 2) &&
+                                this.Origin.Y + (this.Height / 2) > otherBox.Origin.Y - (otherBox.Height / 2))
+                CollidedWith.Add(otherBox);
+        }
 
-
-
-
-
-            return false;
+        /// <summary>
+        /// Checks the does collide.
+        /// </summary>
+        /// <param name="otherComponents">The other components.</param>
+        public override void CheckDoesCollide(List<Entity> otherComponents)
+        {
+            this.CollidedWith = new List<CollisionComponent>();
+            foreach (Entity otherEntity in otherComponents)
+            {
+                if (this.Entity == otherEntity)
+                    continue;
+                
+                CheckDoesCollideWithBox((BoxColliderComponent)otherEntity.CollisionComponent);
+            }
+            
         }
     }
 }

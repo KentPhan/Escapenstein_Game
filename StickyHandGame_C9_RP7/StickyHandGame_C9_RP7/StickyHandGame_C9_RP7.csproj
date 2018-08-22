@@ -47,16 +47,14 @@
     <Compile Include="Source\Components\Collision\BoxColliderComponent.cs" />
     <Compile Include="Source\Components\Render\AnimationComponent.cs" />
     <Compile Include="Source\Components\Render\RenderComponent.cs" />
-    <Compile Include="Source\Components\Render\RenderManager.cs" />
+    <Compile Include="Source\Managers\Classes\RenderManager.cs" />
     <Compile Include="Source\Entities\Classes\PlatformEntity.cs" />
     <Compile Include="Source\Entities\Classes\PlayerEntity.cs" />
     <Compile Include="Source\Components\Collision\CollisionComponent.cs" />
     <Compile Include="Source\Entities\Core\CollisionLayers.cs" />
     <Compile Include="Source\Entities\Core\Entity.cs" />
-    <Compile Include="Source\Game1.cs" />
+    <Compile Include="Source\GameManager.cs" />
     <Compile Include="Source\Managers\Classes\CollisionManager.cs" />
-    <Compile Include="Source\Managers\Classes\DrawManager.cs" />
-    <Compile Include="Source\Managers\Classes\GameManager.cs" />
     <Compile Include="Source\Managers\Classes\MovementManager.cs" />
     <Compile Include="Source\Managers\Core\IManager.cs" />
   </ItemGroup>

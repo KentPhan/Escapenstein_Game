@@ -5,29 +5,35 @@ using StickyHandGame_C9_RP7.Source.Entities.Classes;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Collections.Generic;
+using StickyHandGame_C9_RP7.Source.Managers;
 
 namespace StickyHandGame_C9_RP7
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class GameManager : Game
     {
         
-        private Texture2D textureBall;
-        private Vector2 ballPosition;
-        float ballSpeed;
+        //private Texture2D textureBall;
+        //private Vector2 ballPosition;
+        //float ballSpeed;
+
+        //Managers
+        private CollisionManager _collisionManager;
         
-        public GraphicsDeviceManager graphics;
-        public SpriteBatch spriteBatch;
+        public GraphicsDeviceManager Graphics;
+        public SpriteBatch SpriteBatch;
+
+        
         // test the basic rendercomponent;
         public PlatformEntity test;
         public PlayerEntity playertest;
         private List<Entity> entityList;
-        public Game1()
+        public GameManager()
         {
             entityList = new List<Entity>();
-            graphics = new GraphicsDeviceManager(this);
+            Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
             test = new PlatformEntity(this, "Ball");
@@ -46,11 +52,14 @@ namespace StickyHandGame_C9_RP7
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            ballPosition = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-            ballSpeed = 100f;
             foreach (Entity e in entityList) {
                 e.Initialize();
             }
+            
+            
+            _collisionManager = CollisionManager.Instance;
+            _collisionManager.Initialize(entityList);
+            
 
             base.Initialize();
         }
@@ -62,10 +71,10 @@ namespace StickyHandGame_C9_RP7
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
-            textureBall = Content.Load<Texture2D>("ball");
+            //// TODO: use this.Content to load your game content here
+            //textureBall = Content.Load<Texture2D>("ball");
 
             foreach (Entity e in entityList)
             {
@@ -97,27 +106,15 @@ namespace StickyHandGame_C9_RP7
 
             // TODO: Add your update logic here
             var kState = Keyboard.GetState();
-
-            if (kState.IsKeyDown(Keys.Up))
-                ballPosition.Y -= ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (kState.IsKeyDown(Keys.Down))
-                ballPosition.Y += ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (kState.IsKeyDown(Keys.Left))
-                ballPosition.X -= ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (kState.IsKeyDown(Keys.Right))
-                ballPosition.X += ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (kState.IsKeyDown(Keys.Right))
-                ballPosition.X += ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            ballPosition.X = Math.Min(Math.Max(textureBall.Width / 2, ballPosition.X), graphics.PreferredBackBufferWidth - textureBall.Width / 2);
-            ballPosition.Y = Math.Min(Math.Max(textureBall.Height / 2, ballPosition.Y), graphics.PreferredBackBufferHeight - textureBall.Height / 2);
-
+            
+            // Collisions
+            _collisionManager.Update(gameTime);
+            
             foreach (Entity e in entityList)
             {
                 e.Update(gameTime);
             }
-
+            
             base.Update(gameTime);
         }
 
@@ -130,15 +127,15 @@ namespace StickyHandGame_C9_RP7
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            spriteBatch.Draw(textureBall, ballPosition, null, Color.White, 0f, new Vector2(textureBall.Width / 2, textureBall.Height / 2), Vector2.One, SpriteEffects.None, 0f);
+            SpriteBatch.Begin();
+            //spriteBatch.Draw(textureBall, ballPosition, null, Color.White, 0f, new Vector2(textureBall.Width / 2, textureBall.Height / 2), Vector2.One, SpriteEffects.None, 0f);
 
             foreach (Entity e in entityList)
             {
                 e.Draw(gameTime);
             }
 
-            spriteBatch.End();
+            SpriteBatch.End();
 
             base.Draw(gameTime);
         }

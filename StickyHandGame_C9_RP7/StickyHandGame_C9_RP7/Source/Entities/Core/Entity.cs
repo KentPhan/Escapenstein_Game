@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 // need this for GameTime.
 using Microsoft.Xna.Framework;
 using StickyHandGame_C9_RP7.Source.Components.Render;
+using StickyHandGame_C9_RP7.Source.Entities.Components;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Core
 {
@@ -39,11 +40,16 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Core
 
     public abstract class Entity
     {
+        public CollisionComponent CollisionComponent { get; set; }
+
         protected int id = 0;
-        protected Game1 g;
+        protected GameManager g;
         private static int count = 0;
         public Vector2 position;
-        protected Entity(Game1 g) {
+
+
+
+        protected Entity(GameManager g) {
             this.id = Entity.GetId();
             position = new Vector2(0, 0);
             this.g = g;

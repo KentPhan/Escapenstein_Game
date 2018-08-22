@@ -10,7 +10,29 @@ namespace StickyHandGame_C9_RP7.Source.Managers
 {
     public class MovementManager : Manager
     {
-        public override void Initialize(Entity[] entities)
+        /// <summary>
+        /// The instance
+        /// </summary>
+        private static MovementManager _instance;
+        public static MovementManager Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new MovementManager();
+                }
+                return _instance;
+            }
+        }
+
+        private MovementManager()
+        {
+
+        }
+
+
+        public override void Initialize(List<Entity> entities)
         {
             throw new NotImplementedException();
         }
