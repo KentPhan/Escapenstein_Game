@@ -45,6 +45,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Components\Collision\BoxColliderComponent.cs" />
+    <Compile Include="Source\Components\Render\AnimationComponent.cs" />
+    <Compile Include="Source\Components\Render\RenderComponent.cs" />
+    <Compile Include="Source\Components\Render\RenderManager.cs" />
     <Compile Include="Source\Entities\Classes\PlatformEntity.cs" />
     <Compile Include="Source\Entities\Classes\PlayerEntity.cs" />
     <Compile Include="Source\Components\Collision\CollisionComponent.cs" />

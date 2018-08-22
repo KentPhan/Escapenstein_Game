@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using StickyHandGame_C9_RP7.Source.Entities.Classes;
+using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
+using System.Collections.Generic;
 
 namespace StickyHandGame_C9_RP7
 {
@@ -15,13 +18,19 @@ namespace StickyHandGame_C9_RP7
         private Vector2 ballPosition;
         float ballSpeed;
         
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        
+        public GraphicsDeviceManager graphics;
+        public SpriteBatch spriteBatch;
+        // test the basic rendercomponent;
+        public PlatformEntity test;
+        private List<Entity> entityList;
         public Game1()
         {
+            entityList = new List<Entity>();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            test = new PlatformEntity(this, "Ball");
+            entityList.Add(test);
         }
 
         /// <summary>
@@ -35,6 +44,9 @@ namespace StickyHandGame_C9_RP7
             // TODO: Add your initialization logic here
             ballPosition = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
             ballSpeed = 100f;
+            foreach (Entity e in entityList) {
+                e.Initialize();
+            }
 
             base.Initialize();
         }
@@ -50,6 +62,11 @@ namespace StickyHandGame_C9_RP7
 
             // TODO: use this.Content to load your game content here
             textureBall = Content.Load<Texture2D>("ball");
+
+            foreach (Entity e in entityList)
+            {
+                e.LoadContent();
+            }
         }
 
         /// <summary>
@@ -58,7 +75,10 @@ namespace StickyHandGame_C9_RP7
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            foreach (Entity e in entityList)
+            {
+                e.UnloadContent();
+            }
         }
 
         /// <summary>
@@ -89,6 +109,11 @@ namespace StickyHandGame_C9_RP7
             ballPosition.X = Math.Min(Math.Max(textureBall.Width / 2, ballPosition.X), graphics.PreferredBackBufferWidth - textureBall.Width / 2);
             ballPosition.Y = Math.Min(Math.Max(textureBall.Height / 2, ballPosition.Y), graphics.PreferredBackBufferHeight - textureBall.Height / 2);
 
+            foreach (Entity e in entityList)
+            {
+                e.Update(gameTime);
+            }
+
             base.Update(gameTime);
         }
 
@@ -103,7 +128,12 @@ namespace StickyHandGame_C9_RP7
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             spriteBatch.Draw(textureBall, ballPosition, null, Color.White, 0f, new Vector2(textureBall.Width / 2, textureBall.Height / 2), Vector2.One, SpriteEffects.None, 0f);
-            
+
+            foreach (Entity e in entityList)
+            {
+                e.Draw(gameTime);
+            }
+
             spriteBatch.End();
 
             base.Draw(gameTime);
