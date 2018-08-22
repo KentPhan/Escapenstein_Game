@@ -10,15 +10,13 @@ namespace StickyHandGame_C9_RP7
     /// </summary>
     public class Game1 : Game
     {
+        
         private Texture2D textureBall;
         private Vector2 ballPosition;
         float ballSpeed;
         
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
-
-        
         
         public Game1()
         {
