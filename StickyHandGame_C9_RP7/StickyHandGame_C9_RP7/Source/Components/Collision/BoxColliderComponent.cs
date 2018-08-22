@@ -10,10 +10,18 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
 {
     public class BoxColliderComponent : CollisionComponent
     {
-        public Point TLeft { get; set; }
-        public Point TRight { get; set; }
-        public Point BLeft { get; set; }
-        public Point BRight { get; set; }
+        private Point _center;
 
+        private float _width;
+
+        private float _height;
+
+
+        public BoxColliderComponent(Point center, float width, float height)
+        {
+            _center = center;
+            _width = width;
+            _height = height;
+        }
     }
 }

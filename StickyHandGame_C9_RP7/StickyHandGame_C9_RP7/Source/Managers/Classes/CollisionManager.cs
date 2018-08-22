@@ -10,6 +10,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers
 {
     public class CollisionManager : Manager
     {
+
         private static CollisionManager _instance;
         public static CollisionManager Instance
         {
@@ -21,6 +22,11 @@ namespace StickyHandGame_C9_RP7.Source.Managers
                 }
                 return _instance;
             }
+        }
+
+        private CollisionManager()
+        {
+            
         }
         
         public override void Initialize(Entity[] entities)

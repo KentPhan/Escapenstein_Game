@@ -44,10 +44,12 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\Components\Collision\BoxColliderComponent.cs" />
     <Compile Include="Source\Entities\Classes\PlatformEntity.cs" />
     <Compile Include="Source\Entities\Classes\PlayerEntity.cs" />
-    <Compile Include="Source\Components\CollisionComponent.cs" />
-    <Compile Include="Source\Entities\Core\IEntity.cs" />
+    <Compile Include="Source\Components\Collision\CollisionComponent.cs" />
+    <Compile Include="Source\Entities\Core\CollisionLayers.cs" />
+    <Compile Include="Source\Entities\Core\Entity.cs" />
     <Compile Include="Source\Game1.cs" />
     <Compile Include="Source\Managers\Classes\CollisionManager.cs" />
     <Compile Include="Source\Managers\Classes\DrawManager.cs" />

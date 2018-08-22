@@ -11,7 +11,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 {
     public class PlayerEntity : Entity
     {
-        public CollisionComponent boxCollider = new BoxColliderComponent();
+
 
     }
 }
