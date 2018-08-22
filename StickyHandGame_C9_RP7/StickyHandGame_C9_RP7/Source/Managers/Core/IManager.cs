@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers
 {
     public abstract class Manager
     {
+        public abstract void Initialize(Entity[] entities);
         public abstract void Update(GameTime time);
     }
 }
