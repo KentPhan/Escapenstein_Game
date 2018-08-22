@@ -22,6 +22,7 @@ namespace StickyHandGame_C9_RP7
         public SpriteBatch spriteBatch;
         // test the basic rendercomponent;
         public PlatformEntity test;
+        public PlayerEntity playertest;
         private List<Entity> entityList;
         public Game1()
         {
@@ -30,7 +31,10 @@ namespace StickyHandGame_C9_RP7
             Content.RootDirectory = "Content";
 
             test = new PlatformEntity(this, "Ball");
+            this.playertest = new PlayerEntity(this); 
             entityList.Add(test);
+            entityList.Add(playertest);
+            playertest.position = new Vector2(100, 100);
         }
 
         /// <summary>

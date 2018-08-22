@@ -10,6 +10,8 @@ using StickyHandGame_C9_RP7.Source.Entities.Core;
 
 namespace StickyHandGame_C9_RP7.Source.Components.Render
 {
+    //TODO make this more Data driven
+    //TODO make the rotation to save efforts
     public class AnimationComponent : RenderComponent
     {
         Dictionary<String, Rectangle[]> Animation = new Dictionary<string, Rectangle[]>();
@@ -17,6 +19,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         private int FrameX = 36;
         private int FrameY = 36;// test with 36*36
         int[] framNumber;
+        // the play speed is the lasting time of each frame
         int[] playSpeed;
         String[] Names;
         String currentAnimation = "";
@@ -24,24 +27,32 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         int cummulattime = 0;// int in Milliseconds the return type is int.
         int currentPlaySpeed = 0; // int in Millionseconds
         int currentlength = 0;
-        public AnimationComponent(string assetName, Game1 g, Entity entity,int[] framNumber,int[] playSpeed,String[] Names) : base(assetName, g, entity)
+        Vector2 scale;
+        public AnimationComponent(string assetName, Game1 g, Entity entity,int[] framNumber,int[] playSpeed,String[] Names,int FrameX,int FrameY,Vector2 scale) : base(assetName, g, entity)
         {
+            this.scale = scale; 
+            this.FrameX = FrameX;
+            this.FrameY = FrameY;
             this.framNumber = framNumber;
             this.playSpeed = playSpeed;
             this.Names = Names;
             Debug.Assert(framNumber.Length == playSpeed.Length&& framNumber.Length == Names.Length, "inconsistent length in animation");
-
+            this.BuildDictionary();
+            SetAnimation(Names[2], 0);
         }
 
         public override void Update(GameTime gameTime)
         {
             cummulattime += gameTime.ElapsedGameTime.Milliseconds;
-            
+            if (cummulattime > currentPlaySpeed) {
+                cummulattime = 0;
+                loopFrameUpdate();
+            }
             base.Update(gameTime);
         }
         public override void Draw(GameTime gameTime)
         {
-            g.spriteBatch.Draw(texture: texture, origin: new Vector2(FrameX / 2, FrameY / 2), position: e.position,sourceRectangle:GetFrame(CurrentAnimation,CurrentFrame));
+            g.spriteBatch.Draw(texture: texture, origin: new Vector2(FrameX / 2, FrameY / 2), position: e.position,sourceRectangle:GetFrame(currentAnimation,currentFrame),scale: scale);
         }
         private void BuildDictionary() {
             // for every row
@@ -60,6 +71,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
             return Animation[Name][Frame];
         }
         public void SetAnimation(String Name, int StartFrame) {
+            cummulattime = 0;
             currentAnimation = Name;
             currentFrame = StartFrame;
             currentlength = framNumber[AnimationOrder[Name]];
