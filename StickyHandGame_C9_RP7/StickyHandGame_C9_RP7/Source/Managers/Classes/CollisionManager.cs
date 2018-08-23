@@ -27,29 +27,31 @@ namespace StickyHandGame_C9_RP7.Source.Managers
             }
         }
 
-
-        private List<Entity> entities;
+        private Entity _playerEntity;
+        private List<Entity> _entities;
 
         private CollisionManager()
         {
             
         }
         
-        public override void Initialize(List<Entity> entities)
+        public void Initialize(List<Entity> entities)
         {
-            this.entities = entities;
+            this._entities = entities;
+        }
+
+        public void AssignPlayerEntity(Entity player)
+        {
+            this._playerEntity = player;
         }
 
         public override void Update(GameTime time)
         {
-            if (entities == null)
+            if (_entities == null)
                 return;
 
             // TODO: Need to optimize maybe to check layers 
-            foreach (Entity entity in entities)
-            {
-                entity.CollisionComponent?.CheckDoesCollide(entities);
-            }
+            _playerEntity.CollisionComponent?.CheckDoesCollide(_entities);
         }
     }
 }

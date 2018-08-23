@@ -6,7 +6,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 
 namespace StickyHandGame_C9_RP7.Source.Components.Collision
@@ -32,18 +34,21 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
             this.Entity = entity;
             this.Layer = layer;
             this.CollidedWith = new List<Tuple<CollisionComponent, Vector2>>();
+            this.WillCollideWith = new List<Tuple<CollisionComponent, Vector2>>();
         }
 
         /// <summary>
-        /// Checks the does collide with box.
+        /// Checks the collision.
         /// </summary>
+        /// <param name="box">The box.</param>
         /// <param name="otherBox">The other box.</param>
-        public void CheckDoesCollideWithBox(BoxColliderComponent otherBox)
+        /// <returns></returns>
+        public static Tuple<CollisionComponent,Vector2> CheckCollision(BoxColliderComponent box, BoxColliderComponent otherBox)
         {
-            Vector2 origin = this.Entity.Position;
+            Vector2 origin = box.Entity.Position;
             Vector2 otherOrigin = otherBox.Entity.Position;
-            float width = this.Entity.Width;
-            float height = this.Entity.Height;
+            float width = box.Entity.Width;
+            float height = box.Entity.Height;
             float otherWidth = otherBox.Entity.Width;
             float otherHeight = otherBox.Entity.Height;
 
@@ -55,9 +60,9 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
             {
                 Vector2 direction = (origin - otherOrigin);
                 direction.Normalize();
-                CollidedWith.Add(new Tuple<CollisionComponent, Vector2>(otherBox, direction));
+                return new Tuple<CollisionComponent, Vector2>(otherBox, direction);
             }
-
+            return null;
         }
 
         /// <summary>
@@ -72,7 +77,36 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
                 if (this.Entity == otherEntity)
                     continue;
 
-                CheckDoesCollideWithBox((BoxColliderComponent)otherEntity.CollisionComponent);
+                var check = BoxColliderComponent.CheckCollision((BoxColliderComponent) this.Entity.CollisionComponent,
+                    (BoxColliderComponent) otherEntity.CollisionComponent);
+                if(check != null)
+                    this.CollidedWith.Add(check);
+            }
+        }
+
+        public override void CheckWillCollide(List<Entity> otherComponents, Vector2 directionMoving)
+        {
+            float directionalSpeed = 10.0f;
+            float predictedTime = 0.02f;
+            Vector2 unitDirection = new Vector2(directionMoving.X, directionMoving.Y);
+            unitDirection.Normalize();
+
+            this.WillCollideWith  = new List<Tuple<CollisionComponent, Vector2>>();
+            foreach (Entity otherEntity in otherComponents)
+            {
+                if (this.Entity == otherEntity)
+                    continue;
+
+                var predictedEntity = (Entity)this.Entity.Clone();
+                predictedEntity.Position += unitDirection * directionalSpeed * predictedTime;
+
+                var check = BoxColliderComponent.CheckCollision(
+                    (BoxColliderComponent) predictedEntity.CollisionComponent,
+                    (BoxColliderComponent) otherEntity.CollisionComponent);
+                if(check != null)
+                    this.WillCollideWith.Add(check);
+
+                predictedEntity.UnloadContent();
             }
 
         }
