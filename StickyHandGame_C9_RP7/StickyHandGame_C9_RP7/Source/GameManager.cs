@@ -6,6 +6,7 @@ using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Collections.Generic;
 using StickyHandGame_C9_RP7.Source.Managers;
+using StickyHandGame_C9_RP7.Source.Managers.Classes;
 
 namespace StickyHandGame_C9_RP7
 {
@@ -46,12 +47,14 @@ namespace StickyHandGame_C9_RP7
         public GraphicsDeviceManager Graphics;
         public SpriteBatch SpriteBatch;
 
+        public CameraManager MyCameraManager;
         public GameManager()
         {
             _instance = this;
             currentEntityList = new List<Entity>();
             Content.RootDirectory = "Content";
             Graphics = new GraphicsDeviceManager(GameManager.Instance);
+            MyCameraManager = new CameraManager();
             this.State = GameState.Start;
         }
 
@@ -79,6 +82,7 @@ namespace StickyHandGame_C9_RP7
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
+            MyCameraManager.LoadContent();
         }
 
         /// <summary>
@@ -103,7 +107,6 @@ namespace StickyHandGame_C9_RP7
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-
             if (State == GameState.Start)
             {
                 PlatformEntity plat = new PlatformEntity("platform");
@@ -119,6 +122,8 @@ namespace StickyHandGame_C9_RP7
             }
             else if (State == GameState.Level1)
             {
+                //update camera
+                MyCameraManager.Update();
 
                 // Collision Updates
                 _collisionManager.Update(gameTime);
@@ -142,7 +147,8 @@ namespace StickyHandGame_C9_RP7
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            SpriteBatch.Begin();
+            // Set the view point
+            SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, MyCameraManager.camaer.Transform);
 
             foreach (Entity e in currentEntityList)
             {

@@ -1,0 +1,29 @@
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using StickyHandGame_C9_RP7.Source.Entities.Classes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using StickyHandGame_C9_RP7.Source.Cameras;
+
+namespace StickyHandGame_C9_RP7.Source.Managers.Classes
+{
+    public class CameraManager
+    {
+        public Camera camaer;
+        public CameraManager() {
+       
+        }
+        public void LoadContent() {
+            camaer = new Camera(GameManager.Instance.GraphicsDevice.Viewport);
+        }
+        public void Update() {
+            camaer.UpdateCamera(GameManager.Instance.GraphicsDevice.Viewport);
+        }
+
+        
+    }
+}

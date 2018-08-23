@@ -44,9 +44,12 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\Cameras\Camera.cs" />
     <Compile Include="Source\Components\Collision\BoxColliderComponent.cs" />
     <Compile Include="Source\Components\Render\AnimationComponent.cs" />
     <Compile Include="Source\Components\Render\RenderComponent.cs" />
+    <Compile Include="Source\Entities\Classes\KeyBinds.cs" />
+    <Compile Include="Source\Managers\Classes\CameraManager.cs" />
     <Compile Include="Source\Managers\Classes\RenderManager.cs" />
     <Compile Include="Source\Entities\Classes\PlatformEntity.cs" />
     <Compile Include="Source\Entities\Classes\PlayerEntity.cs" />
@@ -59,6 +62,18 @@
     <Compile Include="Source\Managers\Core\IManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="EmptyKeys.UserInterface, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EmptyKeysUI_MonoGame.3.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Common\AnyCPU\EmptyKeys.UserInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="EmptyKeys.UserInterface.Core, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EmptyKeysUI_MonoGame.3.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Common\AnyCPU\EmptyKeys.UserInterface.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="EmptyKeys.UserInterface.Debug, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EmptyKeysUI_MonoGame.3.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Common\AnyCPU\EmptyKeys.UserInterface.Debug.dll</HintPath>
+    </Reference>
+    <Reference Include="EmptyKeys.UserInterface.MonoGame, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EmptyKeysUI_MonoGame.3.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\MonoGame\AnyCPU\EmptyKeys.UserInterface.MonoGame.dll</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll</HintPath>
     </Reference>
@@ -116,6 +131,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="app.manifest" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BehaviorsLicense.txt" />
+    <Content Include="license.txt" />
+    <Content Include="shaders\DirectionalBlurShader.fx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
