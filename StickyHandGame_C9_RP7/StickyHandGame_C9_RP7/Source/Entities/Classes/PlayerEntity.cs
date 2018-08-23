@@ -23,30 +23,25 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         private float speed = 100f;
 
 
-        public PlayerEntity(GameManager g) : base(g)
+        public PlayerEntity() : base()
         {
-            myAnimationComponent = new AnimationComponent("Animation", g, this, 
+            myAnimationComponent = new AnimationComponent("Animation", this,
                 framNumber,
                 playSpeed,
                 Names,
                 RenderManager.PlayerAnimatedAttribute.Width
                 , RenderManager.PlayerAnimatedAttribute.Height
                 , RenderManager.PlayerAnimatedAttribute.Scale);
+
+            this.CollisionComponent = new BoxColliderComponent(this, position, (float)RenderManager.PlayerAnimatedAttribute.Width * RenderManager.PlayerAnimatedAttribute.Scale.X, (float)RenderManager.PlayerAnimatedAttribute.Height * RenderManager.PlayerAnimatedAttribute.Scale.Y, CollisionLayers.Player);
+
+            // Load Content
+            myAnimationComponent.LoadContent();
         }
 
         public override void Draw(GameTime gameTime)
         {
             myAnimationComponent.Draw(gameTime);
-        }
-
-        public override void Initialize()
-        {
-            this.CollisionComponent = new BoxColliderComponent(this, position, (float)RenderManager.PlayerAnimatedAttribute.Width * RenderManager.PlayerAnimatedAttribute.Scale.X, (float)RenderManager.PlayerAnimatedAttribute.Height * RenderManager.PlayerAnimatedAttribute.Scale.Y, CollisionLayers.Player);
-        }
-
-        public override void LoadContent()
-        {
-            myAnimationComponent.LoadContent();
         }
 
         public override void Reset()
@@ -61,12 +56,11 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         {
             var kState = Keyboard.GetState();
 
+            //if (this.CollisionComponent.HasCollided)
+            //{
+            //    return;
+            //}
 
-            if (this.CollisionComponent.HasCollided)
-            {
-                return;
-            }
-            
             if (kState.IsKeyDown(Keys.Up))
                 position.Y -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (kState.IsKeyDown(Keys.Down))
@@ -78,7 +72,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
             if (kState.IsKeyDown(Keys.Right))
                 position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            
+
             myAnimationComponent.Update(gameTime);
         }
     }

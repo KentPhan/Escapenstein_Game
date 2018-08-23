@@ -13,22 +13,17 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
     public class PlatformEntity : Entity
     {
         public RenderComponent renderComponent;
-        public PlatformEntity(GameManager g,String assetName):base(g) {
-            renderComponent = new RenderComponent(assetName, g, this);
+        public PlatformEntity(String assetName) : base()
+        {
+            renderComponent = new RenderComponent(assetName, this);
+            this.CollisionComponent = new BoxColliderComponent(this, position, (float)RenderManager.PlayerAnimatedAttribute.Width, (float)RenderManager.PlayerAnimatedAttribute.Height, CollisionLayers.Platform);
+
+            // Load Content
+            this.renderComponent.LoadContent();
         }
         public override void Draw(GameTime gameTime)
         {
             this.renderComponent.Draw(gameTime);
-        }
-
-        public override void Initialize()
-        {
-            this.CollisionComponent = new BoxColliderComponent(this, position, (float)RenderManager.PlayerAnimatedAttribute.Width, (float)RenderManager.PlayerAnimatedAttribute.Height, CollisionLayers.Platform);
-        }
-
-        public override void LoadContent()
-        {
-            this.renderComponent.LoadContent();
         }
 
         public override void Reset()

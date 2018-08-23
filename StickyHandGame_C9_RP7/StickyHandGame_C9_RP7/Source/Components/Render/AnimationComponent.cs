@@ -29,15 +29,15 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         int currentlength = 0;
         Vector2 scale;
         //Vector2 origin;
-        public AnimationComponent(string assetName, GameManager g, Entity entity,int[] framNumber,int[] playSpeed,String[] Names,int FrameX,int FrameY,Vector2 scale) : base(assetName, g, entity)
+        public AnimationComponent(string assetName, Entity entity, int[] framNumber, int[] playSpeed, String[] Names, int FrameX, int FrameY, Vector2 scale) : base(assetName, entity)
         {
-            this.scale = scale; 
+            this.scale = scale;
             this.FrameX = FrameX;
             this.FrameY = FrameY;
             this.framNumber = framNumber;
             this.playSpeed = playSpeed;
             this.Names = Names;
-            Debug.Assert(framNumber.Length == playSpeed.Length&& framNumber.Length == Names.Length, "inconsistent length in animation");
+            Debug.Assert(framNumber.Length == playSpeed.Length && framNumber.Length == Names.Length, "inconsistent length in animation");
             this.BuildDictionary();
             SetAnimation(Names[1], 0);
 
@@ -46,7 +46,8 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         public override void Update(GameTime gameTime)
         {
             cummulattime += gameTime.ElapsedGameTime.Milliseconds;
-            if (cummulattime > currentPlaySpeed) {
+            if (cummulattime > currentPlaySpeed)
+            {
                 cummulattime = 0;
                 loopFrameUpdate();
             }
@@ -54,14 +55,17 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         }
         public override void Draw(GameTime gameTime)
         {
-            g.SpriteBatch.Draw(texture: texture,position: e.position,sourceRectangle:GetFrame(currentAnimation,currentFrame),scale: scale,origin:new Vector2(FrameX/2,FrameY/2));
+            GameManager.Instance.SpriteBatch.Draw(texture: texture, position: e.position, sourceRectangle: GetFrame(currentAnimation, currentFrame), scale: scale, origin: new Vector2(FrameX / 2, FrameY / 2));
         }
-        private void BuildDictionary() {
+        private void BuildDictionary()
+        {
             // for every row
-            for (int i = 0; i < framNumber.Length; i++) {
+            for (int i = 0; i < framNumber.Length; i++)
+            {
                 Rectangle[] array = new Rectangle[framNumber[i]];
                 // for every frame
-                for (int j = 0; j < framNumber[i]; j++) {
+                for (int j = 0; j < framNumber[i]; j++)
+                {
                     array[j] = RenderManager.CutFrame(FrameX, FrameY, i, j);
                 }
                 Animation[Names[i]] = array;
@@ -69,17 +73,20 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
             }
         }
         //this function use to play animation
-        public Rectangle GetFrame(String Name, int Frame) {
+        public Rectangle GetFrame(String Name, int Frame)
+        {
             return Animation[Name][Frame];
         }
-        public void SetAnimation(String Name, int StartFrame) {
+        public void SetAnimation(String Name, int StartFrame)
+        {
             cummulattime = 0;
             currentAnimation = Name;
             currentFrame = StartFrame;
             currentlength = framNumber[AnimationOrder[Name]];
             currentPlaySpeed = playSpeed[AnimationOrder[Name]];
         }
-        private void loopFrameUpdate() {
+        private void loopFrameUpdate()
+        {
             currentFrame = (currentFrame + 1) % currentlength;
         }
     }

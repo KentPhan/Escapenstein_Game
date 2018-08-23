@@ -11,7 +11,7 @@ using StickyHandGame_C9_RP7.Source.Entities.Core;
 namespace StickyHandGame_C9_RP7.Source.Components.Collision
 {
 
-    
+
 
     public class BoxColliderComponent : CollisionComponent
     {
@@ -22,9 +22,17 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         public float Height { get; }
 
         public CollisionLayers Layer { get; }
-        
 
-        public BoxColliderComponent(Entity entity,Vector2 origin, float width, float height, CollisionLayers layer)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BoxColliderComponent"/> class.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="origin">The origin.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="layer">The layer.</param>
+        public BoxColliderComponent(Entity entity, Vector2 origin, float width, float height, CollisionLayers layer)
         {
             this.Entity = entity;
             this.Origin = origin;
@@ -40,7 +48,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         /// <param name="otherBox">The other box.</param>
         public void CheckDoesCollideWithBox(BoxColliderComponent otherBox)
         {
-            if(this.Origin.X - (this.Width / 2) < otherBox.Origin.X + (otherBox.Width / 2) &&
+            if (this.Origin.X - (this.Width / 2) < otherBox.Origin.X + (otherBox.Width / 2) &&
                                 this.Origin.X + (this.Width / 2) > otherBox.Origin.X - (otherBox.Width / 2) &&
                                 this.Origin.Y - (this.Height / 2) < otherBox.Origin.Y + (otherBox.Height / 2) &&
                                 this.Origin.Y + (this.Height / 2) > otherBox.Origin.Y - (otherBox.Height / 2))
@@ -58,10 +66,10 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
             {
                 if (this.Entity == otherEntity)
                     continue;
-                
+
                 CheckDoesCollideWithBox((BoxColliderComponent)otherEntity.CollisionComponent);
             }
-            
+
         }
     }
 }

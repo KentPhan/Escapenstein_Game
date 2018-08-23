@@ -14,23 +14,28 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
     {
         public String assetName;
         protected Texture2D texture;
-        protected GameManager g;
         protected Entity e;
-        public RenderComponent(String assetName, GameManager g,Entity entity) {
+
+        public RenderComponent(String assetName, Entity entity)
+        {
             this.assetName = assetName;
-            this.g = g;
             this.e = entity;
         }
-        public void LoadContent() {
-            texture = g.Content.Load<Texture2D>(assetName);
+
+        public void LoadContent()
+        {
+            texture = GameManager.Instance.Content.Load<Texture2D>(assetName);
             Debug.Assert(texture != null, "null texture");
         }
-        public virtual void Update(GameTime gameTime) {
+
+        public virtual void Update(GameTime gameTime)
+        {
             // this function do nothing since the render for a static object might not change
         }
 
-        public virtual void Draw(GameTime gameTime) {
-            g.SpriteBatch.Draw(texture: texture, origin: new Vector2(texture.Width / 2, texture.Height / 2),position:e.position);
+        public virtual void Draw(GameTime gameTime)
+        {
+            GameManager.Instance.SpriteBatch.Draw(texture: texture, origin: new Vector2(texture.Width / 2, texture.Height / 2), position: e.position);
         }
 
     }

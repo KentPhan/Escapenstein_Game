@@ -14,33 +14,45 @@ namespace StickyHandGame_C9_RP7
     /// </summary>
     public class GameManager : Game
     {
-        
-        //private Texture2D textureBall;
-        //private Vector2 ballPosition;
-        //float ballSpeed;
+        /// <summary>
+        /// The instance
+        /// </summary>
+        private static GameManager _instance;
+        public static GameManager Instance
+        {
+            get { return _instance ?? null; }
+        }
 
         //Managers
         private CollisionManager _collisionManager;
-        
+
+
+        /// <summary>
+        /// Game State
+        /// </summary>
+        public enum GameState
+        {
+            Start,
+            Level1,
+            End
+        }
+        public GameState State { get; private set; }
+
+        // For keeping track of current entities
+        private readonly List<Entity> currentEntityList;
+
+
+        // For Drawing Crap
         public GraphicsDeviceManager Graphics;
         public SpriteBatch SpriteBatch;
 
-        
-        // test the basic rendercomponent;
-        public PlatformEntity test;
-        public PlayerEntity playertest;
-        private List<Entity> entityList;
         public GameManager()
         {
-            entityList = new List<Entity>();
-            Graphics = new GraphicsDeviceManager(this);
+            _instance = this;
+            currentEntityList = new List<Entity>();
             Content.RootDirectory = "Content";
-
-            test = new PlatformEntity(this, "Ball");
-            this.playertest = new PlayerEntity(this); 
-            entityList.Add(test);
-            entityList.Add(playertest);
-            playertest.position = new Vector2(100, 100);
+            Graphics = new GraphicsDeviceManager(GameManager.Instance);
+            this.State = GameState.Start;
         }
 
         /// <summary>
@@ -52,14 +64,9 @@ namespace StickyHandGame_C9_RP7
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            foreach (Entity e in entityList) {
-                e.Initialize();
-            }
-            
-            
+
             _collisionManager = CollisionManager.Instance;
-            _collisionManager.Initialize(entityList);
-            
+            _collisionManager.Initialize(currentEntityList);
 
             base.Initialize();
         }
@@ -72,14 +79,6 @@ namespace StickyHandGame_C9_RP7
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-
-            //// TODO: use this.Content to load your game content here
-            //textureBall = Content.Load<Texture2D>("ball");
-
-            foreach (Entity e in entityList)
-            {
-                e.LoadContent();
-            }
         }
 
         /// <summary>
@@ -88,7 +87,7 @@ namespace StickyHandGame_C9_RP7
         /// </summary>
         protected override void UnloadContent()
         {
-            foreach (Entity e in entityList)
+            foreach (Entity e in currentEntityList)
             {
                 e.UnloadContent();
             }
@@ -104,17 +103,33 @@ namespace StickyHandGame_C9_RP7
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-            var kState = Keyboard.GetState();
-            
-            // Collisions
-            _collisionManager.Update(gameTime);
-            
-            foreach (Entity e in entityList)
+
+            if (State == GameState.Start)
             {
-                e.Update(gameTime);
+                PlatformEntity plat = new PlatformEntity("platform");
+                currentEntityList.Add(plat);
+                plat.position = new Vector2(200, 400);
+
+                PlayerEntity player = new PlayerEntity();
+                currentEntityList.Add(player);
+                player.position = new Vector2(200, 200);
+
+
+                State = GameState.Level1;
             }
-            
+            else if (State == GameState.Level1)
+            {
+
+                // Collision Updates
+                _collisionManager.Update(gameTime);
+
+                // Entity Updates
+                foreach (Entity e in currentEntityList)
+                {
+                    e.Update(gameTime);
+                }
+            }
+
             base.Update(gameTime);
         }
 
@@ -128,9 +143,8 @@ namespace StickyHandGame_C9_RP7
 
             // TODO: Add your drawing code here
             SpriteBatch.Begin();
-            //spriteBatch.Draw(textureBall, ballPosition, null, Color.White, 0f, new Vector2(textureBall.Width / 2, textureBall.Height / 2), Vector2.One, SpriteEffects.None, 0f);
 
-            foreach (Entity e in entityList)
+            foreach (Entity e in currentEntityList)
             {
                 e.Draw(gameTime);
             }
