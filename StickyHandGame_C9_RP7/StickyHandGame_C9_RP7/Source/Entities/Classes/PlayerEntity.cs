@@ -16,9 +16,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 {
     public class PlayerEntity : Entity
     {
-        int[] framNumber = RenderManager.PlayerAnimatedAttribute.framNumber;
-        int[] playSpeed = RenderManager.PlayerAnimatedAttribute.playSpeed;
-        String[] Names = RenderManager.PlayerAnimatedAttribute.Names;
+        int[] framNumber = RenderManager.zombieAnimatedAttribute.framNumber;
+        int[] playSpeed = RenderManager.zombieAnimatedAttribute.playSpeed;
+        String[] Names = RenderManager.zombieAnimatedAttribute.Names;
         AnimationComponent myAnimationComponent;
 
 
@@ -41,13 +41,13 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         {
             this.State = CharacterState.Standing;
 
-            myAnimationComponent = new AnimationComponent("Animation", this,
+            myAnimationComponent = new AnimationComponent("Idle", this,
                 framNumber,
                 playSpeed,
                 Names,
-                RenderManager.PlayerAnimatedAttribute.Width
-                , RenderManager.PlayerAnimatedAttribute.Height
-                , RenderManager.PlayerAnimatedAttribute.Scale);
+                RenderManager.zombieAnimatedAttribute.Width
+                , RenderManager.zombieAnimatedAttribute.Height
+                , RenderManager.zombieAnimatedAttribute.Scale);
 
             this.CollisionComponent = new BoxColliderComponent(this, CollisionLayers.Player);
 

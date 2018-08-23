@@ -49,6 +49,7 @@
     <Compile Include="Source\Components\Render\AnimationComponent.cs" />
     <Compile Include="Source\Components\Render\RenderComponent.cs" />
     <Compile Include="Source\Entities\Classes\KeyBinds.cs" />
+    <Compile Include="Source\Entities\Classes\ThrowAbleEntity.cs" />
     <Compile Include="Source\Managers\Classes\CameraManager.cs" />
     <Compile Include="Source\Managers\Classes\RenderManager.cs" />
     <Compile Include="Source\Entities\Classes\PlatformEntity.cs" />

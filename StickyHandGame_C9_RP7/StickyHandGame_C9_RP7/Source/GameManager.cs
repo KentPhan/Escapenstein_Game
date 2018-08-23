@@ -6,6 +6,7 @@ using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Collections.Generic;
 using StickyHandGame_C9_RP7.Source.Managers;
+using StickyHandGame_C9_RP7.Source.Managers.Classes;
 
 namespace StickyHandGame_C9_RP7
 {
@@ -25,7 +26,6 @@ namespace StickyHandGame_C9_RP7
 
         //Managers
         private CollisionManager _collisionManager;
-
 
         /// <summary>
         /// Game State
@@ -83,6 +83,7 @@ namespace StickyHandGame_C9_RP7
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
+            CameraManager.Instance.LoadContent();
         }
 
         /// <summary>
@@ -126,7 +127,7 @@ namespace StickyHandGame_C9_RP7
             }
             else if (State == GameState.Level1)
             {
-
+                CameraManager.Instance.Update();
                 // Collision Updates
                 _collisionManager.Update(gameTime);
 
@@ -150,7 +151,8 @@ namespace StickyHandGame_C9_RP7
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            SpriteBatch.Begin();
+            // Changed the begin for camera
+            SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camaer.Transform);
 
             PlayerEntity.Draw(gameTime);
             foreach (Entity e in NonPlayerEntityList)

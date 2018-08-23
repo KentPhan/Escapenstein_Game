@@ -13,6 +13,13 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
 {
     public class CameraManager
     {
+        private static CameraManager instance;
+        public static CameraManager Instance { get {
+                if (instance == null) {
+                    instance = new CameraManager();
+                }
+                return instance;
+            } }
         public Camera camaer;
         public CameraManager() {
        
