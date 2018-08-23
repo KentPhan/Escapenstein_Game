@@ -15,6 +15,15 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
 {
 
 
+    public enum Side
+    {
+        Left,
+        Right,
+        Top,
+        Bottom,
+        None,
+    }
+
 
     public class BoxColliderComponent : CollisionComponent
     {
@@ -33,8 +42,8 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         {
             this.Entity = entity;
             this.Layer = layer;
-            this.CollidedWith = new List<Tuple<CollisionComponent, Vector2>>();
-            this.WillCollideWith = new List<Tuple<CollisionComponent, Vector2>>();
+            this.CollidedWith = new List<Tuple<CollisionComponent, Vector2, Side>>();
+            this.WillCollideWith = new List<Tuple<CollisionComponent, Vector2, Side>>();
         }
 
         /// <summary>
@@ -43,7 +52,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         /// <param name="box">The box.</param>
         /// <param name="otherBox">The other box.</param>
         /// <returns></returns>
-        public static Tuple<CollisionComponent,Vector2> CheckCollision(BoxColliderComponent box, BoxColliderComponent otherBox)
+        public static Tuple<CollisionComponent,Vector2,Side> CheckCollision(BoxColliderComponent box, BoxColliderComponent otherBox)
         {
             Vector2 origin = box.Entity.Position;
             Vector2 otherOrigin = otherBox.Entity.Position;
@@ -58,9 +67,24 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
                 origin.Y - (height / 2) < otherOrigin.Y + (otherHeight / 2) &&
                 origin.Y + (height / 2) > otherOrigin.Y - (otherHeight / 2))
             {
+
+                Side side = Side.None;
+
                 Vector2 direction = (origin - otherOrigin);
                 direction.Normalize();
-                return new Tuple<CollisionComponent, Vector2>(otherBox, direction);
+                if (Math.Abs(origin.X - otherOrigin.X) < Math.Abs(origin.Y - otherOrigin.Y))
+                {
+                    
+                    Vector2 up = new Vector2(0,1);
+                    side = (Vector2.Dot(up, direction) > 0) ? Side.Bottom : Side.Top;
+                }
+                else
+                {
+                    Vector2 right = new Vector2(1, 0);
+                    side = (Vector2.Dot(right, direction) > 0) ? Side.Right : Side.Left;
+                }
+                
+                return new Tuple<CollisionComponent, Vector2, Side>(otherBox, direction, side);
             }
             return null;
         }
@@ -71,7 +95,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         /// <param name="otherComponents">The other components.</param>
         public override void CheckDoesCollide(List<Entity> otherComponents)
         {
-            this.CollidedWith = new List<Tuple<CollisionComponent, Vector2>>();
+            this.CollidedWith = new List<Tuple<CollisionComponent, Vector2, Side>>();
             foreach (Entity otherEntity in otherComponents)
             {
                 if (this.Entity == otherEntity)
@@ -91,7 +115,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
             Vector2 unitDirection = new Vector2(directionMoving.X, directionMoving.Y);
             unitDirection.Normalize();
 
-            this.WillCollideWith  = new List<Tuple<CollisionComponent, Vector2>>();
+            this.WillCollideWith  = new List<Tuple<CollisionComponent, Vector2, Side>>();
             foreach (Entity otherEntity in otherComponents)
             {
                 if (this.Entity == otherEntity)

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
+using StickyHandGame_C9_RP7.Source.Managers;
 
 namespace StickyHandGame_C9_RP7.Source.Components.Render
 {
