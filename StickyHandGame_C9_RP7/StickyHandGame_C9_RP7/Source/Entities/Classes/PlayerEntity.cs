@@ -22,9 +22,22 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
         private float speed = 100f;
 
+        private float jumpforce = 5f;
+        private float gravitationalAcceleration = 100f;
+        private float verticalVelocity = 0f;
+
+
+        public enum CharacterState
+        {
+            Default,
+            Jumping
+        }
+        public CharacterState State { get; private set; }
 
         public PlayerEntity() : base()
         {
+            this.State = CharacterState.Default;
+
             myAnimationComponent = new AnimationComponent("Animation", this,
                 framNumber,
                 playSpeed,
@@ -57,6 +70,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         public override void Update(GameTime gameTime)
         {
             var kState = Keyboard.GetState();
+            float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (this.CollisionComponent.CollidedWith.Count > 0)
             {
@@ -64,20 +78,38 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
                 {
                     this.Position += speed * item.Item2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
+
+                verticalVelocity = 0;
                 return;
             }
 
-            if (kState.IsKeyDown(Keys.Up))
-                Position.Y -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (kState.IsKeyDown(Keys.Down))
-                Position.Y += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (kState.IsKeyDown(Keys.Left))
-                Position.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (kState.IsKeyDown(Keys.Right))
-                Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            switch (this.State)
+            {
+                case CharacterState.Jumping:
+                    break;
+                case CharacterState.Default:
+                    break;
+            }
+
+            if (kState.IsKeyDown(Keys.Up))
+            {
+                verticalVelocity -= jumpforce;
+                //this.State = CharacterState.Jumping;
+            }
+            if (kState.IsKeyDown(Keys.Left))
+                Position.X -= speed * timeElapsed;
             if (kState.IsKeyDown(Keys.Right))
-                Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.X += speed * timeElapsed;
+
+
+
+
+
+
+            // Gravity
+            verticalVelocity += gravitationalAcceleration * timeElapsed;
+            Position.Y += verticalVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             myAnimationComponent.Update(gameTime);
         }
