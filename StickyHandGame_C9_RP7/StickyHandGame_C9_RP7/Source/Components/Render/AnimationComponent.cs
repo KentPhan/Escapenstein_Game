@@ -39,7 +39,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
             this.Names = Names;
             Debug.Assert(framNumber.Length == playSpeed.Length && framNumber.Length == Names.Length, "inconsistent length in animation");
             this.BuildDictionary();
-            SetAnimation(Names[1], 0);
+            SetAnimation(Names[0], 0);
 
         }
 
