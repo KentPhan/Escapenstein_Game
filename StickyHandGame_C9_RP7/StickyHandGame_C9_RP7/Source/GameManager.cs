@@ -39,7 +39,8 @@ namespace StickyHandGame_C9_RP7
         public GameState State { get; private set; }
 
         // For keeping track of current entities
-        private readonly List<Entity> currentEntityList;
+        public Entity PlayerEntity { get; private set; }
+        public List<Entity> NonPlayerEntityList { get; private set; }
 
 
         // For Drawing Crap
@@ -49,9 +50,12 @@ namespace StickyHandGame_C9_RP7
         public GameManager()
         {
             _instance = this;
-            currentEntityList = new List<Entity>();
+            NonPlayerEntityList = new List<Entity>();
             Content.RootDirectory = "Content";
             Graphics = new GraphicsDeviceManager(GameManager.Instance);
+            Graphics.PreferredBackBufferWidth = 1000;
+            Graphics.PreferredBackBufferHeight = 1000;
+            //Graphics.IsFullScreen = true;
             this.State = GameState.Start;
         }
 
@@ -66,7 +70,7 @@ namespace StickyHandGame_C9_RP7
             // TODO: Add your initialization logic here
 
             _collisionManager = CollisionManager.Instance;
-            _collisionManager.Initialize(currentEntityList);
+            _collisionManager.Initialize(NonPlayerEntityList);
 
             base.Initialize();
         }
@@ -87,7 +91,7 @@ namespace StickyHandGame_C9_RP7
         /// </summary>
         protected override void UnloadContent()
         {
-            foreach (Entity e in currentEntityList)
+            foreach (Entity e in NonPlayerEntityList)
             {
                 e.UnloadContent();
             }
@@ -106,13 +110,16 @@ namespace StickyHandGame_C9_RP7
 
             if (State == GameState.Start)
             {
-                PlatformEntity plat = new PlatformEntity("platform");
-                currentEntityList.Add(plat);
-                plat.Position = new Vector2(200, 400);
+                PlatformEntity plat = new PlatformEntity();
+                NonPlayerEntityList.Add(plat);
+                plat.Position = new Vector2(600, 300);
 
-                PlayerEntity player = new PlayerEntity();
-                currentEntityList.Add(player);
-                player.Position = new Vector2(200, 200);
+                PlatformEntity plat2 = new PlatformEntity();
+                NonPlayerEntityList.Add(plat2);
+                plat2.Position = new Vector2(200, 600);
+
+                PlayerEntity = new PlayerEntity {Position = new Vector2(200, 200)};
+                CollisionManager.Instance.AssignPlayerEntity(PlayerEntity);
 
 
                 State = GameState.Level1;
@@ -124,7 +131,8 @@ namespace StickyHandGame_C9_RP7
                 _collisionManager.Update(gameTime);
 
                 // Entity Updates
-                foreach (Entity e in currentEntityList)
+                PlayerEntity.Update(gameTime);
+                foreach (Entity e in NonPlayerEntityList)
                 {
                     e.Update(gameTime);
                 }
@@ -144,7 +152,8 @@ namespace StickyHandGame_C9_RP7
             // TODO: Add your drawing code here
             SpriteBatch.Begin();
 
-            foreach (Entity e in currentEntityList)
+            PlayerEntity.Draw(gameTime);
+            foreach (Entity e in NonPlayerEntityList)
             {
                 e.Draw(gameTime);
             }

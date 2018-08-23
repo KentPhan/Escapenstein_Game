@@ -32,7 +32,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers
         }
 
 
-        public override void Initialize(List<Entity> entities)
+        public void Initialize(List<Entity> entities)
         {
             throw new NotImplementedException();
         }

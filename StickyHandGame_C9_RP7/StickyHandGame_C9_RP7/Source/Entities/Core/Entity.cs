@@ -42,7 +42,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Core
         }
     }
 
-    public abstract class Entity
+    public abstract class Entity : ICloneable
     {
         public CollisionComponent CollisionComponent { get; set; }
 
@@ -51,6 +51,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Core
         public Vector2 Position;
         public float Width;
         public float Height;
+        public bool Hide;
 
         protected Entity()
         {
@@ -58,6 +59,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Core
             Position = new Vector2(0, 0);
             Width = 0;
             Height = 0;
+            Hide = false;
         }
         public abstract void UnloadContent();
         public abstract void Update(GameTime gameTime);
@@ -68,5 +70,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Core
             return ++_count;
         }
 
+        public abstract object Clone();
     }
 }
