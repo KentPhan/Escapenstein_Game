@@ -22,10 +22,11 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
             this.e = entity;
         }
 
-        public void LoadContent()
+        public Texture2D LoadContent()
         {
             texture = GameManager.Instance.Content.Load<Texture2D>(assetName);
             Debug.Assert(texture != null, "null texture");
+            return texture;
         }
 
         public virtual void Update(GameTime gameTime)
@@ -35,7 +36,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
 
         public virtual void Draw(GameTime gameTime)
         {
-            GameManager.Instance.SpriteBatch.Draw(texture: texture, origin: new Vector2(texture.Width / 2, texture.Height / 2), position: e.position);
+            GameManager.Instance.SpriteBatch.Draw(texture: texture, origin: new Vector2(texture.Width / 2, texture.Height / 2), position: e.Position);
         }
 
     }

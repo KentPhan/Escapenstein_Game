@@ -33,10 +33,12 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
                 , RenderManager.PlayerAnimatedAttribute.Height
                 , RenderManager.PlayerAnimatedAttribute.Scale);
 
-            this.CollisionComponent = new BoxColliderComponent(this, position, (float)RenderManager.PlayerAnimatedAttribute.Width * RenderManager.PlayerAnimatedAttribute.Scale.X, (float)RenderManager.PlayerAnimatedAttribute.Height * RenderManager.PlayerAnimatedAttribute.Scale.Y, CollisionLayers.Player);
+            this.CollisionComponent = new BoxColliderComponent(this, CollisionLayers.Player);
 
             // Load Content
-            myAnimationComponent.LoadContent();
+            var texture = myAnimationComponent.LoadContent();
+            Width = texture.Width;
+            Height = texture.Height;
         }
 
         public override void Draw(GameTime gameTime)
@@ -56,22 +58,26 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         {
             var kState = Keyboard.GetState();
 
-            //if (this.CollisionComponent.HasCollided)
-            //{
-            //    return;
-            //}
+            if (this.CollisionComponent.CollidedWith.Count > 0)
+            {
+                foreach (var item in this.CollisionComponent.CollidedWith)
+                {
+                    this.Position += speed * item.Item2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+                return;
+            }
 
             if (kState.IsKeyDown(Keys.Up))
-                position.Y -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.Y -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (kState.IsKeyDown(Keys.Down))
-                position.Y += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.Y += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (kState.IsKeyDown(Keys.Left))
-                position.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (kState.IsKeyDown(Keys.Right))
-                position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (kState.IsKeyDown(Keys.Right))
-                position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             myAnimationComponent.Update(gameTime);
         }

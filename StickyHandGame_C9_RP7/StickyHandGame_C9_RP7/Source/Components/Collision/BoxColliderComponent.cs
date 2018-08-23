@@ -2,6 +2,7 @@
 using StickyHandGame_C9_RP7.Source.Entities.Components;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
@@ -15,12 +16,6 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
 
     public class BoxColliderComponent : CollisionComponent
     {
-        public Vector2 Origin { get; }
-
-        public float Width { get; }
-
-        public float Height { get; }
-
         public CollisionLayers Layer { get; }
 
 
@@ -32,14 +27,11 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="layer">The layer.</param>
-        public BoxColliderComponent(Entity entity, Vector2 origin, float width, float height, CollisionLayers layer)
+        public BoxColliderComponent(Entity entity, CollisionLayers layer)
         {
             this.Entity = entity;
-            this.Origin = origin;
-            this.Width = width;
-            this.Height = height;
             this.Layer = layer;
-            this.CollidedWith = new List<CollisionComponent>();
+            this.CollidedWith = new List<Tuple<CollisionComponent, Vector2>>();
         }
 
         /// <summary>
@@ -48,11 +40,24 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         /// <param name="otherBox">The other box.</param>
         public void CheckDoesCollideWithBox(BoxColliderComponent otherBox)
         {
-            if (this.Origin.X - (this.Width / 2) < otherBox.Origin.X + (otherBox.Width / 2) &&
-                                this.Origin.X + (this.Width / 2) > otherBox.Origin.X - (otherBox.Width / 2) &&
-                                this.Origin.Y - (this.Height / 2) < otherBox.Origin.Y + (otherBox.Height / 2) &&
-                                this.Origin.Y + (this.Height / 2) > otherBox.Origin.Y - (otherBox.Height / 2))
-                CollidedWith.Add(otherBox);
+            Vector2 origin = this.Entity.Position;
+            Vector2 otherOrigin = otherBox.Entity.Position;
+            float width = this.Entity.Width;
+            float height = this.Entity.Height;
+            float otherWidth = otherBox.Entity.Width;
+            float otherHeight = otherBox.Entity.Height;
+
+
+            if (origin.X - (width / 2) < otherOrigin.X + (otherWidth / 2) &&
+                origin.X + (width / 2) > otherOrigin.X - (otherWidth / 2) &&
+                origin.Y - (height / 2) < otherOrigin.Y + (otherHeight / 2) &&
+                origin.Y + (height / 2) > otherOrigin.Y - (otherHeight / 2))
+            {
+                Vector2 direction = (origin - otherOrigin);
+                direction.Normalize();
+                CollidedWith.Add(new Tuple<CollisionComponent, Vector2>(otherBox, direction));
+            }
+
         }
 
         /// <summary>
@@ -61,7 +66,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         /// <param name="otherComponents">The other components.</param>
         public override void CheckDoesCollide(List<Entity> otherComponents)
         {
-            this.CollidedWith = new List<CollisionComponent>();
+            this.CollidedWith = new List<Tuple<CollisionComponent, Vector2>>();
             foreach (Entity otherEntity in otherComponents)
             {
                 if (this.Entity == otherEntity)

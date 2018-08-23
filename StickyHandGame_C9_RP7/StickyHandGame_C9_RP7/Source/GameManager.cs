@@ -108,11 +108,11 @@ namespace StickyHandGame_C9_RP7
             {
                 PlatformEntity plat = new PlatformEntity("platform");
                 currentEntityList.Add(plat);
-                plat.position = new Vector2(200, 400);
+                plat.Position = new Vector2(200, 400);
 
                 PlayerEntity player = new PlayerEntity();
                 currentEntityList.Add(player);
-                player.position = new Vector2(200, 200);
+                player.Position = new Vector2(200, 200);
 
 
                 State = GameState.Level1;

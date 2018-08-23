@@ -16,10 +16,12 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         public PlatformEntity(String assetName) : base()
         {
             renderComponent = new RenderComponent(assetName, this);
-            this.CollisionComponent = new BoxColliderComponent(this, position, (float)RenderManager.PlayerAnimatedAttribute.Width, (float)RenderManager.PlayerAnimatedAttribute.Height, CollisionLayers.Platform);
+            this.CollisionComponent = new BoxColliderComponent(this, CollisionLayers.Platform);
 
             // Load Content
-            this.renderComponent.LoadContent();
+            var texture = this.renderComponent.LoadContent();
+            Width = texture.Width;
+            Height = texture.Height;
         }
         public override void Draw(GameTime gameTime)
         {
