@@ -115,11 +115,11 @@ namespace StickyHandGame_C9_RP7
             {
                 PlatformEntity plat = new PlatformEntity();
                 NonPlayerEntityList.Add(plat);
-                plat.Position = new Vector2(600, 300);
+                plat.Position = new Vector2(600, 800);
 
                 PlatformEntity plat2 = new PlatformEntity();
                 NonPlayerEntityList.Add(plat2);
-                plat2.Position = new Vector2(200, 600);
+                plat2.Position = new Vector2(200, 1000);
 
                 PlayerEntity = new PlayerEntity {Position = new Vector2(200, 200)};
                 CollisionManager.Instance.AssignPlayerEntity(PlayerEntity);

@@ -24,10 +24,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
         
 
-        private readonly float _jumpforce = 200f;
-        private readonly float _gravitationalAcceleration = 100f;
-        private readonly float _runningAcceleration = 100f;
-        private readonly float _runningTerminal = 1000f;
+        private readonly float _jumpforce = 300f;
+        private readonly float _gravitationalAcceleration = 300f;
+        private readonly float _runningSpeed = 300f;
+        private readonly float _rejectionSpeed = 200f;
         private Vector2 _velocity = new Vector2();
         private Vector2 previousposition;
         // The Hand 
@@ -93,52 +93,54 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // Collision Checking
-            //if (this.CollisionComponent.CollidedWith.Count > 0)
-            //{
-            //    // Move user in opposite direction of collision
-            //    foreach (var item in this.CollisionComponent.CollidedWith)
-            //    {
-            //        this.Position += _speed * item.Item2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            //    }
+            if (this.CollisionComponent.CollidedWith.Count > 0)
+            {
+                // Move user in opposite direction of collision
+                foreach (var item in this.CollisionComponent.CollidedWith)
+                {
+                    this.Position += _rejectionSpeed * item.Item2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+                return;
+            }
+            else
+            {
 
-            //    return;
-            //}
-            //else
-            //{
-
-            //}
+            }
 
             // If its moving, do predictive collisions
-            if (_velocity.X > 0 || _velocity.Y > 0)
+            this.CollisionComponent.CheckWillCollide(GameManager.Instance.NonPlayerEntityList, _velocity);
+            if (this.CollisionComponent.WillCollideWith.Count > 0)
             {
-                this.CollisionComponent.CheckWillCollide(GameManager.Instance.NonPlayerEntityList, _velocity);
-                if (this.CollisionComponent.WillCollideWith.Count > 0)
+                // based upon the direction, react
+                foreach (var item in this.CollisionComponent.WillCollideWith)
                 {
-                    // based upon the direction, react
-                    bool onPlatform = false;
-                    foreach (var item in this.CollisionComponent.WillCollideWith)
+                    bool thereIsSomethingBelowMe = false;
+                    switch (item.Item3)
                     {
-                        Vector2 upVector = new Vector2(0, -1);
-                        if (Vector2.Dot((upVector), item.Item2) > 0)
-                        {
-                            // if below
-                            onPlatform = true;
-                        }
+                        case Side.Top:
+                            
+                            thereIsSomethingBelowMe = true;
+                            this._velocity = new Vector2(_velocity.X, 0);
+                            break;
+                        case Side.Left:
+                            if(_velocity.X < 0)
+                                this._velocity = new Vector2(0, _velocity.Y);
+                            break;
+                        case Side.Right:
+                            if (_velocity.X > 0)
+                                this._velocity = new Vector2(0, _velocity.Y);
+                            break;
+                        case Side.Bottom:
+                            if(_velocity.Y < 0)
+                                this._velocity = new Vector2(_velocity.X, 0);
+                            break;
+                        case Side.None:
+                            break;
                     }
 
-                    if (onPlatform)
-                    {
-                        this.State = CharacterState.Standing;
-                        this._velocity = new Vector2(0, 0);
-                    }
-                    else
-                    {
-                        this.State = CharacterState.AirBourne;
-                    }
-
+                    this.State = !thereIsSomethingBelowMe ? CharacterState.AirBourne : CharacterState.Standing;
                 }
             }
-            
 
             switch (this.State)
             {
@@ -158,16 +160,25 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
             if (kState.IsKeyDown(Keys.Left))
             {
-                this._velocity += new Vector2(-1, 0) * _runningAcceleration * timeElapsed;
-                if (Math.Abs(this._velocity.X) > this._runningTerminal)
-                    this._velocity.X = this._runningTerminal * -1;
-
+                this._velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
+                //if (Math.Abs(this._velocity.X) > this._runningTerminal)
+                //    this._velocity.X = this._runningTerminal * -1;
+            }
+            else
+            {
+                if (this._velocity.X < 0)
+                    this._velocity.X = 0;
             }
             if (kState.IsKeyDown(Keys.Right))
             {
-                this._velocity += new Vector2(1, 0) * _runningAcceleration * timeElapsed;
-                if (Math.Abs(this._velocity.X) > this._runningTerminal)
-                    this._velocity.X = this._runningTerminal;
+                this._velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
+                //if (Math.Abs(this._velocity.X) > this._runningTerminal)
+                //    this._velocity.X = this._runningTerminal;
+            }
+            else
+            {
+                if (this._velocity.X > 0)
+                    this._velocity.X = 0;
             }
             
             this.Position += _velocity * timeElapsed;
