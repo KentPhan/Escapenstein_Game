@@ -19,7 +19,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         public static float speed = 0.01f; //multiply this value with millionseconds to get distance
         public static Vector2 Ringpivot = new Vector2(15,16);
         public static int ringLenght = 3;
-        public static Vector2 Scale = new Vector2(4, 4);
+        public static Vector2 Scale = new Vector2(1, 1);
         public static Vector2 HndPositionOffSet = new Vector2(0, 0);
         public static Vector2 HandOrigin = new Vector2(0, 16);
     }

@@ -51,6 +51,7 @@
     <Compile Include="Source\Entities\Classes\KeyBinds.cs" />
     <Compile Include="Source\Entities\Classes\ThrowAbleEntity.cs" />
     <Compile Include="Source\Managers\Classes\CameraManager.cs" />
+    <Compile Include="Source\Managers\Classes\LevelManager.cs" />
     <Compile Include="Source\Managers\Classes\RenderManager.cs" />
     <Compile Include="Source\Entities\Classes\PlatformEntity.cs" />
     <Compile Include="Source\Entities\Classes\PlayerEntity.cs" />

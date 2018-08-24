@@ -26,6 +26,7 @@ namespace StickyHandGame_C9_RP7
 
         //Managers
         private CollisionManager _collisionManager;
+        private LevelManager _levelManager;
 
         /// <summary>
         /// Game State
@@ -68,10 +69,10 @@ namespace StickyHandGame_C9_RP7
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
             _collisionManager = CollisionManager.Instance;
             _collisionManager.Initialize(NonPlayerEntityList);
-
+            _levelManager = LevelManager.Instance;
+            
             base.Initialize();
         }
 
@@ -113,17 +114,36 @@ namespace StickyHandGame_C9_RP7
 
             if (State == GameState.Start)
             {
-                PlatformEntity plat = new PlatformEntity();
-                NonPlayerEntityList.Add(plat);
-                plat.Position = new Vector2(600, 800);
+                Tiles[][] level1 = new Tiles[][]
+                {
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt},
+                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt},
+                };
 
-                PlatformEntity plat2 = new PlatformEntity();
-                NonPlayerEntityList.Add(plat2);
-                plat2.Position = new Vector2(200, 1000);
+                NonPlayerEntityList = _levelManager.GenerateLevel(level1);
+
 
                 PlayerEntity = new PlayerEntity {Position = new Vector2(200, 200)};
                 CollisionManager.Instance.AssignPlayerEntity(PlayerEntity);
-
 
                 State = GameState.Level1;
             }
