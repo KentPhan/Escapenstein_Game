@@ -84,6 +84,8 @@ namespace StickyHandGame_C9_RP7
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             CameraManager.Instance.LoadContent();
+            //
+            IsMouseVisible = true;
         }
 
         /// <summary>
@@ -153,7 +155,7 @@ namespace StickyHandGame_C9_RP7
             // TODO: Add your drawing code here
             // Changed the begin for camera
             SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camaer.Transform);
-
+           // SpriteBatch.Begin();
             PlayerEntity.Draw(gameTime);
             foreach (Entity e in NonPlayerEntityList)
             {

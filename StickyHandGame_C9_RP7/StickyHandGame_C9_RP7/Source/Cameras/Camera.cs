@@ -11,6 +11,7 @@ namespace StickyHandGame_C9_RP7.Source.Cameras
 {
     public class Camera
     {
+        public static Matrix Trans;
         public float Zoom { get; set; }
         public Vector2 Position { get; set; }
         public Rectangle Bounds { get; protected set; }
@@ -18,14 +19,20 @@ namespace StickyHandGame_C9_RP7.Source.Cameras
         public Matrix Transform { get; protected set; }
 
         private float currentMouseWheelValue, previousMouseWheelValue, zoom, previousZoom;
+        private static Camera instance;
+        public static Camera Instance { get {if (instance == null) {
+                    instance = new Camera(GameManager.Instance.GraphicsDevice.Viewport);
+                }
+                return instance;
 
-        public Camera(Viewport viewport)
+            } }
+        private Camera(Viewport viewport)
         {
             Bounds = viewport.Bounds;
             Zoom = 1f;
             Position = Vector2.Zero;
         }
-
+        
 
         private void UpdateVisibleArea()
         {
@@ -50,6 +57,7 @@ namespace StickyHandGame_C9_RP7.Source.Cameras
             Transform = Matrix.CreateTranslation(new Vector3(-Position.X, -Position.Y, 0)) *
                     Matrix.CreateScale(Zoom) *
                     Matrix.CreateTranslation(new Vector3(Bounds.Width * 0.5f, Bounds.Height * 0.5f, 0));
+            
             UpdateVisibleArea();
         }
 

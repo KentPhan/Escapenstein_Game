@@ -25,7 +25,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
        
         }
         public void LoadContent() {
-            camaer = new Camera(GameManager.Instance.GraphicsDevice.Viewport);
+            camaer = Camera.Instance;
         }
         public void Update() {
             camaer.UpdateCamera(GameManager.Instance.GraphicsDevice.Viewport);

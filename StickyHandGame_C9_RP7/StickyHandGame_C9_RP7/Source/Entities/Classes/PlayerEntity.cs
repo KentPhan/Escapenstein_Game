@@ -29,7 +29,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         private readonly float _runningAcceleration = 100f;
         private readonly float _runningTerminal = 1000f;
         private Vector2 _velocity = new Vector2();
-
+        private Vector2 previousposition;
+        // The Hand 
+        private ThrowAbleEntity HandChain;
         public enum CharacterState
         {
             AirBourne,
@@ -51,6 +53,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
             this.CollisionComponent = new BoxColliderComponent(this, CollisionLayers.Player);
 
+            HandChain = new ThrowAbleEntity(this.Position+HandEntry.HndPositionOffSet,this);
+
             // Load Content
             var texture = myAnimationComponent.LoadContent();
             this.Hide = hide;
@@ -61,6 +65,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
         public override void Draw(GameTime gameTime)
         {
+            HandChain.Draw(gameTime);
             myAnimationComponent.Draw(gameTime);
         }
 
@@ -81,6 +86,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
         public override void Update(GameTime gameTime)
         {
+            Vector2 deltaMovement = this.Position - this.previousposition;
+            this.previousposition = this.Position;
+            HandChain.Update(gameTime, deltaMovement);
             var kState = Keyboard.GetState();
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
