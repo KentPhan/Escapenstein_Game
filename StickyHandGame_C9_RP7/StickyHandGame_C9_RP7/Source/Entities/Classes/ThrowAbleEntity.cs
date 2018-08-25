@@ -18,7 +18,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
     // 15 18
     public struct HandEntry {
         public static int[] lengthnumber = {2,6,14};
-        public static float speed = 0.01f; //multiply this value with millionseconds to get distance
+        public static float speed = 0.1f; //multiply this value with millionseconds to get distance
         public static Vector2 Ringpivot = new Vector2(15,16);
         public static int ringLenght = 3;
         public static Vector2 Scale = new Vector2(1, 1);
@@ -138,7 +138,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
                     chain.Push(new ChainEntity(this.Position, this.angle));
                     this.previouslength = this.length;
                 }
-                deltalength = HandEntry.speed * HandEntry.lengthnumber[currentGate] * gameTime.ElapsedGameTime.Milliseconds;
+                deltalength = HandEntry.speed * gameTime.ElapsedGameTime.Milliseconds;
                 length += deltalength;
                 this.Position += deltalength * HandEntry.Scale.X * this.direction;
             }
@@ -162,7 +162,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
                     chain.Pop();
                     this.previouslength = this.length;
                 }
-                deltalength = HandEntry.speed * HandEntry.lengthnumber[currentGate] * gameTime.ElapsedGameTime.Milliseconds;
+                deltalength = HandEntry.speed * gameTime.ElapsedGameTime.Milliseconds;
                 length -= deltalength;
                 this.Position -= deltalength  * HandEntry.Scale.X * this.direction;
             }

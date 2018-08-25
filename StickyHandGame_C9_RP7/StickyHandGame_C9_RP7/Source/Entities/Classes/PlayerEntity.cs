@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Components.Collision;
 using StickyHandGame_C9_RP7.Source.Components.Render;
@@ -25,7 +26,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
 
         // The Hand 
-        //private ThrowAbleEntity HandChain;
+        private ThrowAbleEntity HandChain;
 
         // States
         public enum CharacterState
@@ -48,7 +49,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
                 , RenderManager.zombieAnimatedAttribute.Height
                 , RenderManager.zombieAnimatedAttribute.Scale);
 
-            //HandChain = new ThrowAbleEntity(this.Position+HandEntry.HndPositionOffSet,this);
+            HandChain = new ThrowAbleEntity(this.Position+HandEntry.HndPositionOffSet,this);
 
             // Load Content
             var texture = myAnimationComponent.LoadContent();
@@ -63,7 +64,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
         public override void Draw(GameTime gameTime)
         {
-            //HandChain.Draw(gameTime);
+            HandChain.Draw(gameTime);
             myAnimationComponent.Draw(gameTime);
         }
 
@@ -111,9 +112,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
         public override void Update(GameTime gameTime)
         {
-            //Vector2 deltaMovement = this.Position - this.previousposition;
-            //this.previousposition = this.Position;
-            //HandChain.Update(gameTime, deltaMovement);
+            Vector2 deltaMovement = this.Position - this.previousposition;
+            this.previousposition = this.Position;
+            this.HandChain.Update(gameTime, deltaMovement);
 
             var kState = Keyboard.GetState();
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -144,6 +145,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             if (kState.IsKeyDown(Keys.Left))
             {
                 this._velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
+                this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
             }
             else
             {
@@ -153,6 +155,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             if (kState.IsKeyDown(Keys.Right))
             {
                 this._velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
+                this.myAnimationComponent.myeffect = SpriteEffects.None;
             }
             else
             {
