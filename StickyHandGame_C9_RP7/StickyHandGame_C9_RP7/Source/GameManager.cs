@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using StickyHandGame_C9_RP7.Source.Entities.Classes;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
+using StickyHandGame_C9_RP7.Source.Managers.Classes;
 using System;
 using System.Collections.Generic;
-using StickyHandGame_C9_RP7.Source.Managers;
-using StickyHandGame_C9_RP7.Source.Managers.Classes;
+using System.Linq;
 
 namespace StickyHandGame_C9_RP7
 {
@@ -39,8 +38,10 @@ namespace StickyHandGame_C9_RP7
         public GameState State { get; private set; }
 
         // For keeping track of current entities
-        public Entity PlayerEntity { get; private set; }
+        public Entity PlayerEntity { get; set; }
         public List<Entity> NonPlayerEntityList { get; private set; }
+
+        public List<Entity> CollidableNonPlayerEntityList { get; private set; }
 
 
         // For Drawing Crap
@@ -69,7 +70,7 @@ namespace StickyHandGame_C9_RP7
         {
             // TODO: Add your initialization logic here
             _levelManager = LevelManager.Instance;
-            
+
             base.Initialize();
         }
 
@@ -111,40 +112,35 @@ namespace StickyHandGame_C9_RP7
 
             if (State == GameState.Start)
             {
-                Tiles[][] level1 = new Tiles[][]
-                {
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt},
-                    new Tiles[]{ Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt},
-                };
+                //List<List<Tiles>> level1 = new List<List<Tiles>>()
+                //{
+                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
+                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
+                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
+                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
+                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
+                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
+                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
+                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
+                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt },
+                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt },
+                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt },
+                //};
 
-                NonPlayerEntityList = _levelManager.GenerateLevel(level1);
-                PlayerEntity = new PlayerEntity {Position = new Vector2(200, 200)};
+                //NonPlayerEntityList = _levelManager.GenerateLevel(level1);
+                //PlayerEntity = new PlayerEntity { Position = new Vector2(200, 200) };
+
+                string fullPath = Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\Test_Map_Tile_Layer_2.csv";
+                NonPlayerEntityList = _levelManager.BuildLevelOffOfCSVFile(fullPath);
+                CollidableNonPlayerEntityList =
+                    NonPlayerEntityList.Where(i => i.CollisionComponent != null).ToList();
 
                 State = GameState.Level1;
             }
             else if (State == GameState.Level1)
             {
                 CameraManager.Instance.Update();
-                
+
                 // Entity Updates
                 PlayerEntity.Update(gameTime);
                 foreach (Entity e in NonPlayerEntityList)
@@ -167,12 +163,13 @@ namespace StickyHandGame_C9_RP7
             // TODO: Add your drawing code here
             // Changed the begin for camera
             SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
-           // SpriteBatch.Begin();
-            PlayerEntity.Draw(gameTime);
+            // SpriteBatch.Begin();
+
             foreach (Entity e in NonPlayerEntityList)
             {
                 e.Draw(gameTime);
             }
+            PlayerEntity.Draw(gameTime);
 
             SpriteBatch.End();
 

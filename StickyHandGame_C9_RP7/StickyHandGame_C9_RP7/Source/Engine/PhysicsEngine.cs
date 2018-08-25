@@ -21,7 +21,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers
             float distanceMoved = 0.0f;
             float stepDistance = 0.01f;
 
-            var possibleCollisions = GameManager.Instance.NonPlayerEntityList;
+            var possibleCollisions = GameManager.Instance.CollidableNonPlayerEntityList;
             var nextPosition = new Vector2(0, 0);
 
             while (distanceMoved < distanceFull)
@@ -73,6 +73,13 @@ namespace StickyHandGame_C9_RP7.Source.Managers
         }
 
 
+        /// <summary>
+        /// Checks the possible collisions.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="movement">The movement.</param>
+        /// <param name="possibleCollisions">The possible collisions.</param>
+        /// <returns></returns>
         private static List<Tuple<CollisionComponent, Vector2, Side>> CheckPossibleCollisions(Entity entity, Vector2 movement, List<Entity> possibleCollisions)
         {
             List<Tuple<CollisionComponent, Vector2, Side>> collisions = new List<Tuple<CollisionComponent, Vector2, Side>>();
