@@ -6,7 +6,6 @@ using StickyHandGame_C9_RP7.Source.Entities.Components;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using StickyHandGame_C9_RP7.Source.Managers;
 using System;
-using System.Diagnostics;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 {
@@ -18,8 +17,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         AnimationComponent myAnimationComponent;
 
         // PhysicsEngine
-        private readonly float _jumpforce = 300f;
-        private readonly float _gravitationalAcceleration = 100f;
+        private readonly float _jumpforce = 400f;
+        private readonly float _gravitationalAcceleration = 400f;
         private readonly float _runningSpeed = 300f;
         private Vector2 _velocity = new Vector2();
         private Vector2 previousposition;
@@ -130,12 +129,12 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
                     }
                     else
                     {
-                        this._velocity.Y = 0.0f;
+
                     }
 
                     break;
                 case CharacterState.Airbourne:
-                    this._velocity += new Vector2(0, 1) * _gravitationalAcceleration * timeElapsed;
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -162,11 +161,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             }
 
             // Gravity
+            this._velocity += new Vector2(0, 1) * _gravitationalAcceleration * timeElapsed;
 
-
+            //Debug.WriteLine(this.State + $" {_velocity.X} {_velocity.Y}");
             PhysicsEngine.MoveTowards(this, _velocity, timeElapsed);
-
-            Debug.WriteLine(this.State);
             myAnimationComponent.Update(gameTime);
         }
     }

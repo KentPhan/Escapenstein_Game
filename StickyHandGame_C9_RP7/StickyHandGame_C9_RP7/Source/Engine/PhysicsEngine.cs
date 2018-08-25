@@ -22,73 +22,99 @@ namespace StickyHandGame_C9_RP7.Source.Managers
             float stepDistance = 0.01f;
 
             var possibleCollisions = GameManager.Instance.NonPlayerEntityList;
-            var predictedEntity = (Entity)entity.Clone();
+            var nextPosition = new Vector2(0, 0);
 
-            while (distanceMoved <= distanceFull)
+            while (distanceMoved < distanceFull)
             {
                 // if step movement would be greater than full movement, limit to full movement
                 if ((distanceMoved + stepDistance) > distanceFull)
-                    predictedEntity.Position += unitDirection * (distanceFull - distanceMoved);
+                    nextPosition = unitDirection * (distanceFull - distanceMoved);
                 else
-                    predictedEntity.Position += unitDirection * stepDistance;
+                    nextPosition = unitDirection * stepDistance;
 
-                if (CheckPossibleCollisions(entity, predictedEntity, possibleCollisions))
+
+                // Get all collisions
+                var collisions = CheckPossibleCollisions(entity, nextPosition, possibleCollisions);
+                foreach (var collision in collisions)
+                {
+                    if (collision.Item1.Entity.CollisionComponent.Layer == CollisionLayers.Static)
+                    {
+                        switch (collision.Item3)
+                        {
+                            case Side.Top:
+                                entity.Position.Y = collision.Item1.Entity.Position.Y - 32.1f;
+                                nextPosition.Y = 0;
+                                break;
+                            case Side.Bottom:
+                                entity.Position.Y = collision.Item1.Entity.Position.Y + 32.1f;
+                                nextPosition.Y = 0;
+                                break;
+                            case Side.Left:
+                                entity.Position.X = collision.Item1.Entity.Position.X - 32.1f;
+                                nextPosition.X = 0;
+                                break;
+                            case Side.Right:
+                                entity.Position.X = collision.Item1.Entity.Position.X + 32.1f;
+                                nextPosition.X = 0;
+                                break;
+                        }
+                    }
+                }
+
+
+                if (nextPosition.Length() <= 0)
                     break;
 
-                entity.Position = predictedEntity.Position;
-                distanceMoved += stepDistance;
+                entity.Position += nextPosition;
+
+                distanceMoved += nextPosition.Length();
             }
 
         }
 
-        /// <summary>
-        /// Checks the possible collisions.
-        /// </summary>
-        /// <param name="entity">The entity.</param>
-        /// <param name="possibleCollisions">The possible collisions.</param>
-        /// <returns></returns>
-        private static bool CheckPossibleCollisions(Entity originalEntity, Entity entity, List<Entity> possibleCollisions)
+
+        private static List<Tuple<CollisionComponent, Vector2, Side>> CheckPossibleCollisions(Entity entity, Vector2 movement, List<Entity> possibleCollisions)
         {
+            List<Tuple<CollisionComponent, Vector2, Side>> collisions = new List<Tuple<CollisionComponent, Vector2, Side>>();
+
             // Check possible collisions with predicted movement
-            bool collidedWithStoppingObject = false;
             foreach (Entity otherEntity in possibleCollisions)
             {
-                var check = CheckCollision(
+                var check = CheckWouldCollide(
                     (BoxColliderComponent)entity.CollisionComponent,
+                    movement,
                     (BoxColliderComponent)otherEntity.CollisionComponent);
 
                 // if collided
                 if (check != null)
                 {
                     // Call collision trigger on moving item
-                    originalEntity.CollisionTriggered(check);
+                    entity.CollisionTriggered(check);
 
                     // If would collide with a stopping object
-                    if (check.Item1.Entity.CollisionComponent.Layer == CollisionLayers.Static)
-                    {
-                        collidedWithStoppingObject = true;
-                    }
+                    collisions.Add(check);
                 }
             }
 
-            return collidedWithStoppingObject;
+            return collisions;
         }
 
         /// <summary>
         /// Checks the collision.
         /// </summary>
-        /// <param name="box">The box.</param>
+        /// <param name="movingBox">The moving box.</param>
+        /// <param name="movement">The movement.</param>
         /// <param name="otherBox">The other box.</param>
         /// <returns></returns>
-        private static Tuple<CollisionComponent, Vector2, Side> CheckCollision(BoxColliderComponent box, BoxColliderComponent otherBox)
+        private static Tuple<CollisionComponent, Vector2, Side> CheckWouldCollide(BoxColliderComponent movingBox, Vector2 movement, BoxColliderComponent otherBox)
         {
-            Vector2 origin = box.Entity.Position;
+            Vector2 origin = movingBox.Entity.Position + movement;
             Vector2 otherOrigin = otherBox.Entity.Position;
 
-            if (origin.X - (box.Width / 2) < otherOrigin.X + (otherBox.Width / 2) &&
-                origin.X + (box.Width / 2) > otherOrigin.X - (otherBox.Width / 2) &&
-                origin.Y - (box.Height / 2) < otherOrigin.Y + (otherBox.Height / 2) &&
-                origin.Y + (box.Height / 2) > otherOrigin.Y - (otherBox.Height / 2))
+            if (origin.X + movement.X - (movingBox.Width / 2) < otherOrigin.X + (otherBox.Width / 2) &&
+                origin.X + movement.X + (movingBox.Width / 2) > otherOrigin.X - (otherBox.Width / 2) &&
+                origin.Y + movement.Y - (movingBox.Height / 2) < otherOrigin.Y + (otherBox.Height / 2) &&
+                origin.Y + movement.Y + (movingBox.Height / 2) > otherOrigin.Y - (otherBox.Height / 2))
             {
 
                 Side side = Side.None;

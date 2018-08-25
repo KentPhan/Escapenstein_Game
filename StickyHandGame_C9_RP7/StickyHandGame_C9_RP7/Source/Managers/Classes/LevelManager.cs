@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StickyHandGame_C9_RP7.Source.Entities.Classes;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
+using System.Collections.Generic;
 
 namespace StickyHandGame_C9_RP7.Source.Managers.Classes
 {
@@ -43,22 +38,21 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         /// </summary>
         /// <param name="tiles">The tiles.</param>
         /// <returns></returns>
-        public List<Entity> GenerateLevel( Tiles[][] tiles)
+        public List<Entity> GenerateLevel(Tiles[][] tiles)
         {
             List<Entity> entities = new List<Entity>();
 
-            for(int r = 0; r < tiles.Length; r++)
+            for (int r = 0; r < tiles.Length; r++)
             {
                 Tiles[] column = tiles[r];
                 for (int c = 0; c < column.Length; c++)
                 {
                     Tiles tile = column[c];
-                    Entity entity = SpawnTile(c + 1, r + 1 , tile);
-                    if(entity != null)
+                    Entity entity = SpawnTile((c + 1) * 32 - 16, (r + 1) * 32 - 16, tile);
+                    if (entity != null)
                         entities.Add(entity);
                 }
             }
-
             return entities;
         }
 
@@ -69,9 +63,9 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         /// <param name="colIndex">The colIndex.</param>
         /// <param name="tile">The tile.</param>
         /// <returns></returns>
-        private Entity SpawnTile(int rowIndex, int colIndex, Tiles tile)
+        private Entity SpawnTile(float x, float y, Tiles tile)
         {
-            Vector2 origin = new Vector2(rowIndex * 32 - 16, colIndex * 32 - 16);
+            Vector2 origin = new Vector2(x, y);
             switch (tile)
             {
                 case Tiles.Tile_Dirt:
