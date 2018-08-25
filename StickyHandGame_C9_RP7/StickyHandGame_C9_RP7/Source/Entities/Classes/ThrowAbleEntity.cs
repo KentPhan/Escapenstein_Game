@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Graphics;
 using StickyHandGame_C9_RP7.Source.Components.Render;
 using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Cameras;
+using StickyHandGame_C9_RP7.Source.Components.Collision;
+using StickyHandGame_C9_RP7.Source.Entities.Components;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 {
@@ -34,6 +36,12 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             this.MyrenderComponent.Origin = HandEntry.Ringpivot;
             this.MyrenderComponent.LoadContent();
         }
+
+        public override void CollisionTriggered(Tuple<CollisionComponent, Vector2, Side> collided)
+        {
+            throw new NotImplementedException();
+        }
+
         public override object Clone()
         {
             throw new NotImplementedException();
@@ -195,6 +203,12 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         {
             throw new NotImplementedException();
         }
+
+        public override void CollisionTriggered(Tuple<CollisionComponent, Vector2, Side> collided)
+        {
+            throw new NotImplementedException();
+        }
+
         public override object Clone()
         {
             throw new NotImplementedException();

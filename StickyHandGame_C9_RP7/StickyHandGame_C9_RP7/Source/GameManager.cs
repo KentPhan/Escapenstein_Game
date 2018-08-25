@@ -25,7 +25,6 @@ namespace StickyHandGame_C9_RP7
         }
 
         //Managers
-        private CollisionManager _collisionManager;
         private LevelManager _levelManager;
 
         /// <summary>
@@ -69,8 +68,6 @@ namespace StickyHandGame_C9_RP7
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            _collisionManager = CollisionManager.Instance;
-            _collisionManager.Initialize(NonPlayerEntityList);
             _levelManager = LevelManager.Instance;
             
             base.Initialize();
@@ -140,19 +137,14 @@ namespace StickyHandGame_C9_RP7
                 };
 
                 NonPlayerEntityList = _levelManager.GenerateLevel(level1);
-
-
                 PlayerEntity = new PlayerEntity {Position = new Vector2(200, 200)};
-                CollisionManager.Instance.AssignPlayerEntity(PlayerEntity);
 
                 State = GameState.Level1;
             }
             else if (State == GameState.Level1)
             {
                 CameraManager.Instance.Update();
-                // Collision Updates
-                _collisionManager.Update(gameTime);
-
+                
                 // Entity Updates
                 PlayerEntity.Update(gameTime);
                 foreach (Entity e in NonPlayerEntityList)
@@ -174,7 +166,7 @@ namespace StickyHandGame_C9_RP7
 
             // TODO: Add your drawing code here
             // Changed the begin for camera
-            SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camaer.Transform);
+            SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
            // SpriteBatch.Begin();
             PlayerEntity.Draw(gameTime);
             foreach (Entity e in NonPlayerEntityList)

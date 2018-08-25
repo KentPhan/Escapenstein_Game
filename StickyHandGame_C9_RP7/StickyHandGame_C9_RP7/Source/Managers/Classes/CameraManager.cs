@@ -20,15 +20,16 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
                 }
                 return instance;
             } }
-        public Camera camaer;
+        public Camera camera;
         public CameraManager() {
        
         }
         public void LoadContent() {
-            camaer = Camera.Instance;
+            camera = Camera.Instance;
+            camera.Position = new Vector2(500,500);
         }
         public void Update() {
-            camaer.UpdateCamera(GameManager.Instance.GraphicsDevice.Viewport);
+            camera.UpdateCamera(GameManager.Instance.GraphicsDevice.Viewport);
         }
 
         

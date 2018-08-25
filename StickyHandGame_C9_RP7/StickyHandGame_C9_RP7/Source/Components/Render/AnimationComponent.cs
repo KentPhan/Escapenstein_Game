@@ -1,13 +1,8 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using StickyHandGame_C9_RP7.Source.Entities.Core;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StickyHandGame_C9_RP7.Source.Entities.Core;
-using StickyHandGame_C9_RP7.Source.Managers;
 
 namespace StickyHandGame_C9_RP7.Source.Components.Render
 {
@@ -56,7 +51,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         }
         public override void Draw(GameTime gameTime)
         {
-            GameManager.Instance.SpriteBatch.Draw(scale:this.scale,texture: texture, position: e.Position, sourceRectangle: GetFrame(currentAnimation, currentFrame), origin: new Vector2(FrameX / 2, FrameY / 2));
+            GameManager.Instance.SpriteBatch.Draw(scale: this.scale, texture: texture, position: entity.Position, sourceRectangle: GetFrame(currentAnimation, currentFrame), origin: new Vector2(FrameX / 2, FrameY / 2));
         }
         private void BuildDictionary()
         {

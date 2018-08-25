@@ -1,16 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Components.Collision;
 using StickyHandGame_C9_RP7.Source.Components.Render;
 using StickyHandGame_C9_RP7.Source.Entities.Components;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Managers;
+using System;
+using System.Diagnostics;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 {
@@ -21,22 +17,24 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         String[] Names = RenderManager.zombieAnimatedAttribute.Names;
         AnimationComponent myAnimationComponent;
 
-
-        
-
+        // PhysicsEngine
         private readonly float _jumpforce = 300f;
-        private readonly float _gravitationalAcceleration = 300f;
+        private readonly float _gravitationalAcceleration = 100f;
         private readonly float _runningSpeed = 300f;
-        private readonly float _rejectionSpeed = 200f;
         private Vector2 _velocity = new Vector2();
         private Vector2 previousposition;
+
+
         // The Hand 
-        private ThrowAbleEntity HandChain;
+        //private ThrowAbleEntity HandChain;
+
+        // States
         public enum CharacterState
         {
-            AirBourne,
+            Airbourne,
             Standing
         }
+
         public CharacterState State { get; private set; }
 
         public PlayerEntity(bool hide = false) : base()
@@ -51,21 +49,22 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
                 , RenderManager.zombieAnimatedAttribute.Height
                 , RenderManager.zombieAnimatedAttribute.Scale);
 
-            this.CollisionComponent = new BoxColliderComponent(this, CollisionLayers.Player);
-
-            HandChain = new ThrowAbleEntity(this.Position+HandEntry.HndPositionOffSet,this);
+            //HandChain = new ThrowAbleEntity(this.Position+HandEntry.HndPositionOffSet,this);
 
             // Load Content
             var texture = myAnimationComponent.LoadContent();
             this.Hide = hide;
-            Width = texture.Width;
-            Height = texture.Height;
-            this.State = CharacterState.AirBourne;
+            Width = 32f;
+            Height = 32f;
+
+            this.CollisionComponent = new BoxColliderComponent(this, this.Width, this.Height, CollisionLayers.Player);
+
+            this.State = CharacterState.Airbourne;
         }
 
         public override void Draw(GameTime gameTime)
         {
-            HandChain.Draw(gameTime);
+            //HandChain.Draw(gameTime);
             myAnimationComponent.Draw(gameTime);
         }
 
@@ -75,7 +74,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
         public override object Clone()
         {
-            var cloned = new PlayerEntity(true);
+            var cloned = new PlayerEntity(false);
             cloned.Position = this.Position;
             return cloned;
         }
@@ -84,85 +83,68 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         {
         }
 
+        public override void CollisionTriggered(Tuple<CollisionComponent, Vector2, Side> collided)
+        {
+            //based upon the direction, react
+            switch (collided.Item3)
+            {
+                case Side.Top:
+                    this.State = CharacterState.Standing;
+                    this._velocity = new Vector2(_velocity.X, 0);
+                    break;
+                case Side.Left:
+                    if (_velocity.X < 0)
+                        this._velocity = new Vector2(0, _velocity.Y);
+                    break;
+                case Side.Right:
+                    if (_velocity.X > 0)
+                        this._velocity = new Vector2(0, _velocity.Y);
+                    break;
+                case Side.Bottom:
+                    if (_velocity.Y < 0)
+                        this._velocity = new Vector2(_velocity.X, 0);
+                    break;
+                case Side.None:
+                    break;
+            }
+        }
+
+
         public override void Update(GameTime gameTime)
         {
-            Vector2 deltaMovement = this.Position - this.previousposition;
-            this.previousposition = this.Position;
-            HandChain.Update(gameTime, deltaMovement);
+            //Vector2 deltaMovement = this.Position - this.previousposition;
+            //this.previousposition = this.Position;
+            //HandChain.Update(gameTime, deltaMovement);
+
             var kState = Keyboard.GetState();
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            // Collision Checking
-            if (this.CollisionComponent.CollidedWith.Count > 0)
-            {
-                // Move user in opposite direction of collision
-                foreach (var item in this.CollisionComponent.CollidedWith)
-                {
-                    this.Position += _rejectionSpeed * item.Item2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                }
-                return;
-            }
-            else
-            {
-
-            }
-
-            // If its moving, do predictive collisions
-            this.CollisionComponent.CheckWillCollide(GameManager.Instance.NonPlayerEntityList, _velocity);
-            if (this.CollisionComponent.WillCollideWith.Count > 0)
-            {
-                // based upon the direction, react
-                foreach (var item in this.CollisionComponent.WillCollideWith)
-                {
-                    bool thereIsSomethingBelowMe = false;
-                    switch (item.Item3)
-                    {
-                        case Side.Top:
-                            
-                            thereIsSomethingBelowMe = true;
-                            this._velocity = new Vector2(_velocity.X, 0);
-                            break;
-                        case Side.Left:
-                            if(_velocity.X < 0)
-                                this._velocity = new Vector2(0, _velocity.Y);
-                            break;
-                        case Side.Right:
-                            if (_velocity.X > 0)
-                                this._velocity = new Vector2(0, _velocity.Y);
-                            break;
-                        case Side.Bottom:
-                            if(_velocity.Y < 0)
-                                this._velocity = new Vector2(_velocity.X, 0);
-                            break;
-                        case Side.None:
-                            break;
-                    }
-
-                    this.State = !thereIsSomethingBelowMe ? CharacterState.AirBourne : CharacterState.Standing;
-                }
-            }
-
+            // Based upon current state
             switch (this.State)
             {
                 case CharacterState.Standing:
                     if (kState.IsKeyDown(Keys.Up))
                     {
-                        _velocity +=  new Vector2(0,-1) * _jumpforce;
-                        this.State = CharacterState.AirBourne;
+                        _velocity += new Vector2(0, -1) * _jumpforce;
+                        this.State = CharacterState.Airbourne;
                     }
+                    else
+                    {
+                        this._velocity.Y = 0.0f;
+                    }
+
                     break;
-                case CharacterState.AirBourne:
-                    // Gravity
-                    this._velocity +=  new Vector2(0,1) * _gravitationalAcceleration * timeElapsed;
+                case CharacterState.Airbourne:
+                    this._velocity += new Vector2(0, 1) * _gravitationalAcceleration * timeElapsed;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
-
+            // Left and right movement
             if (kState.IsKeyDown(Keys.Left))
             {
                 this._velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
-                //if (Math.Abs(this._velocity.X) > this._runningTerminal)
-                //    this._velocity.X = this._runningTerminal * -1;
             }
             else
             {
@@ -172,19 +154,19 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             if (kState.IsKeyDown(Keys.Right))
             {
                 this._velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
-                //if (Math.Abs(this._velocity.X) > this._runningTerminal)
-                //    this._velocity.X = this._runningTerminal;
             }
             else
             {
                 if (this._velocity.X > 0)
                     this._velocity.X = 0;
             }
-            
-            this.Position += _velocity * timeElapsed;
+
+            // Gravity
+
+
+            PhysicsEngine.MoveTowards(this, _velocity, timeElapsed);
 
             Debug.WriteLine(this.State);
-
             myAnimationComponent.Update(gameTime);
         }
     }

@@ -59,8 +59,7 @@
     <Compile Include="Source\Entities\Core\CollisionLayers.cs" />
     <Compile Include="Source\Entities\Core\Entity.cs" />
     <Compile Include="Source\GameManager.cs" />
-    <Compile Include="Source\Managers\Classes\CollisionManager.cs" />
-    <Compile Include="Source\Managers\Classes\MovementManager.cs" />
+    <Compile Include="Source\Engine\PhysicsEngine.cs" />
     <Compile Include="Source\Managers\Core\IManager.cs" />
   </ItemGroup>
   <ItemGroup>
