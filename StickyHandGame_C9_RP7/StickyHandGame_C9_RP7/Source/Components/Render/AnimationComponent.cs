@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         int currentPlaySpeed = 0; // int in Millionseconds
         int currentlength = 0;
         Vector2 scale;
+        public SpriteEffects myeffect;
         //Vector2 origin;
         public AnimationComponent(string assetName, Entity entity, int[] framNumber, int[] playSpeed, String[] Names, int FrameX, int FrameY, Vector2 scale) : base(assetName, entity)
         {
@@ -36,7 +38,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
             Debug.Assert(framNumber.Length == playSpeed.Length && framNumber.Length == Names.Length, "inconsistent length in animation");
             this.BuildDictionary();
             SetAnimation(Names[0], 0);
-
+            myeffect = SpriteEffects.None;
         }
 
         public override void Update(GameTime gameTime)
@@ -51,7 +53,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         }
         public override void Draw(GameTime gameTime)
         {
-            GameManager.Instance.SpriteBatch.Draw(scale: this.scale, texture: texture, position: entity.Position, sourceRectangle: GetFrame(currentAnimation, currentFrame), origin: new Vector2(FrameX / 2, FrameY / 2));
+            GameManager.Instance.SpriteBatch.Draw(scale: this.scale, texture: texture, position: entity.Position, sourceRectangle: GetFrame(currentAnimation, currentFrame), origin: new Vector2(FrameX / 2, FrameY / 2),effects:myeffect);
         }
         private void BuildDictionary()
         {
