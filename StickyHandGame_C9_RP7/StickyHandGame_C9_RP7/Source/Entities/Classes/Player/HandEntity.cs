@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Cameras;
 using StickyHandGame_C9_RP7.Source.Components.Collision;
+using StickyHandGame_C9_RP7.Source.Components.Render;
 using StickyHandGame_C9_RP7.Source.Entities.Classes.Player;
 using StickyHandGame_C9_RP7.Source.Entities.Components;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
@@ -23,7 +24,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
 
         //Render component
-
+        private readonly RenderComponent _renderComponent;
 
 
         /// <summary>
@@ -33,13 +34,24 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         /// The player.
         /// </value>
         private PlayerEntity _player { get; set; }
+
+
+        // Physics
         private Vector2 targetDestination { get; set; }
+        private float _speed = 10.0f;
+        private float _minimumDistanceFromTarget = 10.0f;
+        private float _maxDistanceOfHand = 100.0f;
 
 
         public HandEntity(PlayerEntity player)
         {
             this.CurrentState = HandState.OnPlayer;
             this._player = player;
+
+            // Render
+            _renderComponent = new RenderComponent("Bread", this, HandEntry.HandOrigin);
+            _renderComponent.LoadContent();
+            _renderComponent.Scale = HandEntry.Scale;
         }
 
 
@@ -64,6 +76,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     }
                     break;
                 case HandState.Shooting:
+                    // If destinat
+
+
                     break;
                 case HandState.Latched:
                     break;
@@ -78,7 +93,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
         public override void Draw(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            _renderComponent.Draw(gameTime);
         }
 
         public override void Reset()
@@ -100,8 +115,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         {
             Point mouseLocation = Mouse.GetState().Position;
             Vector2 WorldVector = Vector2.Transform(new Vector2(mouseLocation.X, mouseLocation.Y), Matrix.Invert(Camera.Instance.Transform));
-            angle = CalculateRotation(WorldVector);
-            this.MyrenderComponent.Rotation = angle;
+            float angle = CalculateRotation(WorldVector);
+            this._renderComponent.Rotation = angle;
         }
 
         public float CalculateRotation(Vector2 EndPoint)

@@ -148,13 +148,15 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public override void Update(GameTime gameTime)
         {
-            Vector2 deltaMovement = this.Position - this.previousposition;
-            this.previousposition = this.Position;
+            float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // Hand
+            //Vector2 deltaMovement = this.Position - this.previousposition;
+            //this.previousposition = this.Position;
             //this.HandChain.Update(gameTime, deltaMovement);
             this._hand.Update(gameTime);
 
             var kState = Keyboard.GetState();
-            float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // Based upon current state
             switch (this.State)
