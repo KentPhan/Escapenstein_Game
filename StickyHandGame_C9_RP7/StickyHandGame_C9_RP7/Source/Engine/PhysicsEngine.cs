@@ -5,11 +5,20 @@ using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Collections.Generic;
 
-namespace StickyHandGame_C9_RP7.Source.Managers
+namespace StickyHandGame_C9_RP7.Source.Engine
 {
+    /// <summary>
+    /// Basic collisions are handled here. Take note that this only accounts player collision with other objects right now. Could adapt later.
+    /// </summary>
     public static class PhysicsEngine
     {
 
+        /// <summary>
+        /// Moves the Entity towards a destination.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="velocity">The velocity.</param>
+        /// <param name="deltaTime">The delta time.</param>
         public static void MoveTowards(Entity entity, Vector2 velocity, float deltaTime)
         {
             if (velocity.Length() <= 0)
@@ -22,7 +31,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers
             float stepDistance = 0.01f;
 
             var possibleCollisions = GameManager.Instance.CollidableNonPlayerEntityList;
-            var nextPosition = new Vector2(0, 0);
+            Vector2 nextPosition;
 
             while (distanceMoved < distanceFull)
             {
@@ -35,8 +44,12 @@ namespace StickyHandGame_C9_RP7.Source.Managers
 
                 // Get all collisions
                 var collisions = CheckPossibleCollisions(entity, nextPosition, possibleCollisions);
+
+                // For each collision react
                 foreach (var collision in collisions)
                 {
+                    // Found that this worked. With static collisions move the entity a bit away from the colliding object based upon
+                    // what side it collided with
                     if (collision.Item1.Entity.CollisionComponent.Layer == CollisionLayers.Static)
                     {
                         switch (collision.Item3)
@@ -98,7 +111,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers
                     // Call collision trigger on moving item
                     entity.CollisionTriggered(check);
 
-                    // If would collide with a stopping object
+                    // Add collision to return list
                     collisions.Add(check);
                 }
             }
@@ -118,19 +131,21 @@ namespace StickyHandGame_C9_RP7.Source.Managers
             Vector2 origin = movingBox.Entity.Position + movement;
             Vector2 otherOrigin = otherBox.Entity.Position;
 
+            // AABB collision check. Offset box by movement
             if (origin.X + movement.X - (movingBox.Width / 2) < otherOrigin.X + (otherBox.Width / 2) &&
                 origin.X + movement.X + (movingBox.Width / 2) > otherOrigin.X - (otherBox.Width / 2) &&
                 origin.Y + movement.Y - (movingBox.Height / 2) < otherOrigin.Y + (otherBox.Height / 2) &&
                 origin.Y + movement.Y + (movingBox.Height / 2) > otherOrigin.Y - (otherBox.Height / 2))
             {
 
+                // Do dot products to determine which side your hitting the other object from. May not be 100% accurate
                 Side side = Side.None;
-
                 Vector2 direction = (origin - otherOrigin);
                 direction.Normalize();
+                // Compare difference in X and Y components. Because they're squares only. Smaller X component means means bottom and top collisions. Smaller Y component means side collisions.
+                // Then do dot products to determine which direction. CosTheta
                 if (Math.Abs(origin.X - otherOrigin.X) < Math.Abs(origin.Y - otherOrigin.Y))
                 {
-
                     Vector2 up = new Vector2(0, 1);
                     side = (Vector2.Dot(up, direction) > 0) ? Side.Bottom : Side.Top;
                 }

@@ -114,17 +114,17 @@ namespace StickyHandGame_C9_RP7
             {
                 //List<List<Tiles>> level1 = new List<List<Tiles>>()
                 //{
-                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
-                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
-                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
-                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
-                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
-                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
-                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
-                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_Dirt },
-                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt },
-                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt },
-                //    new List<Tiles>() { Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt, Tiles.Tile_Dirt },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.Tile_34_C, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.OnPlayer, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C },
                 //};
 
                 //NonPlayerEntityList = _levelManager.GenerateLevel(level1);

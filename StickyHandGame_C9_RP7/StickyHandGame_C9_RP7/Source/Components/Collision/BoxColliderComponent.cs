@@ -14,7 +14,10 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         None,
     }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="StickyHandGame_C9_RP7.Source.Entities.Components.CollisionComponent" />
     public class BoxColliderComponent : CollisionComponent
     {
         public float Width { get; private set; }

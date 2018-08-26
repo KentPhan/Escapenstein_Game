@@ -3,6 +3,7 @@ using StickyHandGame_C9_RP7.Source.Entities.Classes;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System.Collections.Generic;
 using System.IO;
+using StickyHandGame_C9_RP7.Source.Entities.Classes.Player;
 
 namespace StickyHandGame_C9_RP7.Source.Managers.Classes
 {
@@ -39,7 +40,6 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         /// The instance
         /// </summary>
         private static LevelManager _instance;
-
         private Dictionary<int, string> fileMappings;
         public static LevelManager Instance
         {
@@ -57,7 +57,11 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         {
         }
 
-
+        /// <summary>
+        /// Builds the level off of CSV file.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns></returns>
         public List<Entity> BuildLevelOffOfCSVFile(string filePath)
         {
             List<List<Tiles>> tileGrid = new List<List<Tiles>>();
@@ -128,62 +132,6 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
             }
 
             return null;
-            //switch (tile)
-            //{
-            //    case Tiles.Tile_Dirt:
-
-            //    case Tiles.PlayerSpawn:
-            //        GameManager.Instance.PlayerEntity = new PlayerEntity { Position = new Vector2(x, y + 34) };
-            //        return new PlatformEntity(nameof(Tiles.Tile_Dirt), origin);
-            //    case Tiles.Tile_0_C:
-            //        break;
-            //    case Tiles.Tile_1_C:
-            //        break;
-            //    case Tiles.Tile_2_C:
-            //        break;
-            //    case Tiles.Tile_3_C:
-            //        break;
-            //    case Tiles.Tile_4_C:
-            //        break;
-            //    case Tiles.Tile_5_C:
-            //        break;
-            //    case Tiles.Tile_6_C:
-            //        break;
-            //    case Tiles.Tile_7_C:
-            //        break;
-            //    case Tiles.Tile_8_C:
-            //        break;
-            //    case Tiles.Tile_9_C:
-
-            //        break;
-            //    case Tiles.Tile_16_C:
-            //        break;
-            //    case Tiles.Tile_17_C:
-            //        break;
-            //    case Tiles.Tile_19_NC:
-            //        break;
-            //    case Tiles.Tile_20_NC:
-            //        break;
-            //    case Tiles.Tile_21_NC:
-            //        break;
-            //    case Tiles.Tile_32_C:
-            //        break;
-            //    case Tiles.Tile_33_C:
-            //        break;
-            //    case Tiles.Tile_34_C:
-            //        break;
-            //    case Tiles.Tile_35_NC:
-            //        break;
-            //    case Tiles.Tile_36_NC:
-            //        break;
-            //    case Tiles.Tile_48_C_S:
-            //        break;
-            //    case Tiles.Tile_49_C_W:
-            //        break;
-            //    case Tiles.Nothing:
-            //    default:
-            //        return null;
-            //}
         }
 
 
