@@ -48,6 +48,7 @@
     <Compile Include="Source\Components\Collision\BoxColliderComponent.cs" />
     <Compile Include="Source\Components\Render\AnimationComponent.cs" />
     <Compile Include="Source\Components\Render\RenderComponent.cs" />
+    <Compile Include="Source\Engine\CollisionLayerManager.cs" />
     <Compile Include="Source\Entities\Classes\Player\ChainEntity.cs" />
     <Compile Include="Source\Entities\Classes\EmptyEntity.cs" />
     <Compile Include="Source\Entities\Classes\Player\HandEntity.cs" />

@@ -36,18 +36,18 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         private Entity Myplayer;
         public ThrowAbleEntity(Vector2 Position, Entity player)
         {
-            Myplayer = player;
-            MyrenderComponent = new RenderComponent("Bread", this, HandEntry.HandOrigin);
-            MyrenderComponent.LoadContent();
-            MyrenderComponent.Scale = HandEntry.Scale;
-            this.Position = Position;
-            myState = HandEntity.HandState.OnPlayer;
+            //Myplayer = player;
+            //MyrenderComponent = new RenderComponent("Bread", this, HandEntry.HandOrigin);
+            //MyrenderComponent.LoadContent();
+            //MyrenderComponent.Scale = HandEntry.Scale;
+            //this.Position = Position;
+            //myState = HandEntity.HandState.OnPlayer;
             chain = new Stack<Entity>();
         }
 
         public override void Draw(GameTime gameTime)
         {
-            MyrenderComponent.Draw(gameTime);
+            //MyrenderComponent.Draw(gameTime);
             if (count > 1)
             {
                 foreach (ChainEntity ring in chain)
@@ -59,7 +59,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
         public void Update(GameTime gameTime, Vector2 deltaMovement)
         {
-            this.Position += deltaMovement;
+            //this.Position += deltaMovement;
             //if (this.myState == HandEntity.HandState.OnPlayer)
             //{
             //    //AimTo(Mouse.GetState().Position);
@@ -68,62 +68,62 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             //        myState = HandEntity.HandState.Shooting;
             //    }
             //}
-            else if (myState == HandEntity.HandState.Shooting)
-            {
-                if (count > HandEntry.lengthnumber[currentGate])
-                {
-                    if (currentGate < HandEntry.lengthnumber.Length - 1)
-                    {
-                        currentGate++;
-                    }
-                    else
-                    {
-                        myState = HandEntity.HandState.Retreating;
-                    }
-                }
+            //else if (myState == HandEntity.HandState.Shooting)
+            //{
+            //    if (count > HandEntry.lengthnumber[currentGate])
+            //    {
+            //        if (currentGate < HandEntry.lengthnumber.Length - 1)
+            //        {
+            //            currentGate++;
+            //        }
+            //        else
+            //        {
+            //            myState = HandEntity.HandState.Retreating;
+            //        }
+            //    }
 
-                if (this.length - this.previouslength > 3)
-                {
-                    count++;
-                    chain.Push(new ChainEntity(this.Position, this.angle));
-                    this.previouslength = this.length;
-                }
-                deltalength = HandEntry.speed * gameTime.ElapsedGameTime.Milliseconds;
-                length += deltalength;
-                this.Position += deltalength * HandEntry.Scale.X * this.direction;
-            }
-            else if (myState == HandEntity.HandState.Retreating)
-            {
-                if (count < HandEntry.lengthnumber[currentGate])
-                {
-                    if (currentGate > 0)
-                    {
-                        currentGate--;
-                    }
-                    else
-                    {
-                        myState = HandEntity.HandState.OnPlayer;
-                        this.Position = Myplayer.Position + HandEntry.HndPositionOffSet;
-                    }
-                }
+            //    if (this.length - this.previouslength > 3)
+            //    {
+            //        count++;
+            //        chain.Push(new ChainEntity(this.Position, this.angle));
+            //        this.previouslength = this.length;
+            //    }
+            //    deltalength = HandEntry.speed * gameTime.ElapsedGameTime.Milliseconds;
+            //    length += deltalength;
+            //    this.Position += deltalength * HandEntry.Scale.X * this.direction;
+            //}
+            //else if (myState == HandEntity.HandState.Retreating)
+            //{
+            //    if (count < HandEntry.lengthnumber[currentGate])
+            //    {
+            //        if (currentGate > 0)
+            //        {
+            //            currentGate--;
+            //        }
+            //        else
+            //        {
+            //            myState = HandEntity.HandState.OnPlayer;
+            //            this.Position = Myplayer.Position + HandEntry.HndPositionOffSet;
+            //        }
+            //    }
 
-                if (this.previouslength - this.length > 3)
-                {
-                    count--;
-                    chain.Pop();
-                    this.previouslength = this.length;
-                }
-                deltalength = HandEntry.speed * gameTime.ElapsedGameTime.Milliseconds;
-                length -= deltalength;
-                this.Position -= deltalength * HandEntry.Scale.X * this.direction;
-            }
-            if (count > 1)
-            {
-                foreach (ChainEntity ring in chain)
-                {
-                    ring.Position += deltaMovement;
-                }
-            }
+            //    if (this.previouslength - this.length > 3)
+            //    {
+            //        count--;
+            //        chain.Pop();
+            //        this.previouslength = this.length;
+            //    }
+            //    deltalength = HandEntry.speed * gameTime.ElapsedGameTime.Milliseconds;
+            //    length -= deltalength;
+            //    this.Position -= deltalength * HandEntry.Scale.X * this.direction;
+            //}
+            //if (count > 1)
+            //{
+            //    foreach (ChainEntity ring in chain)
+            //    {
+            //        ring.Position += deltaMovement;
+            //    }
+            //}
         }
 
 

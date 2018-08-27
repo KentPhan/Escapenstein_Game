@@ -20,6 +20,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
         // PhysicsEngine
         private readonly float _jumpforce = 400f;
+        private readonly float _rappleAcceleration = 1000f;
         private readonly float _gravitationalAcceleration = 400f;
         private readonly float _runningSpeed = 300f;
         private Vector2 _velocity = new Vector2();
@@ -39,9 +40,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         {
             Airbourne,
             Standing,
+            Rappling,
 
         }
-        public CharacterState State { get; private set; }
+        public CharacterState CurrentState { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerEntity"/> class.
@@ -49,7 +51,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// <param name="hide">if set to <c>true</c> [hide].</param>
         public PlayerEntity(bool hide = false) : base()
         {
-            this.State = CharacterState.Standing;
+            this.CurrentState = CharacterState.Standing;
 
             myAnimationComponent = new AnimationComponent("Idle", this,
                 framNumber,
@@ -71,7 +73,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
             this.CollisionComponent = new BoxColliderComponent(this, this.Width, this.Height, CollisionLayers.Player);
 
-            this.State = CharacterState.Airbourne;
+            this.CurrentState = CharacterState.Airbourne;
         }
 
         /// <summary>
@@ -118,10 +120,13 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         public override void CollisionTriggered(Tuple<CollisionComponent, Vector2, Side> collided)
         {
             //based upon the direction, react
+            if (this.CurrentState == CharacterState.Rappling)
+                return;
+
             switch (collided.Item3)
             {
                 case Side.Top:
-                    this.State = CharacterState.Standing;
+                    this.CurrentState = CharacterState.Standing;
                     this._velocity = new Vector2(_velocity.X, 0);
                     break;
                 case Side.Left:
@@ -141,6 +146,20 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             }
         }
 
+
+        /// <summary>
+        /// Applies a velocity to the player.
+        /// </summary>
+        /// <param name="velocity">The velocity.</param>
+        public void RappleToHand()
+        {
+            if (this.CurrentState != CharacterState.Rappling)
+            {
+                this.CurrentState = CharacterState.Rappling;
+            }
+        }
+
+
         /// <summary>
         /// Update
         /// </summary>
@@ -159,48 +178,61 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             var kState = Keyboard.GetState();
 
             // Based upon current state
-            switch (this.State)
+            switch (this.CurrentState)
             {
                 case CharacterState.Standing:
                     if (kState.IsKeyDown(Keys.Up))
                     {
                         _velocity += new Vector2(0, -1) * _jumpforce;
-                        this.State = CharacterState.Airbourne;
+                        this.CurrentState = CharacterState.Airbourne;
+                    }
+                    goto case CharacterState.Airbourne;
+                case CharacterState.Airbourne:
+                    // Left and right movement
+                    if (kState.IsKeyDown(Keys.Left))
+                    {
+                        this._velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
+                        this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
+                    }
+                    else
+                    {
+                        if (this._velocity.X < 0)
+                            this._velocity.X = 0;
+                    }
+                    if (kState.IsKeyDown(Keys.Right))
+                    {
+                        this._velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
+                        this.myAnimationComponent.myeffect = SpriteEffects.None;
+                    }
+                    else
+                    {
+                        if (this._velocity.X > 0)
+                            this._velocity.X = 0;
                     }
                     break;
-                case CharacterState.Airbourne:
-
+                case CharacterState.Rappling:
+                    if ((this.Position - _hand.Position).Length() <= _hand.HandCatchDistance)
+                    {
+                        _hand.CurrentState = HandEntity.HandState.OnPlayer;
+                        this.CurrentState = CharacterState.Airbourne;
+                    }
+                    else
+                    {
+                        var direction = (_hand.Position - this.Position);
+                        direction.Normalize();
+                        _velocity += direction * _rappleAcceleration * timeElapsed;
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            // Left and right movement
-            if (kState.IsKeyDown(Keys.Left))
-            {
-                this._velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
-                this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
-            }
-            else
-            {
-                if (this._velocity.X < 0)
-                    this._velocity.X = 0;
-            }
-            if (kState.IsKeyDown(Keys.Right))
-            {
-                this._velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
-                this.myAnimationComponent.myeffect = SpriteEffects.None;
-            }
-            else
-            {
-                if (this._velocity.X > 0)
-                    this._velocity.X = 0;
-            }
+
 
             // Gravity
             this._velocity += new Vector2(0, 1) * _gravitationalAcceleration * timeElapsed;
 
-            //Debug.WriteLine(this.State + $" {_velocity.X} {_velocity.Y}");
+            //Debug.WriteLine(this.CurrentState + $" {_velocity.X} {_velocity.Y}");
             PhysicsEngine.MoveTowards(this, _velocity, timeElapsed);
             myAnimationComponent.Update(gameTime);
         }

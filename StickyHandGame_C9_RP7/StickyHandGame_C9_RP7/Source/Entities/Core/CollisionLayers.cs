@@ -7,6 +7,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Core
     {
         Player = 1,
         Static = 2,
+        Ghost = 4,
         None
     }
 }

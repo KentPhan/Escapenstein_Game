@@ -4,6 +4,7 @@ using StickyHandGame_C9_RP7.Source.Entities.Components;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace StickyHandGame_C9_RP7.Source.Engine
 {
@@ -14,15 +15,24 @@ namespace StickyHandGame_C9_RP7.Source.Engine
     {
 
         /// <summary>
-        /// Moves the Entity towards a destination.
+        /// Moves the towards.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="velocity">The velocity.</param>
         /// <param name="deltaTime">The delta time.</param>
-        public static void MoveTowards(Entity entity, Vector2 velocity, float deltaTime)
+        /// <returns>Final position</returns>
+        public static Vector2 MoveTowards(Entity entity, Vector2 velocity, float deltaTime)
         {
             if (velocity.Length() <= 0)
-                return;
+                return entity.Position;
+
+            // TODO do something smarter with Layers later
+            if (entity.CollisionComponent.Layer == CollisionLayers.Ghost)
+            {
+                entity.Position += velocity * deltaTime;
+                return entity.Position;
+            }
+
 
             Vector2 unitDirection = new Vector2(velocity.X, velocity.Y);
             unitDirection.Normalize();
@@ -74,7 +84,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                     }
                 }
 
-
+                // If next position wouldn't move, that means movement is over
                 if (nextPosition.Length() <= 0)
                     break;
 
@@ -83,6 +93,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 distanceMoved += nextPosition.Length();
             }
 
+            return entity.Position;
         }
 
 
