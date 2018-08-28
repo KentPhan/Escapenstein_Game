@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using StickyHandGame_C9_RP7.Source.Managers.Classes;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -47,6 +46,8 @@ namespace StickyHandGame_C9_RP7
         // For Drawing Crap
         public GraphicsDeviceManager Graphics;
         public SpriteBatch SpriteBatch;
+        public SpriteFont font;
+        public Texture2D titleImage;
 
         public GameManager()
         {
@@ -83,7 +84,8 @@ namespace StickyHandGame_C9_RP7
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             CameraManager.Instance.LoadContent();
-            //
+
+            font = Content.Load<SpriteFont>("Main");
             IsMouseVisible = true;
         }
 
@@ -112,19 +114,21 @@ namespace StickyHandGame_C9_RP7
             if (Keyboard.GetState().IsKeyDown(Keys.R))
                 LevelManager.Instance.ResetPlayerPosition();
 
-
+            CameraManager.Instance.Update();
             if (State == GameState.Start)
             {
-                string fullPath = Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\Test_Map_RPT_Foreground.csv";
-                NonPlayerEntityList = _levelManager.BuildLevelOffOfCSVFile(fullPath);
-                CollidableNonPlayerEntityList =
-                    NonPlayerEntityList.Where(i => i.CollisionComponent != null && ((i.CollisionComponent.Layer == CollisionLayers.Static) || (i.CollisionComponent.Layer == CollisionLayers.Trigger))).ToList();
+                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                {
+                    string fullPath = Levels.Level1.Path;
+                    NonPlayerEntityList = _levelManager.BuildLevelOffOfCSVFile(fullPath);
+                    CollidableNonPlayerEntityList =
+                        NonPlayerEntityList.Where(i => i.CollisionComponent != null && ((i.CollisionComponent.Layer == CollisionLayers.Static) || (i.CollisionComponent.Layer == CollisionLayers.Trigger))).ToList();
 
-                State = GameState.Level1;
+                    State = GameState.Level1;
+                }
             }
             else if (State == GameState.Level1)
             {
-                CameraManager.Instance.Update();
                 // Entity Updates
                 PlayerEntity.Update(gameTime);
                 foreach (Entity e in NonPlayerEntityList)
@@ -144,21 +148,30 @@ namespace StickyHandGame_C9_RP7
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
-
-            // Draw Tiles
-            SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
-            foreach (Entity e in NonPlayerEntityList)
+            if (State != GameState.Start)
             {
-                e.Draw(gameTime);
+                // Draw Tiles
+                SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
+                foreach (Entity e in NonPlayerEntityList)
+                {
+                    e.Draw(gameTime);
+                }
+                SpriteBatch.End();
+
+                // Draw Player and Chain
+                SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
+                PlayerEntity.Draw(gameTime);
+                SpriteBatch.End();
             }
-            SpriteBatch.End();
+            else
+            {
+                SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
 
-            // Draw Player and Chain
-            SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
-            PlayerEntity.Draw(gameTime);
-            SpriteBatch.End();
+                SpriteBatch.DrawString(font, "Press Enter To Start", new Vector2(-80, 0), Color.Black);
 
+                SpriteBatch.End();
+
+            }
             base.Draw(gameTime);
         }
     }

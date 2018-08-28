@@ -29,7 +29,10 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         }
         public void Update()
         {
-            camera.Position = GameManager.Instance.PlayerEntity.Position;
+            if (GameManager.Instance.PlayerEntity != null)
+                camera.Position = GameManager.Instance.PlayerEntity.Position;
+            else
+                camera.Position = new Vector2(0, 0);
             camera.UpdateCamera(GameManager.Instance.GraphicsDevice.Viewport);
         }
 

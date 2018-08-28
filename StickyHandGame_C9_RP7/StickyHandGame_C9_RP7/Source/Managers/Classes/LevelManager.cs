@@ -2,11 +2,24 @@
 using StickyHandGame_C9_RP7.Source.Entities.Classes;
 using StickyHandGame_C9_RP7.Source.Entities.Classes.Player;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace StickyHandGame_C9_RP7.Source.Managers.Classes
 {
+    public class Levels
+    {
+        public string Path { get; private set; }
+
+        public static Levels Level1 = new Levels(Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\Test_Map_RPT_Foreground.csv");
+
+        private Levels(string filePath)
+        {
+            this.Path = filePath;
+        }
+    }
+
     public enum Tiles
     {
         Nothing = -1,
@@ -75,6 +88,11 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
 
         }
 
+
+        public void LoadLevel(Levels level)
+        {
+
+        }
 
         /// <summary>
         /// Builds the level off of CSV file.
