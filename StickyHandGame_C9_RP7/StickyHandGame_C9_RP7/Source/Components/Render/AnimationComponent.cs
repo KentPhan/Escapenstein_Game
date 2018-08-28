@@ -53,7 +53,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         }
         public override void Draw(GameTime gameTime)
         {
-            GameManager.Instance.SpriteBatch.Draw(scale: this.scale, texture: texture, position: entity.Position, sourceRectangle: GetFrame(currentAnimation, currentFrame), origin: new Vector2(FrameX / 2, FrameY / 2),effects:myeffect);
+            GameManager.Instance.SpriteBatch.Draw(scale: this.scale, texture: texture, position: entity.Position, sourceRectangle: GetFrame(currentAnimation, currentFrame), origin: new Vector2(FrameX / 2, FrameY / 2), effects: myeffect);
         }
         private void BuildDictionary()
         {

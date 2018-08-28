@@ -6,7 +6,6 @@ using StickyHandGame_C9_RP7.Source.Managers.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using StickyHandGame_C9_RP7.Source.Entities.Classes.Player;
 
 namespace StickyHandGame_C9_RP7
 {
@@ -113,31 +112,31 @@ namespace StickyHandGame_C9_RP7
 
             if (State == GameState.Start)
             {
-                List<List<Tiles>> level1 = new List<List<Tiles>>()
-                {
-                    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C },
-                    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C },
-                    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C },
-                };
+                //List<List<Tiles>> level1 = new List<List<Tiles>>()
+                //{
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C },
+                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C },
+                //};
 
-                NonPlayerEntityList = _levelManager.GenerateLevel(level1);
-                CollidableNonPlayerEntityList =
-                    NonPlayerEntityList.Where(i => i.CollisionComponent != null && i.CollisionComponent.Layer == CollisionLayers.Static).ToList();
-                PlayerEntity = new PlayerEntity { Position = new Vector2(200, 200) };
-
-
-                //string fullPath = Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\Test_Map_Tile_Layer_2.csv";
-                //NonPlayerEntityList = _levelManager.BuildLevelOffOfCSVFile(fullPath);
+                //NonPlayerEntityList = _levelManager.GenerateLevel(level1);
                 //CollidableNonPlayerEntityList =
                 //    NonPlayerEntityList.Where(i => i.CollisionComponent != null && i.CollisionComponent.Layer == CollisionLayers.Static).ToList();
+                //PlayerEntity = new PlayerEntity { Position = new Vector2(200, 200) };
+
+
+                string fullPath = Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\Test_Map_Tile_Layer_2.csv";
+                NonPlayerEntityList = _levelManager.BuildLevelOffOfCSVFile(fullPath);
+                CollidableNonPlayerEntityList =
+                    NonPlayerEntityList.Where(i => i.CollisionComponent != null && i.CollisionComponent.Layer == CollisionLayers.Static).ToList();
 
                 State = GameState.Level1;
             }
@@ -165,16 +164,18 @@ namespace StickyHandGame_C9_RP7
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            // Changed the begin for camera
-            SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
-            // SpriteBatch.Begin();
 
+            // Draw Tiles
+            SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
             foreach (Entity e in NonPlayerEntityList)
             {
                 e.Draw(gameTime);
             }
-            PlayerEntity.Draw(gameTime);
+            SpriteBatch.End();
 
+            // Draw Player and Chain
+            SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
+            PlayerEntity.Draw(gameTime);
             SpriteBatch.End();
 
             base.Draw(gameTime);

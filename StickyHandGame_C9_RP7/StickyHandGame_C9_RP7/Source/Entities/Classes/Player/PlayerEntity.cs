@@ -20,7 +20,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
         // PhysicsEngine
         private readonly float _jumpforce = 400f;
-        private readonly float _rappleAcceleration = 1000f;
+        private readonly float _rappleAcceleration = 5000f;
         private readonly float _gravitationalAcceleration = 400f;
         private readonly float _runningSpeed = 300f;
         private Vector2 _velocity = new Vector2();
@@ -82,7 +82,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// <param name="gameTime">The game time.</param>
         public override void Draw(GameTime gameTime)
         {
-            //HandChain.Draw(gameTime);
             _hand.Draw(gameTime);
             myAnimationComponent.Draw(gameTime);
         }

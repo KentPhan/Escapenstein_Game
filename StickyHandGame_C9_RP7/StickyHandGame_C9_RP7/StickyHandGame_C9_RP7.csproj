@@ -7,7 +7,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{46E84862-614F-4D90-8F84-71F945C95183}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>StickyHandGame_C9_RP7</RootNamespace>
     <AssemblyName>StickyHandGame_C9_RP7</AssemblyName>
@@ -41,6 +41,9 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -54,6 +57,7 @@
     <Compile Include="Source\Entities\Classes\Player\HandEntity.cs" />
     <Compile Include="Source\Entities\Classes\KeyBinds.cs" />
     <Compile Include="Source\Entities\Classes\Player\ThrowAbleEntity.cs" />
+    <Compile Include="Source\Entities\Classes\TriggerEntity.cs" />
     <Compile Include="Source\Managers\Classes\CameraManager.cs" />
     <Compile Include="Source\Managers\Classes\LevelManager.cs" />
     <Compile Include="Source\Managers\Classes\RenderManager.cs" />

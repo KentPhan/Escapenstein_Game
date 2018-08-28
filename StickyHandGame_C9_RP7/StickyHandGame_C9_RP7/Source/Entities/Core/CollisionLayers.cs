@@ -1,13 +1,11 @@
-﻿using System;
-
-namespace StickyHandGame_C9_RP7.Source.Entities.Core
+﻿namespace StickyHandGame_C9_RP7.Source.Entities.Core
 {
-    [Flags]
     public enum CollisionLayers
     {
         Player = 1,
         Static = 2,
         Ghost = 4,
+        Trigger = 8,
         None
     }
 }

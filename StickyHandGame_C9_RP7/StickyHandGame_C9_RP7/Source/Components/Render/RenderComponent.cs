@@ -44,7 +44,6 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
 
         public virtual void Draw(GameTime gameTime)
         {
-            //GameManager.Instance.SpriteBatch.Draw(texture: texture, origin: this.Origin, position: entity.Position, rotation: this.Rotation, scale: this.Scale);
             GameManager.Instance.SpriteBatch.Draw(texture, new Rectangle((int)entity.Position.X - 16, (int)entity.Position.Y - 16, 32, 32), Color.White);
         }
 

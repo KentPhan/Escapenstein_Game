@@ -1,14 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Cameras;
 using StickyHandGame_C9_RP7.Source.Components.Collision;
 using StickyHandGame_C9_RP7.Source.Components.Render;
+using StickyHandGame_C9_RP7.Source.Engine;
 using StickyHandGame_C9_RP7.Source.Entities.Classes.Player;
 using StickyHandGame_C9_RP7.Source.Entities.Components;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Diagnostics;
-using StickyHandGame_C9_RP7.Source.Engine;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 {
@@ -26,7 +27,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
         //Render component
         private readonly RenderComponent _renderComponent;
-
+        private readonly RenderComponent _renderChainComponents;
+        private Texture2D chainTexture;
 
         /// <summary>
         /// Gets or sets the player.
@@ -40,7 +42,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         // Physics
         private Vector2 OriginalPosition { get; set; }
         private Vector2 TargetDestination { get; set; }
-        private float _speed = 10.0f;
+        private float _speed = 200.0f;
 
         private float _maxDistanceOfHand = 1000.0f;
 
@@ -58,6 +60,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             _renderComponent = new RenderComponent("Character_Hand_Down", this, HandEntry.HandOrigin);
             _renderComponent.LoadContent();
             _renderComponent.Scale = HandEntry.Scale;
+
+            this.chainTexture = GameManager.Instance.Content.Load<Texture2D>("Chain");
+
+
             this.Width = 32f;
             this.Height = 32f;
 
@@ -159,6 +165,19 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         public override void Draw(GameTime gameTime)
         {
             _renderComponent.Draw(gameTime);
+
+            // Draw
+            Vector2 startPosition = _player.Position;
+            Vector2 endPosition = this.Position;
+            Vector2 direction = endPosition - startPosition;
+            direction.Normalize();
+            float scale = 2.5f;
+            Vector2 currentDrawPosition = startPosition;
+            while (Vector2.Dot(direction, (endPosition - currentDrawPosition)) > 0)
+            {
+                GameManager.Instance.SpriteBatch.Draw(chainTexture, new Rectangle((int)currentDrawPosition.X - 16, (int)currentDrawPosition.Y - 16, 32, 32), Color.White);
+                currentDrawPosition += direction * scale;
+            }
         }
 
         public override void Reset()
