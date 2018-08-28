@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Components.Collision;
 using StickyHandGame_C9_RP7.Source.Components.Render;
@@ -25,9 +26,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         private readonly float _drag = 2.0f;
         private Vector2 _velocity = new Vector2();
         private Vector2 previousposition;
-
-
-
 
         // The Hand 
         //private ThrowAbleEntity HandChain;
@@ -91,6 +89,19 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// </summary>
         public override void Reset()
         {
+            _velocity = Vector2.Zero;
+        }
+
+
+        public void SetFacing(Vector2 targetLooking)
+        {
+            Vector2 directionLooking = targetLooking - this.Position;
+            Vector2 right = new Vector2(1, 0);
+            if (Vector2.Dot(right, directionLooking) > 0)
+                this.myAnimationComponent.myeffect = SpriteEffects.None;
+            else
+                this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
+
         }
 
         /// <summary>

@@ -70,6 +70,12 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         {
         }
 
+        public void Update(GameTime gameTime)
+        {
+
+        }
+
+
         /// <summary>
         /// Builds the level off of CSV file.
         /// </summary>
@@ -158,7 +164,9 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         /// </summary>
         public void ResetPlayerPosition()
         {
-            GameManager.Instance.PlayerEntity.Position = _playerStart;
+            Entity player = GameManager.Instance.PlayerEntity;
+            player.Position = _playerStart;
+            player.Reset();
         }
 
     }

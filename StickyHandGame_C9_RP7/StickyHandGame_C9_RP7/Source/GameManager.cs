@@ -109,30 +109,12 @@ namespace StickyHandGame_C9_RP7
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            if (Keyboard.GetState().IsKeyDown(Keys.R))
+                LevelManager.Instance.ResetPlayerPosition();
+
 
             if (State == GameState.Start)
             {
-                //List<List<Tiles>> level1 = new List<List<Tiles>>()
-                //{
-                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Nothing, Tiles.Tile_34_C },
-                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C },
-                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C },
-                //    new List<Tiles>() { Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C, Tiles.Tile_34_C },
-                //};
-
-                //NonPlayerEntityList = _levelManager.GenerateLevel(level1);
-                //CollidableNonPlayerEntityList =
-                //    NonPlayerEntityList.Where(i => i.CollisionComponent != null && i.CollisionComponent.Layer == CollisionLayers.Static).ToList();
-                //PlayerEntity = new PlayerEntity { Position = new Vector2(200, 200) };
-
-
                 string fullPath = Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\Test_Map_RPT_Foreground.csv";
                 NonPlayerEntityList = _levelManager.BuildLevelOffOfCSVFile(fullPath);
                 CollidableNonPlayerEntityList =
@@ -143,7 +125,6 @@ namespace StickyHandGame_C9_RP7
             else if (State == GameState.Level1)
             {
                 CameraManager.Instance.Update();
-
                 // Entity Updates
                 PlayerEntity.Update(gameTime);
                 foreach (Entity e in NonPlayerEntityList)

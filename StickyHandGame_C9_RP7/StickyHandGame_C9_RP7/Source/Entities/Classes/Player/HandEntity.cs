@@ -89,6 +89,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                         float angle = CalculateRotation(this.TargetDestination, this.Position);
                         this._renderComponent.Rotation = angle;
 
+                        _player.SetFacing(this.TargetDestination);
+
                         CurrentState = HandState.Shooting;
                     }
                     this.Position = _player.Position;
