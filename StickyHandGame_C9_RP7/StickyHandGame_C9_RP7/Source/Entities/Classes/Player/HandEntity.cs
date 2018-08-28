@@ -8,7 +8,6 @@ using StickyHandGame_C9_RP7.Source.Engine;
 using StickyHandGame_C9_RP7.Source.Entities.Classes.Player;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
-using System.Diagnostics;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 {
@@ -40,7 +39,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
         // Physics
         private Vector2 TargetDestination { get; set; }
-        private float _speed = 200.0f;
+        private Vector2 TargetDirection { get; set; }
+        private float _speed = 10.0f;
 
         private float _maxDistanceOfHand = 500.0f;
 
@@ -84,9 +84,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     // If mouse is clicked while on player
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
-                        this.TargetDestination = GetTarget();
-
-                        float angle = CalculateRotation(this.TargetDestination, this.Position);
+                        this.TargetDestination = GetTargetDestination();
+                        this.TargetDirection = this.TargetDestination - this.Position;
+                        this.TargetDirection.Normalize();
+                        float angle = CalculateRotation(TargetDirection);
                         this._renderComponent.Rotation = angle;
 
                         _player.SetFacing(this.TargetDestination);
@@ -103,9 +104,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     }
                     else
                     {
-                        var directionShooting = this.TargetDestination - this.Position;
-                        directionShooting.Normalize();
-                        _velocity += directionShooting * _speed;
+                        _velocity += TargetDirection * _speed;
                     }
 
                     break;
@@ -139,7 +138,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                         var directionReturning = _player.Position - this.Position;
                         directionReturning.Normalize();
 
-                        this.Position += directionReturning * _speed;
+                        this.Position += directionReturning * _speed * 5.0f;
                         //this._velocity += directionReturning * _speed;
                         return;
                     }
@@ -148,16 +147,13 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     throw new ArgumentOutOfRangeException();
             }
 
-
-            Debug.WriteLine(this.CurrentState + " " + this.CollisionComponent.Layer);
             Vector2 newPostion = PhysicsEngine.MoveTowards(this, _velocity, timeElapsed);
-
         }
 
 
         private void ChangeStateToRetreating()
         {
-            float angle = CalculateRotation(_player.Position, this.Position);
+            float angle = CalculateRotation(this.TargetDirection * -1);
             this._renderComponent.Rotation = angle;
 
             this.CurrentState = HandState.Retreating;
@@ -204,18 +200,17 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         /// Gets the target.
         /// </summary>
         /// <returns></returns>
-        private Vector2 GetTarget()
+        private Vector2 GetTargetDestination()
         {
             Point mouseLocation = Mouse.GetState().Position;
             Vector2 worldVector = Vector2.Transform(new Vector2(mouseLocation.X, mouseLocation.Y), Matrix.Invert(Camera.Instance.Transform));
             return worldVector;
         }
 
-        public float CalculateRotation(Vector2 destination, Vector2 position)
+        public float CalculateRotation(Vector2 direction)
         {
-            Vector2 Direction = destination - position;
-            Direction.Normalize();
-            return (float)Math.Atan2(Direction.Y, Direction.X);
+            return (float)Math.Atan2(direction.Y, direction.X);
         }
     }
 }
+

@@ -18,14 +18,15 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         AnimationComponent myAnimationComponent;
 
         // PhysicsEngine
-        private readonly float _jumpforce = 400f;
+        private readonly float _jumpforce = 100f;
         private readonly float _rappleAcceleration = 400f;
         private readonly float _rappleVelocityCap = 1000;
         private readonly float _gravitationalAcceleration = 100f;
-        private readonly float _runningSpeed = 100f;
+        private readonly float _runningSpeed = 200f;
         private readonly float _drag = 2.0f;
         private Vector2 _velocity = new Vector2();
         private Vector2 previousposition;
+        private bool _runningJumpingEnabled = false;
 
         // The Hand 
         //private ThrowAbleEntity HandChain;
@@ -39,6 +40,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             Airbourne,
             Standing,
             Rappling,
+            Holding
 
         }
         public CharacterState CurrentState { get; private set; }
@@ -137,7 +139,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             {
                 case Side.Top:
                     this.CurrentState = CharacterState.Standing;
-                    this._velocity = new Vector2(0, 0);
+                    this._velocity = new Vector2(_velocity.X, 0);
                     break;
                 case Side.Left:
                     if (_velocity.X < 0)
@@ -179,50 +181,45 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         public override void Update(GameTime gameTime)
         {
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             // Hand
-            //Vector2 deltaMovement = this.Position - this.previousposition;
-            //this.previousposition = this.Position;
-            //this.HandChain.Update(gameTime, deltaMovement);
             this._hand.Update(gameTime);
 
             var kState = Keyboard.GetState();
+
+
+            // For Testing Purposes
+            if (kState.IsKeyDown(Keys.J))
+                _runningJumpingEnabled = true;
+            if (kState.IsKeyDown(Keys.K))
+                _runningJumpingEnabled = false;
+
 
             // Based upon current state
             switch (this.CurrentState)
             {
                 case CharacterState.Standing:
-                    //if (kState.IsKeyDown(Keys.Up))
-                    //{
-                    //    _velocity += new Vector2(0, -1) * _jumpforce;
-                    //    this.CurrentState = CharacterState.Airbourne;
-                    //}
+                    if (_runningJumpingEnabled)
+                    {
+                        if (kState.IsKeyDown(Keys.Up))
+                        {
+                            _velocity += new Vector2(0, -1) * _jumpforce;
+                            this.CurrentState = CharacterState.Airbourne;
+                        }
+                        UpdateLeftAndRightMovement(timeElapsed);
+                    }
+
                     break;
                 case CharacterState.Airbourne:
                     // Left and right movement
-                    //if (kState.IsKeyDown(Keys.Left))
-                    //{
-                    //    this._velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
-                    //    this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
-                    //}
-                    //else
-                    //{
-                    //    if (this._velocity.X < 0)
-                    //        this._velocity.X = 0;
-                    //}
-                    //if (kState.IsKeyDown(Keys.Right))
-                    //{
-                    //    this._velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
-                    //    this.myAnimationComponent.myeffect = SpriteEffects.None;
-                    //}
-                    //else
-                    //{
-                    //    if (this._velocity.X > 0)
-                    //        this._velocity.X = 0;
-                    //}
+                    if (_runningJumpingEnabled)
+                    {
+                        UpdateLeftAndRightMovement(timeElapsed);
+                    }
                     break;
                 case CharacterState.Rappling:
-                    if (Mouse.GetState().RightButton == ButtonState.Released || Vector2.Dot(_hand.Position - this._originalPosition, _hand.Position - this.Position) <= 0)
+                    // For releasing on reaching destination
+                    //if (Mouse.GetState().RightButton == ButtonState.Released || Vector2.Dot(_hand.Position - this._originalPosition, _hand.Position - this.Position) <= 0)
+                    if (Mouse.GetState().RightButton == ButtonState.Released)
                     {
                         _hand.CurrentState = HandEntity.HandState.OnPlayer;
                         this.CurrentState = CharacterState.Airbourne;
@@ -233,6 +230,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                         direction.Normalize();
                         _velocity += direction * _rappleAcceleration * timeElapsed;
                     }
+                    break;
+                case CharacterState.Holding:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -250,8 +249,36 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             // Gravity
             this._velocity += new Vector2(0, 1) * _gravitationalAcceleration * timeElapsed;
 
+
             PhysicsEngine.MoveTowards(this, _velocity, timeElapsed);
             myAnimationComponent.Update(gameTime);
+        }
+
+        private void UpdateLeftAndRightMovement(float timeElapsed)
+        {
+            var kState = Keyboard.GetState();
+
+            if (kState.IsKeyDown(Keys.Left))
+            {
+                this._velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
+                this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
+            }
+            else
+            {
+                if (this._velocity.X < 0)
+                    this._velocity.X = 0;
+            }
+
+            if (kState.IsKeyDown(Keys.Right))
+            {
+                this._velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
+                this.myAnimationComponent.myeffect = SpriteEffects.None;
+            }
+            else
+            {
+                if (this._velocity.X > 0)
+                    this._velocity.X = 0;
+            }
         }
     }
 }
