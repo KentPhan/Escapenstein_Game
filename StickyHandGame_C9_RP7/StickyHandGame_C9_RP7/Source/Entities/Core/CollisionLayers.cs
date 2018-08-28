@@ -3,9 +3,10 @@
     public enum CollisionLayers
     {
         Player = 1,
-        Static = 2,
-        Ghost = 4,
-        Trigger = 8,
+        PlayerHand = 2,
+        Static = 4,
+        Ghost = 8,
+        Trigger = 16,
         None
     }
 }

@@ -133,10 +133,10 @@ namespace StickyHandGame_C9_RP7
                 //PlayerEntity = new PlayerEntity { Position = new Vector2(200, 200) };
 
 
-                string fullPath = Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\Test_Map_Tile_Layer_2.csv";
+                string fullPath = Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\Test_Map_RPT_Foreground.csv";
                 NonPlayerEntityList = _levelManager.BuildLevelOffOfCSVFile(fullPath);
                 CollidableNonPlayerEntityList =
-                    NonPlayerEntityList.Where(i => i.CollisionComponent != null && i.CollisionComponent.Layer == CollisionLayers.Static).ToList();
+                    NonPlayerEntityList.Where(i => i.CollisionComponent != null && ((i.CollisionComponent.Layer == CollisionLayers.Static) || (i.CollisionComponent.Layer == CollisionLayers.Trigger))).ToList();
 
                 State = GameState.Level1;
             }

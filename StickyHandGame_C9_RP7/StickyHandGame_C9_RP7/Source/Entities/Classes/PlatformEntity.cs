@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using StickyHandGame_C9_RP7.Source.Components.Collision;
 using StickyHandGame_C9_RP7.Source.Components.Render;
-using StickyHandGame_C9_RP7.Source.Entities.Components;
+using StickyHandGame_C9_RP7.Source.Engine;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
-using System;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 {
@@ -49,9 +48,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             this.renderComponent.Update(gameTime);
         }
 
-        public override void CollisionTriggered(Tuple<CollisionComponent, Vector2, Side> collided)
+        public override void CollisionTriggered(CollisionInfo collided)
         {
-            throw new NotImplementedException();
+            return;
         }
 
         public override object Clone()

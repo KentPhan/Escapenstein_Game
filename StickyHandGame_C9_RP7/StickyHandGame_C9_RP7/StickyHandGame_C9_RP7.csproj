@@ -51,6 +51,7 @@
     <Compile Include="Source\Components\Collision\BoxColliderComponent.cs" />
     <Compile Include="Source\Components\Render\AnimationComponent.cs" />
     <Compile Include="Source\Components\Render\RenderComponent.cs" />
+    <Compile Include="Source\Engine\CollisionInfo.cs" />
     <Compile Include="Source\Engine\CollisionLayerManager.cs" />
     <Compile Include="Source\Entities\Classes\Player\ChainEntity.cs" />
     <Compile Include="Source\Entities\Classes\EmptyEntity.cs" />
@@ -145,7 +146,7 @@
     </None>
     <None Include="app.manifest" />
     <None Include="Content\Levels\Map_Info_Export..csv" />
-    <None Include="Content\Levels\Test_Map_Tile_Layer_2.csv" />
+    <None Include="Content\Levels\Test_Map_RPT_Foreground.csv" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

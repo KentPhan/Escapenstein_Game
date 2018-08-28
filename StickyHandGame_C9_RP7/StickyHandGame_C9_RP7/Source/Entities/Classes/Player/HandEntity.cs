@@ -6,7 +6,6 @@ using StickyHandGame_C9_RP7.Source.Components.Collision;
 using StickyHandGame_C9_RP7.Source.Components.Render;
 using StickyHandGame_C9_RP7.Source.Engine;
 using StickyHandGame_C9_RP7.Source.Entities.Classes.Player;
-using StickyHandGame_C9_RP7.Source.Entities.Components;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Diagnostics;
@@ -40,14 +39,12 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
 
         // Physics
-        private Vector2 OriginalPosition { get; set; }
         private Vector2 TargetDestination { get; set; }
         private float _speed = 200.0f;
 
-        private float _maxDistanceOfHand = 1000.0f;
+        private float _maxDistanceOfHand = 500.0f;
 
         // TODO Switch this to collision Layer system instead
-        public float HandCatchDistance => 32.0f;
         private Vector2 _velocity = new Vector2();
 
 
@@ -67,7 +64,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             this.Width = 32f;
             this.Height = 32f;
 
-            this.CollisionComponent = new BoxColliderComponent(this, this.Width, this.Height, CollisionLayers.Player);
+            this.CollisionComponent = new BoxColliderComponent(this, this.Width, this.Height, CollisionLayers.PlayerHand);
         }
 
 
@@ -87,7 +84,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     // If mouse is clicked while on player
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
-                        this.OriginalPosition = this.Position;
                         this.TargetDestination = GetTarget();
 
                         float angle = CalculateRotation(this.TargetDestination, this.Position);
@@ -99,7 +95,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     break;
                 case HandState.Shooting:
                     // if hand is in the middle of movement towards the target
-                    if (Mouse.GetState().RightButton == ButtonState.Pressed || ((this.Position - this.OriginalPosition).Length() >= this._maxDistanceOfHand))
+                    if (Mouse.GetState().RightButton == ButtonState.Pressed || ((this.Position - _player.Position).Length() >= this._maxDistanceOfHand))
                     {
                         ChangeStateToRetreating();
                     }
@@ -115,6 +111,11 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     //if hand is latched
                     // If mouse is clicked while on player
                     _velocity = Vector2.Zero;
+                    if ((this.Position - _player.Position).Length() >= _maxDistanceOfHand)
+                    {
+                        ChangeStateToRetreating();
+                        break;
+                    }
                     if (Mouse.GetState().RightButton == ButtonState.Pressed)
                     {
                         this._player.RappleToHand();
@@ -123,13 +124,13 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     break;
                 case HandState.Retreating:
                     // If hand is in the middle of returning to the player
-                    if ((_player.Position - this.Position).Length() <= this.HandCatchDistance)
+                    if (Vector2.Dot(_player.Position - this.TargetDestination, _player.Position - this.Position) < 0)
                     {
                         this._velocity = Vector2.Zero;
 
                         this.Position = _player.Position;
                         this.CurrentState = HandState.OnPlayer;
-                        this.CollisionComponent.Layer = CollisionLayers.Player;
+                        this.CollisionComponent.Layer = CollisionLayers.PlayerHand;
                     }
                     else
                     {
@@ -166,7 +167,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         {
             _renderComponent.Draw(gameTime);
 
-            // Draw
+            // Draw chain
             Vector2 startPosition = _player.Position;
             Vector2 endPosition = this.Position;
             Vector2 direction = endPosition - startPosition;
@@ -175,7 +176,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             Vector2 currentDrawPosition = startPosition;
             while (Vector2.Dot(direction, (endPosition - currentDrawPosition)) > 0)
             {
-                GameManager.Instance.SpriteBatch.Draw(chainTexture, new Rectangle((int)currentDrawPosition.X - 16, (int)currentDrawPosition.Y - 16, 32, 32), Color.White);
+
+                Color color = Color.Lerp(Color.White, Color.Red, ((startPosition - endPosition).Length() / _maxDistanceOfHand));
+                GameManager.Instance.SpriteBatch.Draw(chainTexture, new Rectangle((int)currentDrawPosition.X - 16, (int)currentDrawPosition.Y - 16, 32, 32), color);
                 currentDrawPosition += direction * scale;
             }
         }
@@ -185,7 +188,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             throw new NotImplementedException();
         }
 
-        public override void CollisionTriggered(Tuple<CollisionComponent, Vector2, Side> collided)
+        public override void CollisionTriggered(CollisionInfo collided)
         {
             this.CurrentState = HandState.Latched;
         }

@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using StickyHandGame_C9_RP7.Source.Components.Collision;
-using StickyHandGame_C9_RP7.Source.Entities.Components;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace StickyHandGame_C9_RP7.Source.Engine
 {
@@ -38,7 +36,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             unitDirection.Normalize();
             float distanceFull = (velocity * deltaTime).Length();
             float distanceMoved = 0.0f;
-            float stepDistance = 0.01f;
+            float stepDistance = 0.04f;
 
             var possibleCollisions = GameManager.Instance.CollidableNonPlayerEntityList;
             Vector2 nextPosition;
@@ -60,24 +58,24 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 {
                     // Found that this worked. With static collisions move the entity a bit away from the colliding object based upon
                     // what side it collided with
-                    if (collision.Item1.Entity.CollisionComponent.Layer == CollisionLayers.Static)
+                    if (collision.CollisionComponent.Entity.CollisionComponent.Layer == CollisionLayers.Static)
                     {
-                        switch (collision.Item3)
+                        switch (collision.Side)
                         {
                             case Side.Top:
-                                entity.Position.Y = collision.Item1.Entity.Position.Y - 32.1f;
+                                entity.Position.Y = collision.CollisionComponent.Entity.Position.Y - 32.1f;
                                 nextPosition.Y = 0;
                                 break;
                             case Side.Bottom:
-                                entity.Position.Y = collision.Item1.Entity.Position.Y + 32.1f;
+                                entity.Position.Y = collision.CollisionComponent.Entity.Position.Y + 32.1f;
                                 nextPosition.Y = 0;
                                 break;
                             case Side.Left:
-                                entity.Position.X = collision.Item1.Entity.Position.X - 32.1f;
+                                entity.Position.X = collision.CollisionComponent.Entity.Position.X - 32.1f;
                                 nextPosition.X = 0;
                                 break;
                             case Side.Right:
-                                entity.Position.X = collision.Item1.Entity.Position.X + 32.1f;
+                                entity.Position.X = collision.CollisionComponent.Entity.Position.X + 32.1f;
                                 nextPosition.X = 0;
                                 break;
                         }
@@ -104,9 +102,9 @@ namespace StickyHandGame_C9_RP7.Source.Engine
         /// <param name="movement">The movement.</param>
         /// <param name="possibleCollisions">The possible collisions.</param>
         /// <returns></returns>
-        private static List<Tuple<CollisionComponent, Vector2, Side>> CheckPossibleCollisions(Entity entity, Vector2 movement, List<Entity> possibleCollisions)
+        private static List<CollisionInfo> CheckPossibleCollisions(Entity entity, Vector2 movement, List<Entity> possibleCollisions)
         {
-            List<Tuple<CollisionComponent, Vector2, Side>> collisions = new List<Tuple<CollisionComponent, Vector2, Side>>();
+            List<CollisionInfo> collisions = new List<CollisionInfo>();
 
             // Check possible collisions with predicted movement
             foreach (Entity otherEntity in possibleCollisions)
@@ -120,10 +118,12 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 if (check != null)
                 {
                     // Call collision trigger on moving item
-                    entity.CollisionTriggered(check);
+                    entity.CollisionTriggered(check.Item1);
+                    //TODO: currently passes wrong parameters for this collision
+                    otherEntity.CollisionTriggered(check.Item2);
 
                     // Add collision to return list
-                    collisions.Add(check);
+                    collisions.Add(check.Item1);
                 }
             }
 
@@ -137,7 +137,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
         /// <param name="movement">The movement.</param>
         /// <param name="otherBox">The other box.</param>
         /// <returns></returns>
-        private static Tuple<CollisionComponent, Vector2, Side> CheckWouldCollide(BoxColliderComponent movingBox, Vector2 movement, BoxColliderComponent otherBox)
+        private static Tuple<CollisionInfo, CollisionInfo> CheckWouldCollide(BoxColliderComponent movingBox, Vector2 movement, BoxColliderComponent otherBox)
         {
             Vector2 origin = movingBox.Entity.Position + movement;
             Vector2 otherOrigin = otherBox.Entity.Position;
@@ -151,6 +151,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
                 // Do dot products to determine which side your hitting the other object from. May not be 100% accurate
                 Side side = Side.None;
+                Side otherSide = Side.None;
                 Vector2 direction = (origin - otherOrigin);
                 direction.Normalize();
                 // Compare difference in X and Y components. Because they're squares only. Smaller X component means means bottom and top collisions. Smaller Y component means side collisions.
@@ -159,14 +160,16 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 {
                     Vector2 up = new Vector2(0, 1);
                     side = (Vector2.Dot(up, direction) > 0) ? Side.Bottom : Side.Top;
+                    otherSide = (Vector2.Dot(up, direction) > 0) ? Side.Top : Side.Bottom;
                 }
                 else
                 {
                     Vector2 right = new Vector2(1, 0);
                     side = (Vector2.Dot(right, direction) > 0) ? Side.Right : Side.Left;
+                    otherSide = (Vector2.Dot(right, direction) > 0) ? Side.Left : Side.Right;
                 }
 
-                return new Tuple<CollisionComponent, Vector2, Side>(otherBox, direction, side);
+                return new Tuple<CollisionInfo, CollisionInfo>(new CollisionInfo(otherBox, side), new CollisionInfo(movingBox, otherSide));
             }
             return null;
         }

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using StickyHandGame_C9_RP7.Source.Entities.Classes;
+using StickyHandGame_C9_RP7.Source.Entities.Classes.Player;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System.Collections.Generic;
 using System.IO;
-using StickyHandGame_C9_RP7.Source.Entities.Classes.Player;
 
 namespace StickyHandGame_C9_RP7.Source.Managers.Classes
 {
@@ -14,24 +14,35 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         Tile_1_C = 1,
         Tile_2_C = 2,
         Tile_3_C = 3,
-        Tile_4_C = 4,
+        Tile_4_C_S = 4,
         Tile_5_C = 5,
         Tile_6_C = 6,
         Tile_7_C = 7,
         Tile_8_C = 8,
         Tile_9_C = 9,
-        Tile_16_C = 16,
-        Tile_17_C = 17,
+        Tile_16_NC = 16,
+        Tile_17_NC = 17,
+        Tile_18_NC = 18,
         Tile_19_NC = 19,
         Tile_20_NC = 20,
         Tile_21_NC = 21,
         Tile_32_C = 32,
         Tile_33_C = 33,
         Tile_34_C = 34,
-        Tile_35_NC = 35,
-        Tile_36_NC = 36,
-        Tile_48_C_S = 48,
-        Tile_49_C_W = 49
+        Tile_35_C = 35,
+        Tile_36_C = 36,
+        Tile_37_C = 37,
+        Tile_38_C = 38,
+        Tile_39_C = 39,
+        Tile_48_C = 48,
+        Tile_49_C = 49,
+        Tile_50_C = 50,
+        Tile_51_C = 51,
+        Tile_52_C = 52,
+        Tile_53_C = 53,
+        Tile_54_C = 54,
+        Tile_55_C = 55,
+        Tile_64_NC_W = 64
     }
 
     public class LevelManager
@@ -52,6 +63,8 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
                 return _instance;
             }
         }
+
+        private Vector2 _playerStart;
 
         private LevelManager()
         {
@@ -123,10 +136,16 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
             if (tileName.Contains("C"))
             {
                 if (tileName.Contains("S"))
-                    GameManager.Instance.PlayerEntity = new PlayerEntity { Position = new Vector2(x, y - 34) };
+                {
+                    _playerStart = new Vector2(x, y - 34);
+                    GameManager.Instance.PlayerEntity = new PlayerEntity { Position = _playerStart };
+                }
                 else if (tileName.Contains("NC"))
                 {
-                    return new EmptyEntity(tileName, origin);
+                    if (tileName.Contains("W"))
+                        return new TriggerEntity(tileName, origin, TriggerEntity.TriggerType.Restart);
+                    else
+                        return new EmptyEntity(tileName, origin);
                 }
                 return new PlatformEntity(tileName, origin);
             }
@@ -134,6 +153,13 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
             return null;
         }
 
+        /// <summary>
+        /// Resets the player position.
+        /// </summary>
+        public void ResetPlayerPosition()
+        {
+            GameManager.Instance.PlayerEntity.Position = _playerStart;
+        }
 
     }
 }

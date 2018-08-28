@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Components.Collision;
 using StickyHandGame_C9_RP7.Source.Components.Render;
 using StickyHandGame_C9_RP7.Source.Engine;
 using StickyHandGame_C9_RP7.Source.Entities.Classes.Arm;
-using StickyHandGame_C9_RP7.Source.Entities.Components;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 
@@ -20,9 +18,11 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
         // PhysicsEngine
         private readonly float _jumpforce = 400f;
-        private readonly float _rappleAcceleration = 5000f;
-        private readonly float _gravitationalAcceleration = 400f;
-        private readonly float _runningSpeed = 300f;
+        private readonly float _rappleAcceleration = 400f;
+        private readonly float _rappleVelocityCap = 1000;
+        private readonly float _gravitationalAcceleration = 100f;
+        private readonly float _runningSpeed = 100f;
+        private readonly float _drag = 2.0f;
         private Vector2 _velocity = new Vector2();
         private Vector2 previousposition;
 
@@ -32,7 +32,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         // The Hand 
         //private ThrowAbleEntity HandChain;
         private HandEntity _hand;
-
+        private Vector2 _originalPosition;
 
 
         // States
@@ -116,17 +116,17 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// Collisions triggered.
         /// </summary>
         /// <param name="collided">The collided.</param>
-        public override void CollisionTriggered(Tuple<CollisionComponent, Vector2, Side> collided)
+        public override void CollisionTriggered(CollisionInfo collided)
         {
             //based upon the direction, react
             if (this.CurrentState == CharacterState.Rappling)
                 return;
 
-            switch (collided.Item3)
+            switch (collided.Side)
             {
                 case Side.Top:
                     this.CurrentState = CharacterState.Standing;
-                    this._velocity = new Vector2(_velocity.X, 0);
+                    this._velocity = new Vector2(0, 0);
                     break;
                 case Side.Left:
                     if (_velocity.X < 0)
@@ -154,6 +154,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         {
             if (this.CurrentState != CharacterState.Rappling)
             {
+                this._originalPosition = this.Position;
                 this.CurrentState = CharacterState.Rappling;
             }
         }
@@ -180,37 +181,37 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             switch (this.CurrentState)
             {
                 case CharacterState.Standing:
-                    if (kState.IsKeyDown(Keys.Up))
-                    {
-                        _velocity += new Vector2(0, -1) * _jumpforce;
-                        this.CurrentState = CharacterState.Airbourne;
-                    }
-                    goto case CharacterState.Airbourne;
+                    //if (kState.IsKeyDown(Keys.Up))
+                    //{
+                    //    _velocity += new Vector2(0, -1) * _jumpforce;
+                    //    this.CurrentState = CharacterState.Airbourne;
+                    //}
+                    break;
                 case CharacterState.Airbourne:
                     // Left and right movement
-                    if (kState.IsKeyDown(Keys.Left))
-                    {
-                        this._velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
-                        this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
-                    }
-                    else
-                    {
-                        if (this._velocity.X < 0)
-                            this._velocity.X = 0;
-                    }
-                    if (kState.IsKeyDown(Keys.Right))
-                    {
-                        this._velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
-                        this.myAnimationComponent.myeffect = SpriteEffects.None;
-                    }
-                    else
-                    {
-                        if (this._velocity.X > 0)
-                            this._velocity.X = 0;
-                    }
+                    //if (kState.IsKeyDown(Keys.Left))
+                    //{
+                    //    this._velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
+                    //    this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
+                    //}
+                    //else
+                    //{
+                    //    if (this._velocity.X < 0)
+                    //        this._velocity.X = 0;
+                    //}
+                    //if (kState.IsKeyDown(Keys.Right))
+                    //{
+                    //    this._velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
+                    //    this.myAnimationComponent.myeffect = SpriteEffects.None;
+                    //}
+                    //else
+                    //{
+                    //    if (this._velocity.X > 0)
+                    //        this._velocity.X = 0;
+                    //}
                     break;
                 case CharacterState.Rappling:
-                    if ((this.Position - _hand.Position).Length() <= _hand.HandCatchDistance)
+                    if (Mouse.GetState().RightButton == ButtonState.Released || Vector2.Dot(_hand.Position - this._originalPosition, _hand.Position - this.Position) <= 0)
                     {
                         _hand.CurrentState = HandEntity.HandState.OnPlayer;
                         this.CurrentState = CharacterState.Airbourne;
@@ -226,12 +227,18 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                     throw new ArgumentOutOfRangeException();
             }
 
+            // Horizontal drag
+            if (Math.Abs(_velocity.X) > 0)
+            {
+                Vector2 dragVector = _velocity * -1;
+                dragVector.Normalize();
+                _velocity.X += dragVector.X * _drag;
 
+            }
 
             // Gravity
             this._velocity += new Vector2(0, 1) * _gravitationalAcceleration * timeElapsed;
 
-            //Debug.WriteLine(this.CurrentState + $" {_velocity.X} {_velocity.Y}");
             PhysicsEngine.MoveTowards(this, _velocity, timeElapsed);
             myAnimationComponent.Update(gameTime);
         }
