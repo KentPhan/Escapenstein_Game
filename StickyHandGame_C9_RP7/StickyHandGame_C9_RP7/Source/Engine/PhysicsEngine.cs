@@ -60,22 +60,23 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                     // what side it collided with
                     if (collision.CollisionComponent.Entity.CollisionComponent.Layer == CollisionLayers.Static)
                     {
+                        Entity otherEntity = collision.CollisionComponent.Entity;
                         switch (collision.Side)
                         {
                             case Side.Top:
-                                entity.Position.Y = collision.CollisionComponent.Entity.Position.Y - 32.1f;
+                                entity.Position.Y = otherEntity.Position.Y - (otherEntity.Height + 0.1f);
                                 nextPosition.Y = 0;
                                 break;
                             case Side.Bottom:
-                                entity.Position.Y = collision.CollisionComponent.Entity.Position.Y + 32.1f;
+                                entity.Position.Y = otherEntity.Position.Y + (otherEntity.Height + 0.1f);
                                 nextPosition.Y = 0;
                                 break;
                             case Side.Left:
-                                entity.Position.X = collision.CollisionComponent.Entity.Position.X - 32.1f;
+                                entity.Position.X = otherEntity.Position.X - (otherEntity.Width + 0.1f);
                                 nextPosition.X = 0;
                                 break;
                             case Side.Right:
-                                entity.Position.X = collision.CollisionComponent.Entity.Position.X + 32.1f;
+                                entity.Position.X = otherEntity.Position.X + (otherEntity.Width + 0.1f);
                                 nextPosition.X = 0;
                                 break;
                         }

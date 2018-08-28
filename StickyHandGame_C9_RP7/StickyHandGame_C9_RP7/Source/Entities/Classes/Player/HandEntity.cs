@@ -87,8 +87,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                         this.TargetDestination = GetTargetDestination();
                         this.TargetDirection = this.TargetDestination - this.Position;
                         this.TargetDirection.Normalize();
-                        float angle = CalculateRotation(TargetDirection);
-                        this._renderComponent.Rotation = angle;
+                        _renderComponent.Direction = this.TargetDirection;
+                        //float angle = CalculateRotation(TargetDirection);
+                        //this._renderComponent.Rotation = angle;
 
                         _player.SetFacing(this.TargetDestination);
 
@@ -153,8 +154,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
         private void ChangeStateToRetreating()
         {
-            float angle = CalculateRotation(this.TargetDirection * -1);
-            this._renderComponent.Rotation = angle;
+
+            //this._renderComponent.Rotation = angle;
 
             this.CurrentState = HandState.Retreating;
             this.CollisionComponent.Layer = CollisionLayers.Ghost;
@@ -163,6 +164,14 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
         public override void Draw(GameTime gameTime)
         {
+            if (this.CurrentState == HandState.Latched)
+            {
+                _renderComponent.LoadContent("Character_Hand_Reach");
+            }
+            else
+            {
+                _renderComponent.LoadContent("Character_Hand_Down");
+            }
             _renderComponent.Draw(gameTime);
 
             // Draw chain

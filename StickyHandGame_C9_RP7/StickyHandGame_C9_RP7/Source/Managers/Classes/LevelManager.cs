@@ -55,7 +55,8 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         Tile_53_C = 53,
         Tile_54_C = 54,
         Tile_55_C = 55,
-        Tile_64_NC_W = 64
+        Tile_64_NC_W = 64,
+        Tile_65_NC_K = 65
     }
 
     public class LevelManager
@@ -168,6 +169,8 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
                 {
                     if (tileName.Contains("W"))
                         return new TriggerEntity(tileName, origin, TriggerEntity.TriggerType.Restart);
+                    else if (tileName.Contains("K"))
+                        return new TriggerEntity(tileName, origin, TriggerEntity.TriggerType.Victory, true);
                     else
                         return new EmptyEntity(tileName, origin);
                 }

@@ -112,7 +112,7 @@ namespace StickyHandGame_C9_RP7
                 Exit();
 
             if (Keyboard.GetState().IsKeyDown(Keys.R))
-                LevelManager.Instance.ResetPlayerPosition();
+                RestartGame();
 
             CameraManager.Instance.Update();
             if (State == GameState.Start)
@@ -165,6 +165,7 @@ namespace StickyHandGame_C9_RP7
             }
             else
             {
+
                 SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
 
                 SpriteBatch.DrawString(font, "Press Enter To Start", new Vector2(-80, 0), Color.Black);
@@ -173,6 +174,12 @@ namespace StickyHandGame_C9_RP7
 
             }
             base.Draw(gameTime);
+        }
+
+        public void RestartGame()
+        {
+
+            this.State = GameState.Start;
         }
     }
 }
