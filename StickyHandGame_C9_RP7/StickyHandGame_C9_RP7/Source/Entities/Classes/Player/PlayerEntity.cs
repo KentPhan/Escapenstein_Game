@@ -182,11 +182,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 case CharacterState.Standing:
                     if (_runningJumpingEnabled)
                     {
-                        if (kState.IsKeyDown(Keys.Up))
-                        {
-                            this.Velocity += new Vector2(0, -1) * _jumpforce;
-                            this.CurrentState = CharacterState.Airbourne;
-                        }
+                        JumpCheck(kState);
                         UpdateLeftAndRightMovement(timeElapsed);
                     }
 
@@ -229,6 +225,20 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             myAnimationComponent.Update(gameTime);
         }
 
+
+        /// <summary>
+        /// Jumps the check.
+        /// </summary>
+        /// <param name="kState">State of the k.</param>
+        private void JumpCheck(KeyboardState kState)
+        {
+            if (kState.IsKeyDown(Keys.W))
+            {
+                this.Velocity += new Vector2(0, -1) * _jumpforce;
+                this.CurrentState = CharacterState.Airbourne;
+            }
+        }
+
         /// <summary>
         /// Updates the left and right movement.
         /// </summary>
@@ -237,13 +247,13 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         {
             var kState = Keyboard.GetState();
 
-            if (kState.IsKeyDown(Keys.Left))
+            if (kState.IsKeyDown(Keys.A))
             {
                 this.Velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
                 this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
             }
 
-            if (kState.IsKeyDown(Keys.Right))
+            if (kState.IsKeyDown(Keys.D))
             {
                 this.Velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
                 this.myAnimationComponent.myeffect = SpriteEffects.None;
