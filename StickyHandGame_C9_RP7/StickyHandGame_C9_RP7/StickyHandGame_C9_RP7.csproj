@@ -49,6 +49,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Cameras\Camera.cs" />
     <Compile Include="Source\Components\Collision\BoxColliderComponent.cs" />
+    <Compile Include="Source\Components\Collision\TriangleColliderComponent.cs" />
     <Compile Include="Source\Components\Render\AnimationComponent.cs" />
     <Compile Include="Source\Components\Render\RenderComponent.cs" />
     <Compile Include="Source\Engine\CollisionInfo.cs" />
@@ -146,6 +147,7 @@
     </None>
     <None Include="app.manifest" />
     <None Include="Content\Levels\Map_Info_Export..csv" />
+    <None Include="Content\Levels\Test_Map_RPT_ForegroundSmall.csv" />
     <None Include="Content\Levels\Test_Map_RPT_Foreground.csv" />
     <None Include="packages.config" />
   </ItemGroup>

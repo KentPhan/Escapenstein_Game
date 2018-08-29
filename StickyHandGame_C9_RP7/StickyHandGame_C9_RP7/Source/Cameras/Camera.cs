@@ -2,10 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StickyHandGame_C9_RP7.Source.Cameras
 {
@@ -20,19 +16,25 @@ namespace StickyHandGame_C9_RP7.Source.Cameras
 
         private float currentMouseWheelValue, previousMouseWheelValue, zoom, previousZoom;
         private static Camera instance;
-        public static Camera Instance { get {if (instance == null) {
+        public static Camera Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
                     instance = new Camera(GameManager.Instance.GraphicsDevice.Viewport);
                 }
                 return instance;
 
-            } }
+            }
+        }
         private Camera(Viewport viewport)
         {
             Bounds = viewport.Bounds;
             Zoom = 1f;
             Position = Vector2.Zero;
         }
-        
+
 
         private void UpdateVisibleArea()
         {
@@ -57,7 +59,7 @@ namespace StickyHandGame_C9_RP7.Source.Cameras
             Transform = Matrix.CreateTranslation(new Vector3(-Position.X, -Position.Y, 0)) *
                     Matrix.CreateScale(Zoom) *
                     Matrix.CreateTranslation(new Vector3(Bounds.Width * 0.5f, Bounds.Height * 0.5f, 0));
-            
+
             UpdateVisibleArea();
         }
 

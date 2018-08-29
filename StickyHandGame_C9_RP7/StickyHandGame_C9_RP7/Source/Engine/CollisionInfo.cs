@@ -1,4 +1,4 @@
-﻿using StickyHandGame_C9_RP7.Source.Components.Collision;
+﻿using Microsoft.Xna.Framework;
 using StickyHandGame_C9_RP7.Source.Entities.Components;
 
 namespace StickyHandGame_C9_RP7.Source.Engine
@@ -6,12 +6,14 @@ namespace StickyHandGame_C9_RP7.Source.Engine
     public class CollisionInfo
     {
         public CollisionComponent CollisionComponent { get; set; }
-        public Side Side { get; set; }
+        public Vector2 NormalVector { get; set; }
+        public Vector2 PointOfCollision { get; set; }
 
-        public CollisionInfo(CollisionComponent collisionComponent, Side side)
+        public CollisionInfo(CollisionComponent collisionComponent, Vector2 pointOfCollision, Vector2 normalVector)
         {
             CollisionComponent = collisionComponent;
-            Side = side;
+            this.PointOfCollision = pointOfCollision;
+            this.NormalVector = normalVector;
         }
     }
 }

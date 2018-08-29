@@ -47,7 +47,9 @@ namespace StickyHandGame_C9_RP7
         public GraphicsDeviceManager Graphics;
         public SpriteBatch SpriteBatch;
         public SpriteFont font;
+        public bool DebugMode = true;
         public Texture2D titleImage;
+
 
         public GameManager()
         {
@@ -55,7 +57,7 @@ namespace StickyHandGame_C9_RP7
             NonPlayerEntityList = new List<Entity>();
             Content.RootDirectory = "Content";
             Graphics = new GraphicsDeviceManager(GameManager.Instance);
-            Graphics.PreferredBackBufferWidth = 1000;
+            Graphics.PreferredBackBufferWidth = 2000;
             Graphics.PreferredBackBufferHeight = 1000;
             //Graphics.IsFullScreen = true;
             this.State = GameState.Start;
@@ -151,12 +153,18 @@ namespace StickyHandGame_C9_RP7
             if (State != GameState.Start)
             {
                 // Draw Tiles
-                SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
+
                 foreach (Entity e in NonPlayerEntityList)
                 {
+                    SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
                     e.Draw(gameTime);
+                    SpriteBatch.End();
                 }
-                SpriteBatch.End();
+
+
+
+
+
 
                 // Draw Player and Chain
                 SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);

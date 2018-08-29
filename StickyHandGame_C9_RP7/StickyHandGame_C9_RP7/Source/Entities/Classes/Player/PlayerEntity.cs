@@ -18,13 +18,13 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         AnimationComponent myAnimationComponent;
 
         // PhysicsEngine
-        private readonly float _jumpforce = 100f;
+        private readonly float _jumpforce = 200f;
         private readonly float _rappleAcceleration = 400f;
-        private readonly float _rappleVelocityCap = 1000;
+        private readonly float _velocityCap = 1000;
         private readonly float _gravitationalAcceleration = 100f;
         private readonly float _runningSpeed = 200f;
         private readonly float _drag = 2.0f;
-        private Vector2 _velocity = new Vector2();
+        public Vector2 Velocity;
         private Vector2 previousposition;
         private bool _runningJumpingEnabled = false;
 
@@ -52,6 +52,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         public PlayerEntity(bool hide = false) : base()
         {
             this.CurrentState = CharacterState.Standing;
+            this.Velocity = new Vector2();
+
 
             myAnimationComponent = new AnimationComponent("Idle", this,
                 framNumber,
@@ -84,6 +86,11 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         {
             _hand.Draw(gameTime);
             myAnimationComponent.Draw(gameTime);
+
+            if (GameManager.Instance.DebugMode)
+            {
+                this.CollisionComponent?.DebugDraw(gameTime);
+            }
         }
 
         /// <summary>
@@ -91,7 +98,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// </summary>
         public override void Reset()
         {
-            _velocity = Vector2.Zero;
+            this.Velocity = Vector2.Zero;
         }
 
 
@@ -135,27 +142,59 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             if (this.CurrentState == CharacterState.Rappling)
                 return;
 
-            switch (collided.Side)
+            // Top collided with other
+            if (collided.NormalVector.Y == 1.0f)
             {
-                case Side.Top:
-                    this.CurrentState = CharacterState.Standing;
-                    this._velocity = new Vector2(_velocity.X, 0);
-                    break;
-                case Side.Left:
-                    if (_velocity.X < 0)
-                        this._velocity = new Vector2(0, _velocity.Y);
-                    break;
-                case Side.Right:
-                    if (_velocity.X > 0)
-                        this._velocity = new Vector2(0, _velocity.Y);
-                    break;
-                case Side.Bottom:
-                    if (_velocity.Y < 0)
-                        this._velocity = new Vector2(_velocity.X, 0);
-                    break;
-                case Side.None:
-                    break;
+                if (this.Velocity.Y < 0)
+                    this.Velocity = new Vector2(this.Velocity.X, 0);
+                //this.Position += new Vector2(0, 1.0f);
             }
+            // Bottom collided with other
+            else if (collided.NormalVector.Y == -1.0f)
+            {
+                this.CurrentState = CharacterState.Standing;
+                this.Velocity = new Vector2(this.Velocity.X, 0);
+            }
+            // Left collided with other
+            else if (collided.NormalVector.X == 1.0f)
+            {
+                if (this.Velocity.X > 0)
+                    this.Velocity = new Vector2(0, this.Velocity.Y);
+                //this.Position += new Vector2(1.0f, 0);
+            }
+            // Right collided with other
+            else if (collided.NormalVector.X == -1.0f)
+            {
+                if (this.Velocity.X < 0)
+                    this.Velocity = new Vector2(0, this.Velocity.Y);
+                //this.Position += new Vector2(-1.0f, 0);
+            }
+            else
+            {
+                throw new NotImplementedException("Did not implement that collision TRigger");
+            }
+
+            //switch (collided.NormalVector)
+            //{
+            //    case Side.Top:
+            //        this.CurrentState = CharacterState.Standing;
+            //        this.Velocity = new Vector2(this.Velocity.X, 0);
+            //        break;
+            //    case Side.Left:
+            //        if (this.Velocity.X < 0)
+            //            this.Velocity = new Vector2(0, this.Velocity.Y);
+            //        break;
+            //    case Side.Right:
+            //        if (this.Velocity.X > 0)
+            //            this.Velocity = new Vector2(0, this.Velocity.Y);
+            //        break;
+            //    case Side.Bottom:
+            //        if (this.Velocity.Y < 0)
+            //            this.Velocity = new Vector2(this.Velocity.X, 0);
+            //        break;
+            //    case Side.None:
+            //        break;
+            //}
         }
 
 
@@ -202,7 +241,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                     {
                         if (kState.IsKeyDown(Keys.Up))
                         {
-                            _velocity += new Vector2(0, -1) * _jumpforce;
+                            this.Velocity += new Vector2(0, -1) * _jumpforce;
                             this.CurrentState = CharacterState.Airbourne;
                         }
                         UpdateLeftAndRightMovement(timeElapsed);
@@ -228,7 +267,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                     {
                         var direction = (_hand.Position - this.Position);
                         direction.Normalize();
-                        _velocity += direction * _rappleAcceleration * timeElapsed;
+                        this.Velocity += direction * _rappleAcceleration * timeElapsed;
                     }
                     break;
                 case CharacterState.Holding:
@@ -238,46 +277,57 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             }
 
             // Horizontal drag
-            if (Math.Abs(_velocity.X) > 0)
+            if (Math.Abs(this.Velocity.X) > 0)
             {
-                Vector2 dragVector = _velocity * -1;
+                Vector2 dragVector = this.Velocity * -1;
                 dragVector.Normalize();
-                _velocity.X += dragVector.X * _drag;
+                this.Velocity.X += dragVector.X * _drag;
 
             }
 
             // Gravity
-            this._velocity += new Vector2(0, 1) * _gravitationalAcceleration * timeElapsed;
+            this.Velocity += new Vector2(0, 1) * _gravitationalAcceleration * timeElapsed;
+
+            if (this.Velocity.Length() > _velocityCap)
+            {
+                var direction = new Vector2(Velocity.X, Velocity.Y);
+                direction.Normalize();
+                this.Velocity = direction * _velocityCap;
+            }
 
 
-            PhysicsEngine.MoveTowards(this, _velocity, timeElapsed);
+            PhysicsEngine.MoveTowards(this, this.Velocity, timeElapsed);
             myAnimationComponent.Update(gameTime);
         }
 
+        /// <summary>
+        /// Updates the left and right movement.
+        /// </summary>
+        /// <param name="timeElapsed">The time elapsed.</param>
         private void UpdateLeftAndRightMovement(float timeElapsed)
         {
             var kState = Keyboard.GetState();
 
             if (kState.IsKeyDown(Keys.Left))
             {
-                this._velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
+                this.Velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
                 this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
             }
             else
             {
-                if (this._velocity.X < 0)
-                    this._velocity.X = 0;
+                if (this.Velocity.X < 0)
+                    this.Velocity.X = 0;
             }
 
             if (kState.IsKeyDown(Keys.Right))
             {
-                this._velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
+                this.Velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
                 this.myAnimationComponent.myeffect = SpriteEffects.None;
             }
             else
             {
-                if (this._velocity.X > 0)
-                    this._velocity.X = 0;
+                if (this.Velocity.X > 0)
+                    this.Velocity.X = 0;
             }
         }
     }

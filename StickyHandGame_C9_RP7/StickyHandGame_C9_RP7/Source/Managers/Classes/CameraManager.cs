@@ -31,6 +31,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         {
             if (GameManager.Instance.PlayerEntity != null)
                 camera.Position = GameManager.Instance.PlayerEntity.Position;
+            //camera.Position = GameManager.Instance.PlayerEntity.Position - new Vector2(-64, 0);
             else
                 camera.Position = new Vector2(0, 0);
             camera.UpdateCamera(GameManager.Instance.GraphicsDevice.Viewport);

@@ -31,6 +31,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         {
             if (!Hide)
                 this.renderComponent.Draw(gameTime);
+            if (GameManager.Instance.DebugMode)
+            {
+                this.CollisionComponent?.DebugDraw(gameTime);
+            }
         }
 
         public override void Reset()
