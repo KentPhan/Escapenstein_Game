@@ -108,7 +108,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     break;
                 case HandState.Shooting:
                     // if hand is in the middle of movement towards the target
-                    if (((this.Position - _player.Position).Length() >= this._maxDistanceOfHand))
+                    if (Mouse.GetState().LeftButton != ButtonState.Pressed || ((this.Position - _player.Position).Length() >= this._maxDistanceOfHand))
                     {
                         ChangeStateToRetreating();
                     }
@@ -127,7 +127,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                         ChangeStateToRetreating();
                         break;
                     }
-                    if (Mouse.GetState().RightButton == ButtonState.Pressed)
+                    else if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
                         this._player.RappleToHand();
                     }
@@ -146,14 +146,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     {
                         var directionReturning = _player.Position - this.Position;
                         directionReturning.Normalize();
-
-                        //if (Vector2.Dot(_player.Position - this.TargetDestination, _player.Position - this.Position) <
-                        //    0)
-                        //{
-
-                        //}
-
-                        //this.Position += directionReturning * _speed * timeElapsed;
                         this.Velocity += directionReturning * _returnSpeed * timeElapsed;
                     }
                     break;

@@ -199,7 +199,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                     break;
                 case CharacterState.Rappling:
                     // For releasing on reaching destination
-                    if (Mouse.GetState().RightButton == ButtonState.Released)
+                    if (Mouse.GetState().LeftButton == ButtonState.Released)
                     {
                         _hand.CurrentState = HandEntity.HandState.OnPlayer;
                         this.CurrentState = CharacterState.Airbourne;
