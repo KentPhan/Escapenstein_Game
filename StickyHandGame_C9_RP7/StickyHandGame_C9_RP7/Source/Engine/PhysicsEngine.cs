@@ -25,9 +25,8 @@ namespace StickyHandGame_C9_RP7.Source.Engine
         /// <returns>Final position</returns>
         public static Vector2 MoveTowards(Entity entity, Vector2 velocity, float deltaTime)
         {
-            //Console.WriteLine(velocity);
             if (velocity.Length() <= 0)
-                return entity.Position;
+                return Vector2.Zero;
 
             // TODO do something smarter with Layers later
             if (entity.CollisionComponent.Layer == CollisionLayers.Ghost)
@@ -36,10 +35,10 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 return entity.Position;
             }
 
-            //if (entity.CollisionComponent.Layer != CollisionLayers.Static)
-            //{
-            //    velocity += new Vector2(0, 1) * _gravitationalAcceleration * deltaTime;
-            //}
+            if (entity.CollisionComponent.Layer != CollisionLayers.Static)
+            {
+                velocity += new Vector2(0, 1) * _gravitationalAcceleration * deltaTime;
+            }
 
             Vector2 unitDirection = new Vector2(velocity.X, velocity.Y);
             unitDirection.Normalize();

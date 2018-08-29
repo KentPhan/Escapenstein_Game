@@ -21,7 +21,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         private readonly float _jumpforce = 100f;
         private readonly float _rappleAcceleration = 400f;
         private readonly float _velocityCap = 1000;
-        private readonly float _gravitationalAcceleration = 100f;
         private readonly float _runningSpeed = 500f;
         private readonly float _drag = 2.0f;
         public Vector2 Velocity;
@@ -262,9 +261,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 this.Velocity.X += dragVector.X * _drag;
 
             }
-
-            // Gravity
-            this.Velocity += new Vector2(0, 1) * _gravitationalAcceleration * timeElapsed;
 
             if (this.Velocity.Length() > _velocityCap)
             {
