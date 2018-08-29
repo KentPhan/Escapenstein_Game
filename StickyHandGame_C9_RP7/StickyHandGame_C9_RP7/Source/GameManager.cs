@@ -49,7 +49,8 @@ namespace StickyHandGame_C9_RP7
         public SpriteFont font;
         public bool DebugMode = true;
         public Texture2D titleImage;
-
+        //For Play Backgroud Music
+        SoundManager mysoundManager;
 
         public GameManager()
         {
@@ -61,6 +62,7 @@ namespace StickyHandGame_C9_RP7
             Graphics.PreferredBackBufferHeight = 1000;
             //Graphics.IsFullScreen = true;
             this.State = GameState.Start;
+            mysoundManager = SoundManager.Instance;
         }
 
         /// <summary>
@@ -89,6 +91,8 @@ namespace StickyHandGame_C9_RP7
 
             font = Content.Load<SpriteFont>("Main");
             IsMouseVisible = true;
+
+            mysoundManager.LoadContent();
         }
 
         /// <summary>

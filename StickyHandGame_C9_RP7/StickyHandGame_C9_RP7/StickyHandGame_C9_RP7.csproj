@@ -70,6 +70,7 @@
     <Compile Include="Source\Entities\Core\Entity.cs" />
     <Compile Include="Source\GameManager.cs" />
     <Compile Include="Source\Engine\PhysicsEngine.cs" />
+    <Compile Include="Source\Managers\Classes\SoundManager.cs" />
     <Compile Include="Source\Managers\Core\IManager.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -440,3 +440,15 @@
 /processorParam:TextureFormat=Color
 /build:Tile_65_NC_K.png
 
+#begin BackGround.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:BackGround.mp3
+
+#begin Shoot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Shoot.wav
+

@@ -7,6 +7,7 @@ using StickyHandGame_C9_RP7.Source.Components.Render;
 using StickyHandGame_C9_RP7.Source.Engine;
 using StickyHandGame_C9_RP7.Source.Entities.Classes.Player;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
+using StickyHandGame_C9_RP7.Source.Managers.Classes;
 using System;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
@@ -89,10 +90,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                         this.TargetDestination = GetTargetDestination();
                         this.TargetDirection = this.TargetDestination - this.Position;
                         this.TargetDirection.Normalize();
-
+                        
                         var test = new Vector2(-1561, 30213);
                         test.Normalize();
-
                         _renderComponent.Direction = this.TargetDirection;
                         //float angle = CalculateRotation(TargetDirection);
                         //this._renderComponent.Rotation = angle;
@@ -103,6 +103,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                         this.Velocity = Vector2.Zero;
 
                         CurrentState = HandState.Shooting;
+                        //SoundManager play the effect
+                        SoundManager.Instance.Play(0);
                     }
                     this.Position = _player.Position;
                     break;
