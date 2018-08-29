@@ -18,19 +18,17 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         AnimationComponent myAnimationComponent;
 
         // PhysicsEngine
-        private readonly float _jumpforce = 100f;
-        private readonly float _rappleAcceleration = 400f;
-        private readonly float _velocityCap = 1000;
-        private readonly float _runningSpeed = 500f;
-        private readonly float _drag = 2.0f;
+        private const float _jumpforce = 100f;
+        private const float _rappleAcceleration = 400f;
+        private const float _velocityCap = 1000;
+        private const float _runningSpeed = 500f;
         public Vector2 Velocity;
         private Vector2 previousposition;
         private bool _runningJumpingEnabled = false;
 
         // The Hand 
         //private ThrowAbleEntity HandChain;
-        private HandEntity _hand;
-        private Vector2 _originalPosition;
+        private readonly HandEntity _hand;
 
 
         // States
@@ -38,8 +36,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         {
             Airbourne,
             Standing,
-            Rappling,
-            Holding
+            Rappling
 
         }
         public CharacterState CurrentState { get; private set; }
@@ -137,43 +134,15 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// <param name="collided">The collided.</param>
         public override void CollisionTriggered(CollisionInfo collided)
         {
-            //based upon the direction, react
             if (this.CurrentState == CharacterState.Rappling)
                 return;
 
-            // Top collided with other
-            if (collided.NormalVector.Y == 1.0f)
-            {
-                if (this.Velocity.Y < 0)
-                    this.Velocity = new Vector2(this.Velocity.X, 0);
-                //this.Position += new Vector2(0, 1.0f);
-            }
             // Bottom collided with other
-            else if (collided.NormalVector.Y == -1.0f)
+            if (collided.NormalVector.Y == -1.0f)
             {
                 this.CurrentState = CharacterState.Standing;
-                this.Velocity = new Vector2(this.Velocity.X, 0);
-            }
-            // Left collided with other
-            else if (collided.NormalVector.X == 1.0f)
-            {
-                if (this.Velocity.X > 0)
-                    this.Velocity = new Vector2(0, this.Velocity.Y);
-                //this.Position += new Vector2(1.0f, 0);
-            }
-            // Right collided with other
-            else if (collided.NormalVector.X == -1.0f)
-            {
-                if (this.Velocity.X < 0)
-                    this.Velocity = new Vector2(0, this.Velocity.Y);
-                //this.Position += new Vector2(-1.0f, 0);
-            }
-            else
-            {
-                throw new NotImplementedException("Did not implement that collision TRigger");
             }
         }
-
 
         /// <summary>
         /// Applies a velocity to the player.
@@ -183,11 +152,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         {
             if (this.CurrentState != CharacterState.Rappling)
             {
-                this._originalPosition = this.Position;
                 this.CurrentState = CharacterState.Rappling;
             }
         }
-
 
         /// <summary>
         /// Update
@@ -202,13 +169,11 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
             var kState = Keyboard.GetState();
 
-
             // For Testing Purposes
             if (kState.IsKeyDown(Keys.J))
                 _runningJumpingEnabled = true;
             if (kState.IsKeyDown(Keys.K))
                 _runningJumpingEnabled = false;
-
 
             // Based upon current state
             switch (this.CurrentState)
@@ -234,7 +199,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                     break;
                 case CharacterState.Rappling:
                     // For releasing on reaching destination
-                    //if (Mouse.GetState().RightButton == ButtonState.Released || Vector2.Dot(_hand.Position - this._originalPosition, _hand.Position - this.Position) <= 0)
                     if (Mouse.GetState().RightButton == ButtonState.Released)
                     {
                         _hand.CurrentState = HandEntity.HandState.OnPlayer;
@@ -247,30 +211,18 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                         this.Velocity += direction * _rappleAcceleration * timeElapsed;
                     }
                     break;
-                case CharacterState.Holding:
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            // Horizontal drag
-            if (Math.Abs(this.Velocity.X) > 0)
-            {
-                Vector2 dragVector = this.Velocity * -1;
-                dragVector.Normalize();
-                this.Velocity.X += dragVector.X * _drag;
 
-            }
-
+            // Velocity Cap
             if (this.Velocity.Length() > _velocityCap)
             {
                 var direction = new Vector2(Velocity.X, Velocity.Y);
                 direction.Normalize();
                 this.Velocity = direction * _velocityCap;
             }
-
-            Console.WriteLine(this.CurrentState);
-
 
             this.Velocity = PhysicsEngine.MoveTowards(this, this.Velocity, timeElapsed);
             myAnimationComponent.Update(gameTime);

@@ -12,9 +12,9 @@ namespace StickyHandGame_C9_RP7.Source.Engine
     /// </summary>
     public static class PhysicsEngine
     {
-
-        private static readonly float _gravitationalAcceleration = 100f;
-
+        private const float GravitationalAcceleration = 100f;
+        private const float Drag = 2.0f;
+        //private const float DragUpeerBound
 
         /// <summary>
         /// Moves the towards.
@@ -37,7 +37,18 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
             if (entity.CollisionComponent.Layer != CollisionLayers.Static)
             {
-                velocity += new Vector2(0, 1) * _gravitationalAcceleration * deltaTime;
+                // Gravity
+                velocity += new Vector2(0, 1) * GravitationalAcceleration * deltaTime;
+
+
+                // drag
+                if (Math.Abs(velocity.X) > 0)
+                {
+                    Vector2 dragVector = velocity * -1;
+                    dragVector.Normalize();
+                    velocity.X += dragVector.X * Drag;
+
+                }
             }
 
             Vector2 unitDirection = new Vector2(velocity.X, velocity.Y);
@@ -59,8 +70,6 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 else
                     nextMovement = unitDirection * stepDistance;
 
-                //                previousMovement = nextMovement;
-
                 // Get all collisions
                 var collisions = CheckPossibleCollisions(entity, nextMovement, possibleCollisions);
 
@@ -71,8 +80,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                     // what side it collided with
                     if (collision.CollisionComponent.Entity.CollisionComponent.Layer == CollisionLayers.Static)
                     {
-
-
+                        // Bounce the item back a bit.
                         nextMovement += (collision.NormalVector * 0.1f);
 
                         // On bounce back calculate reflect with less force
@@ -98,9 +106,6 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                     break;
 
                 entity.Position += nextMovement;
-
-                //if (Vector2.Dot(previousMovement, nextMovement) < 0)
-                //    break;
 
                 distanceMoved += nextMovement.Length();
             }
