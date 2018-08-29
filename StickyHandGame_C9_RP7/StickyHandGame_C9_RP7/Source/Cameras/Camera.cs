@@ -30,7 +30,7 @@ namespace StickyHandGame_C9_RP7.Source.Cameras
         private Camera(Viewport viewport)
         {
             Bounds = viewport.Bounds;
-            Zoom = 1f;
+            Zoom = 3f;
             Position = Vector2.Zero;
         }
 

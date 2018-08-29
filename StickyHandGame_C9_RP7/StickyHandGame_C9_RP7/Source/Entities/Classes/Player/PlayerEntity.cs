@@ -7,6 +7,7 @@ using StickyHandGame_C9_RP7.Source.Engine;
 using StickyHandGame_C9_RP7.Source.Entities.Classes.Arm;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
+using StickyHandGame_C9_RP7.Source.Cameras;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 {
@@ -106,7 +107,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 this.myAnimationComponent.myeffect = SpriteEffects.None;
             else
                 this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
-
+            
         }
 
         /// <summary>
