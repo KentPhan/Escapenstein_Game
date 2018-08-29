@@ -29,7 +29,6 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             if (velocity.Length() <= 0)
                 return entity.Position;
 
-
             // TODO do something smarter with Layers later
             if (entity.CollisionComponent.Layer == CollisionLayers.Ghost)
             {
@@ -37,13 +36,10 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 return entity.Position;
             }
 
-
             //if (entity.CollisionComponent.Layer != CollisionLayers.Static)
             //{
             //    velocity += new Vector2(0, 1) * _gravitationalAcceleration * deltaTime;
             //}
-
-
 
             Vector2 unitDirection = new Vector2(velocity.X, velocity.Y);
             unitDirection.Normalize();
@@ -53,8 +49,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
             var possibleCollisions = GameManager.Instance.CollidableNonPlayerEntityList;
             Vector2 nextMovement;
-            Vector2 previousMovement;
-            Vector2 returnVelocity;
+            Vector2 returnVelocity = velocity;
 
             while (distanceMoved < distanceFull)
             {
@@ -65,7 +60,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 else
                     nextMovement = unitDirection * stepDistance;
 
-                previousMovement = nextMovement;
+                //                previousMovement = nextMovement;
 
                 // Get all collisions
                 var collisions = CheckPossibleCollisions(entity, nextMovement, possibleCollisions);
@@ -77,104 +72,25 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                     // what side it collided with
                     if (collision.CollisionComponent.Entity.CollisionComponent.Layer == CollisionLayers.Static)
                     {
-                        //Entity otherEntity = collision.CollisionComponent.Entity;
 
 
                         nextMovement += (collision.NormalVector * 0.1f);
 
+                        // On bounce back calculate reflect with less force
                         Vector2 normal = collision.NormalVector;
                         Vector2.Reflect(ref velocity, ref normal, out returnVelocity);
 
-                        return returnVelocity;
-
+                        // If colliding with ground or not, apply different slow down coefficients.
                         if (normal.Y == -1)
                         {
-                            //returnVelocity += new Vector2(0, -1) * _gravitationalAcceleration * deltaTime; ;
-                            returnVelocity = returnVelocity * 0.01f;
-                            //if (returnVelocity.Length() < 1.0f)
-                            //    return new Vector2(returnVelocity.X, 0.0f);
-                            return returnVelocity;
+                            returnVelocity = new Vector2(returnVelocity.X * 0.9f, returnVelocity.Y * 0.1f);
+                            if (returnVelocity.Length() < 1.0f)
+                                return Vector2.Zero;
                         }
                         else
                         {
-                            return returnVelocity;
+                            returnVelocity = returnVelocity * 0.3f;
                         }
-
-
-                        // Can lerp like this because of unit vector?
-                        //nextMovement = new Vector2(MathHelper.Lerp(0.0f, nextMovement.X, Math.Abs(collision.NormalVector.Y)), MathHelper.Lerp(0.0f, nextMovement.Y, Math.Abs(collision.NormalVector.X)));
-                        //nextMovement = Vector2.Zero;
-
-                        //if (Math.Abs(collision.NormalVector.X) > 1.0)
-                        //    nextPosition.X = 0.0f;
-
-                        //if (Math.Abs(collision.NormalVector.Y) > 1.0)
-                        //    nextPosition.Y = 0.0f;
-
-
-                        //if (collision.CollisionComponent.BoundaryType ==
-                        //    CollisionComponent.CollisionBoundaryType.Square)
-                        //{
-                        //    // Entity collided on top
-                        //    if (collision.NormalVector.Y == 1.0f)
-                        //    {
-                        //        entity.Position.Y = otherEntity.Position.Y - ((((BoxColliderComponent)entity.CollisionComponent).Height / 2) + (((BoxColliderComponent)otherEntity.CollisionComponent).Height / 2) + 0.1f);
-                        //        nextPosition.Y = 0;
-                        //    }
-                        //    // Entity collided on bottom
-                        //    else if (collision.NormalVector.Y == -1.0f)
-                        //    {
-                        //        entity.Position.Y = otherEntity.Position.Y + ((((BoxColliderComponent)entity.CollisionComponent).Height / 2) + (((BoxColliderComponent)otherEntity.CollisionComponent).Height / 2) + 0.1f);
-                        //        nextPosition.Y = 0;
-                        //    }
-                        //    // Entity collided on left
-                        //    else if (collision.NormalVector.X == 1.0f)
-                        //    {
-                        //        entity.Position.X = otherEntity.Position.X + ((((BoxColliderComponent)entity.CollisionComponent).Width / 2) + (((BoxColliderComponent)otherEntity.CollisionComponent).Width / 2) + 0.1f);
-                        //        nextPosition.X = 0;
-                        //    }
-                        //    // Entity collided on right
-                        //    else if (collision.NormalVector.X == -1.0f)
-                        //    {
-                        //        entity.Position.X = otherEntity.Position.X - ((((BoxColliderComponent)entity.CollisionComponent).Width / 2) + (((BoxColliderComponent)otherEntity.CollisionComponent).Width / 2) + 0.1f);
-                        //        nextPosition.X = 0;
-                        //    }
-                        //    else
-                        //    {
-                        //        throw new NotImplementedException("Did not implement that collision TRigger");
-                        //    }
-                        //}
-
-
-                        //entity.Position = otherEntity.Position + collision.NormalVector * otherEntity.Width; // * some coefficent?
-                        //if (collision.NormalVector.X == 0.0f)
-                        //    nextPosition.Y = 0;
-                        //else if (collision.NormalVector.Y == 0.0f)
-                        //    nextPosition.X = 0;
-
-                        // Could maybe add friction here if wanted;
-
-
-                        //switch (collision.Side)
-                        //{
-                        //    case Side.Top:
-                        //        entity.Position.Y = otherEntity.Position.Y - ((otherEntity.Height) / 2 + entity.CollisionComponent.Height);
-                        //        //entity.Position.Y = otherEntity.Position.Y - (otherEntity.Height + 0.1f);
-                        //        nextPosition.Y = 0;
-                        //        break;
-                        //    case Side.Bottom:
-                        //        entity.Position.Y = otherEntity.Position.Y + ((otherEntity.Height) + 0.1f);
-                        //        nextPosition.Y = 0;
-                        //        break;
-                        //    case Side.Left:
-                        //        entity.Position.X = otherEntity.Position.X - ((otherEntity.Width) + 0.1f);
-                        //        nextPosition.X = 0;
-                        //        break;
-                        //    case Side.Right:
-                        //        entity.Position.X = otherEntity.Position.X + ((otherEntity.Width) + 0.1f);
-                        //        nextPosition.X = 0;
-                        //        break;
-                        //}
                     }
                 }
 
@@ -190,7 +106,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 distanceMoved += nextMovement.Length();
             }
 
-            return velocity;
+            return returnVelocity;
         }
 
 

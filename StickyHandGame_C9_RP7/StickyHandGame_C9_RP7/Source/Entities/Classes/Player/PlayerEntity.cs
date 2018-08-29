@@ -18,11 +18,11 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         AnimationComponent myAnimationComponent;
 
         // PhysicsEngine
-        private readonly float _jumpforce = 200f;
+        private readonly float _jumpforce = 100f;
         private readonly float _rappleAcceleration = 400f;
         private readonly float _velocityCap = 1000;
         private readonly float _gravitationalAcceleration = 100f;
-        private readonly float _runningSpeed = 1000f;
+        private readonly float _runningSpeed = 500f;
         private readonly float _drag = 2.0f;
         public Vector2 Velocity;
         private Vector2 previousposition;
@@ -173,28 +173,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             {
                 throw new NotImplementedException("Did not implement that collision TRigger");
             }
-
-            //switch (collided.NormalVector)
-            //{
-            //    case Side.Top:
-            //        this.CurrentState = CharacterState.Standing;
-            //        this.Velocity = new Vector2(this.Velocity.X, 0);
-            //        break;
-            //    case Side.Left:
-            //        if (this.Velocity.X < 0)
-            //            this.Velocity = new Vector2(0, this.Velocity.Y);
-            //        break;
-            //    case Side.Right:
-            //        if (this.Velocity.X > 0)
-            //            this.Velocity = new Vector2(0, this.Velocity.Y);
-            //        break;
-            //    case Side.Bottom:
-            //        if (this.Velocity.Y < 0)
-            //            this.Velocity = new Vector2(this.Velocity.X, 0);
-            //        break;
-            //    case Side.None:
-            //        break;
-            //}
         }
 
 
@@ -315,21 +293,11 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 this.Velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
                 this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
             }
-            else
-            {
-                if (this.Velocity.X < 0)
-                    this.Velocity.X = 0;
-            }
 
             if (kState.IsKeyDown(Keys.Right))
             {
                 this.Velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
                 this.myAnimationComponent.myeffect = SpriteEffects.None;
-            }
-            else
-            {
-                if (this.Velocity.X > 0)
-                    this.Velocity.X = 0;
             }
         }
     }
