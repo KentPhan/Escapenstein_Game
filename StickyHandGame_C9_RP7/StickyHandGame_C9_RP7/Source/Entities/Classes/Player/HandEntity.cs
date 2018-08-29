@@ -163,7 +163,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
             //// Gravity
             //this._velocity += new Vector2(0, 1) * _gravitationalAcceleration * timeElapsed;
-            Console.WriteLine(this.Velocity);
+            //Console.WriteLine(this.Velocity);
             Vector2 newPosition = PhysicsEngine.MoveTowards(this, Velocity, timeElapsed);
         }
 

@@ -6,6 +6,11 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
 {
     public class TriangleColliderComponent : CollisionComponent
     {
+        public Vector2 Point1 { get; set; }
+        public Vector2 Point2 { get; set; }
+        public Vector2 Point3 { get; set; }
+
+
         public TriangleColliderComponent(Entity entity, CollisionLayers layer)
         {
             this.Entity = entity;

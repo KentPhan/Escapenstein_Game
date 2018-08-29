@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 
 namespace StickyHandGame_C9_RP7.Source.Cameras
 {
@@ -138,20 +137,20 @@ namespace StickyHandGame_C9_RP7.Source.Cameras
             if (currentMouseWheelValue > previousMouseWheelValue)
             {
                 AdjustZoom(.05f);
-                Console.WriteLine(moveSpeed);
+                //Console.WriteLine(moveSpeed);
             }
 
             if (currentMouseWheelValue < previousMouseWheelValue)
             {
                 AdjustZoom(-.05f);
-                Console.WriteLine(moveSpeed);
+                //Console.WriteLine(moveSpeed);
             }
 
             previousZoom = zoom;
             zoom = Zoom;
             if (previousZoom != zoom)
             {
-                Console.WriteLine(zoom);
+                //Console.WriteLine(zoom);
 
             }
 

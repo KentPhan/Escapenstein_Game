@@ -13,6 +13,9 @@ namespace StickyHandGame_C9_RP7.Source.Engine
     public static class PhysicsEngine
     {
 
+        private static readonly float _gravitationalAcceleration = 100f;
+
+
         /// <summary>
         /// Moves the towards.
         /// </summary>
@@ -22,8 +25,10 @@ namespace StickyHandGame_C9_RP7.Source.Engine
         /// <returns>Final position</returns>
         public static Vector2 MoveTowards(Entity entity, Vector2 velocity, float deltaTime)
         {
+            //Console.WriteLine(velocity);
             if (velocity.Length() <= 0)
                 return entity.Position;
+
 
             // TODO do something smarter with Layers later
             if (entity.CollisionComponent.Layer == CollisionLayers.Ghost)
@@ -31,6 +36,13 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 entity.Position += velocity * deltaTime;
                 return entity.Position;
             }
+
+
+            //if (entity.CollisionComponent.Layer != CollisionLayers.Static)
+            //{
+            //    velocity += new Vector2(0, 1) * _gravitationalAcceleration * deltaTime;
+            //}
+
 
 
             Vector2 unitDirection = new Vector2(velocity.X, velocity.Y);
@@ -42,6 +54,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             var possibleCollisions = GameManager.Instance.CollidableNonPlayerEntityList;
             Vector2 nextMovement;
             Vector2 previousMovement;
+            Vector2 returnVelocity;
 
             while (distanceMoved < distanceFull)
             {
@@ -67,7 +80,26 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                         //Entity otherEntity = collision.CollisionComponent.Entity;
 
 
-                        nextMovement += (collision.NormalVector * 0.05f);
+                        nextMovement += (collision.NormalVector * 0.1f);
+
+                        Vector2 normal = collision.NormalVector;
+                        Vector2.Reflect(ref velocity, ref normal, out returnVelocity);
+
+                        return returnVelocity;
+
+                        if (normal.Y == -1)
+                        {
+                            //returnVelocity += new Vector2(0, -1) * _gravitationalAcceleration * deltaTime; ;
+                            returnVelocity = returnVelocity * 0.01f;
+                            //if (returnVelocity.Length() < 1.0f)
+                            //    return new Vector2(returnVelocity.X, 0.0f);
+                            return returnVelocity;
+                        }
+                        else
+                        {
+                            return returnVelocity;
+                        }
+
 
                         // Can lerp like this because of unit vector?
                         //nextMovement = new Vector2(MathHelper.Lerp(0.0f, nextMovement.X, Math.Abs(collision.NormalVector.Y)), MathHelper.Lerp(0.0f, nextMovement.Y, Math.Abs(collision.NormalVector.X)));
@@ -152,13 +184,13 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
                 entity.Position += nextMovement;
 
-                if (Vector2.Dot(previousMovement, nextMovement) < 0)
-                    break;
+                //if (Vector2.Dot(previousMovement, nextMovement) < 0)
+                //    break;
 
                 distanceMoved += nextMovement.Length();
             }
 
-            return entity.Position;
+            return velocity;
         }
 
 
@@ -274,6 +306,10 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
                     return new Tuple<CollisionInfo, CollisionInfo>(new CollisionInfo(otherObject, point, normal), new CollisionInfo(movingObject, otherPoint, otherNormal));
                 }
+            }
+            else if (movingObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square && otherObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Triangle)
+            {
+
             }
             else
             {

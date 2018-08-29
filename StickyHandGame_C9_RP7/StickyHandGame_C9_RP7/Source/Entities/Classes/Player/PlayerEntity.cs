@@ -22,7 +22,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         private readonly float _rappleAcceleration = 400f;
         private readonly float _velocityCap = 1000;
         private readonly float _gravitationalAcceleration = 100f;
-        private readonly float _runningSpeed = 200f;
+        private readonly float _runningSpeed = 1000f;
         private readonly float _drag = 2.0f;
         public Vector2 Velocity;
         private Vector2 previousposition;
@@ -295,8 +295,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 this.Velocity = direction * _velocityCap;
             }
 
+            Console.WriteLine(this.CurrentState);
 
-            PhysicsEngine.MoveTowards(this, this.Velocity, timeElapsed);
+
+            this.Velocity = PhysicsEngine.MoveTowards(this, this.Velocity, timeElapsed);
             myAnimationComponent.Update(gameTime);
         }
 
