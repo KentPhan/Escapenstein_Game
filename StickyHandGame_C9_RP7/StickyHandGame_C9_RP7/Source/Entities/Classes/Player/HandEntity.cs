@@ -40,10 +40,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         // Physics
         private Vector2 TargetDestination;
         private Vector2 TargetDirection;
-        private float _returnSpeed = 7000.0f;
-        private float _shootSpeed = 1000.0f;
+        private float _returnSpeed = 50000.0f;
+        private float _shootSpeed = 50000.0f;
 
-        private float _maxDistanceOfHand = 1000.0f;
+        private float _maxDistanceOfHand = 300.0f;
         //private readonly float _gravitationalAcceleration = 100f;
 
         // TODO Switch this to collision Layer system instead
@@ -114,7 +114,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     }
                     else
                     {
-                        Velocity += TargetDirection * _shootSpeed * timeElapsed;
+                        Velocity = TargetDirection * _shootSpeed * timeElapsed;
                     }
 
                     break;
@@ -146,7 +146,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     {
                         var directionReturning = _player.Position - this.Position;
                         directionReturning.Normalize();
-                        this.Velocity += directionReturning * _returnSpeed * timeElapsed;
+                        this.Velocity = directionReturning * _returnSpeed * timeElapsed;
                     }
                     break;
                 default:
