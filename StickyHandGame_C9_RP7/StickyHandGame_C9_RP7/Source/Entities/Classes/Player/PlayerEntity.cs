@@ -20,7 +20,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
         // PhysicsEngine
         private const float _jumpforce = 100f;
-        private const float _rappleAcceleration = 400f;
+        private const float _rappleAcceleration = 1000f;
         private const float _velocityCap = 1000;
         private const float _runningSpeed = 500f;
         public Vector2 Velocity;
@@ -107,7 +107,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 this.myAnimationComponent.myeffect = SpriteEffects.None;
             else
                 this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
-            
+
         }
 
         /// <summary>
