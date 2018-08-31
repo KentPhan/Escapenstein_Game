@@ -19,7 +19,6 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
             this.Path = filePath;
         }
     }
-
     public enum Tiles
     {
         Nothing = -1,
@@ -56,7 +55,12 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         Tile_54_C = 54,
         Tile_55_C = 55,
         Tile_64_NC_W = 64,
-        Tile_65_NC_K = 65
+        Tile_65_NC_K = 65,
+        //TC for TriangleCollisions
+        Tile_91_TC_TL = 91,
+        Tile_92_TC_TR = 92,
+        Tile_93_TC_BR = 93,
+        Tile_94_TC_BL = 94
     }
 
     public class LevelManager

@@ -95,4 +95,5 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             throw new NotImplementedException();
         }
     }
+
 }
