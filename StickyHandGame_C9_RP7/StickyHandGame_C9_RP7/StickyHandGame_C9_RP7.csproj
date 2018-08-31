@@ -73,6 +73,7 @@
     <Compile Include="Source\Engine\PhysicsEngine.cs" />
     <Compile Include="Source\Managers\Classes\SoundManager.cs" />
     <Compile Include="Source\Managers\Core\IManager.cs" />
+    <Compile Include="Source\MathmaticHelper\VectorHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CsvHelper, Version=7.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">

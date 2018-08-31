@@ -197,78 +197,35 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
             if (movingObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square && otherObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square)
             {
-                BoxColliderComponent movingBox = (BoxColliderComponent)movingObject;
-                BoxColliderComponent otherBox = (BoxColliderComponent)otherObject;
-
-                // AABB collision check. Offset box by movement
-                if (origin.X + movement.X - (movingBox.Width / 2) < otherOrigin.X + (otherBox.Width / 2) &&
-                    origin.X + movement.X + (movingBox.Width / 2) > otherOrigin.X - (otherBox.Width / 2) &&
-                    origin.Y + movement.Y - (movingBox.Height / 2) < otherOrigin.Y + (otherBox.Height / 2) &&
-                    origin.Y + movement.Y + (movingBox.Height / 2) > otherOrigin.Y - (otherBox.Height / 2))
-                {
-
-                    // Do dot products to determine which side your hitting the other object from. May not be 100% accurate
-                    Vector2 normal = new Vector2();
-                    Vector2 point = new Vector2();
-                    Vector2 otherNormal = new Vector2();
-                    Vector2 otherPoint = new Vector2();
-
-                    Vector2 direction = (origin - otherOrigin);
-                    direction.Normalize();
-                    // Compare difference in X and Y components. Because they're squares only. Smaller X component means means bottom and top collisions. Smaller Y component means side collisions.
-                    // Then do dot products to determine which direction. CosTheta
-                    // IMPORTANT. Points aren't actually the point of collision, more like the center of the side
-                    if (Math.Abs(origin.X - otherOrigin.X) < Math.Abs(origin.Y - otherOrigin.Y))
-                    {
-                        Vector2 up = new Vector2(0, -1);
-                        // If moving collided with the top of the other object
-                        if (Vector2.Dot(up, direction) > 0)
-                        {
-                            normal = new Vector2(0, -1);
-                            otherNormal = new Vector2(0, 1);
-
-                            point = new Vector2(otherBox.Entity.Position.X, otherBox.Entity.Position.Y - otherBox.Height);
-                            otherPoint = new Vector2(movingBox.Entity.Position.X, movingBox.Entity.Position.Y + movingBox.Height);
-                        }
-                        // If moving collided with the bottom of the other object
-                        else
-                        {
-                            normal = new Vector2(0, 1);
-                            otherNormal = new Vector2(0, -1);
-
-                            point = new Vector2(otherBox.Entity.Position.X, otherBox.Entity.Position.Y + otherBox.Height);
-                            otherPoint = new Vector2(movingBox.Entity.Position.X, movingBox.Entity.Position.Y - movingBox.Height);
-                        }
-                    }
-                    else
-                    {
-                        Vector2 right = new Vector2(1, 0);
-                        // If moving collided with the right of the other object
-                        if (Vector2.Dot(right, direction) > 0)
-                        {
-                            normal = new Vector2(1, 0);
-                            otherNormal = new Vector2(-1, 0);
-
-                            point = new Vector2(otherBox.Entity.Position.X + otherBox.Width, otherBox.Entity.Position.Y);
-                            otherPoint = new Vector2(movingBox.Entity.Position.X - movingBox.Width, movingBox.Entity.Position.Y);
-                        }
-                        // If moving collided with the left of the other object
-                        else
-                        {
-                            normal = new Vector2(-1, 0);
-                            otherNormal = new Vector2(1, 0);
-
-                            point = new Vector2(otherBox.Entity.Position.X - otherBox.Width, otherBox.Entity.Position.Y);
-                            otherPoint = new Vector2(movingBox.Entity.Position.X + movingBox.Width, movingBox.Entity.Position.Y);
-                        }
-                    }
-
-                    return new Tuple<CollisionInfo, CollisionInfo>(new CollisionInfo(otherObject, point, normal), new CollisionInfo(movingObject, otherPoint, otherNormal));
+                Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin);
+                if(currentTuple != null){
+                    return currentTuple;
                 }
             }
             else if (movingObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square && otherObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Triangle)
             {
-
+                TriangleColliderComponent theotherobject = (TriangleColliderComponent)otherObject;
+                BoxColliderComponent playerobject = (BoxColliderComponent)movingObject;
+                if (TriangleColliderComponent.PlayerToTriangle(origin, (TriangleColliderComponent)otherObject))
+                {
+                    Vector2 P = origin - otherOrigin;
+                    Vector2 N = theotherobject.NormalVector;
+                    float L2limites = playerobject.Height * TriangleColliderComponent.MagicNumber;
+                    float L1limites = theotherobject.size * TriangleColliderComponent.MagicNumber;
+                    Vector2 L2 = MathmaticHelper.VectorHelper.projPtoN(P, N);
+                    Vector2 L1 = MathmaticHelper.VectorHelper.perpPtoN(P, N);
+                    if (L2.Length() < L2limites && L1.Length() < L1limites) {
+                        Vector2 CollisionPoint = origin - theotherobject.NormalVector * L2limites;  
+                        return new Tuple<CollisionInfo, CollisionInfo>(new CollisionInfo(otherObject, CollisionPoint, theotherobject.NormalVector*(-1)), new CollisionInfo(movingObject, CollisionPoint, theotherobject.NormalVector));
+                    }
+                }
+                else {
+                    Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin);
+                    if (currentTuple != null)
+                    {
+                        return currentTuple;
+                    }
+                }
             }
             else
             {
@@ -277,7 +234,77 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
             return null;
         }
+        private static Tuple<CollisionInfo, CollisionInfo> AABBCollision(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, Vector2 origin, Vector2 otherOrigin) {
+            BoxColliderComponent movingBox = (BoxColliderComponent)movingObject;
+            BoxColliderComponent otherBox = (BoxColliderComponent)otherObject;
 
+            // AABB collision check. Offset box by movement
+            if (origin.X + movement.X - (movingBox.Width / 2) < otherOrigin.X + (otherBox.Width / 2) &&
+                origin.X + movement.X + (movingBox.Width / 2) > otherOrigin.X - (otherBox.Width / 2) &&
+                origin.Y + movement.Y - (movingBox.Height / 2) < otherOrigin.Y + (otherBox.Height / 2) &&
+                origin.Y + movement.Y + (movingBox.Height / 2) > otherOrigin.Y - (otherBox.Height / 2))
+            {
+
+                // Do dot products to determine which side your hitting the other object from. May not be 100% accurate
+                Vector2 normal = new Vector2();
+                Vector2 point = new Vector2();
+                Vector2 otherNormal = new Vector2();
+                Vector2 otherPoint = new Vector2();
+
+                Vector2 direction = (origin - otherOrigin);
+                direction.Normalize();
+                // Compare difference in X and Y components. Because they're squares only. Smaller X component means means bottom and top collisions. Smaller Y component means side collisions.
+                // Then do dot products to determine which direction. CosTheta
+                // IMPORTANT. Points aren't actually the point of collision, more like the center of the side
+                if (Math.Abs(origin.X - otherOrigin.X) < Math.Abs(origin.Y - otherOrigin.Y))
+                {
+                    Vector2 up = new Vector2(0, -1);
+                    // If moving collided with the top of the other object
+                    if (Vector2.Dot(up, direction) > 0)
+                    {
+                        normal = new Vector2(0, -1);
+                        otherNormal = new Vector2(0, 1);
+
+                        point = new Vector2(otherBox.Entity.Position.X, otherBox.Entity.Position.Y - otherBox.Height);
+                        otherPoint = new Vector2(movingBox.Entity.Position.X, movingBox.Entity.Position.Y + movingBox.Height);
+                    }
+                    // If moving collided with the bottom of the other object
+                    else
+                    {
+                        normal = new Vector2(0, 1);
+                        otherNormal = new Vector2(0, -1);
+
+                        point = new Vector2(otherBox.Entity.Position.X, otherBox.Entity.Position.Y + otherBox.Height);
+                        otherPoint = new Vector2(movingBox.Entity.Position.X, movingBox.Entity.Position.Y - movingBox.Height);
+                    }
+                }
+                else
+                {
+                    Vector2 right = new Vector2(1, 0);
+                    // If moving collided with the right of the other object
+                    if (Vector2.Dot(right, direction) > 0)
+                    {
+                        normal = new Vector2(1, 0);
+                        otherNormal = new Vector2(-1, 0);
+
+                        point = new Vector2(otherBox.Entity.Position.X + otherBox.Width, otherBox.Entity.Position.Y);
+                        otherPoint = new Vector2(movingBox.Entity.Position.X - movingBox.Width, movingBox.Entity.Position.Y);
+                    }
+                    // If moving collided with the left of the other object
+                    else
+                    {
+                        normal = new Vector2(-1, 0);
+                        otherNormal = new Vector2(1, 0);
+
+                        point = new Vector2(otherBox.Entity.Position.X - otherBox.Width, otherBox.Entity.Position.Y);
+                        otherPoint = new Vector2(movingBox.Entity.Position.X + movingBox.Width, movingBox.Entity.Position.Y);
+                    }
+                }
+
+                return new Tuple<CollisionInfo, CollisionInfo>(new CollisionInfo(otherObject, point, normal), new CollisionInfo(movingObject, otherPoint, otherNormal));
+            }
+            return null;
+        }
 
 
     }
