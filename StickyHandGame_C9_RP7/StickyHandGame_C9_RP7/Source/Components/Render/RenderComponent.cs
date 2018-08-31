@@ -53,7 +53,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
             //    ? SpriteEffects.FlipHorizontally
             //    : SpriteEffects.None;
 
-            //GameManager.Instance.SpriteBatch.Draw(texture, entity.Position, new Rectangle(0, 0, 32, 32), Color.White, 0.0f, this.Origin, 1.0f, flip, 1);
+            //GameManager.Instance.SpriteBatch.Draw(texture, entity.Position, new Rectangle(0, 0, 32, 32), Color.White, 0.0f, this.Origin, 1.0f, SpriteEffects.None, 1);
         }
 
     }

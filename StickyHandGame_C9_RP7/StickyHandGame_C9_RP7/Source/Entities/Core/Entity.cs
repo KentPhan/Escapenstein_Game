@@ -3,9 +3,12 @@ using Microsoft.Xna.Framework;
 using StickyHandGame_C9_RP7.Source.Engine;
 using StickyHandGame_C9_RP7.Source.Entities.Components;
 using System;
+using System.Collections.Generic;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Core
 {
+
+
     //
     public struct EntityAttribute
     {
@@ -38,9 +41,20 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Core
         }
     }
 
+
+
+
+
+
+
     public abstract class Entity : ICloneable
     {
         public CollisionComponent CollisionComponent { get; set; }
+
+        // Anchor stuff
+        public List<Entity> Anchors { get; set; }
+        public bool IsActiveAnchor = false;
+
 
         protected int id = 0;
         private static int _count = 0;

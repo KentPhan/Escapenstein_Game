@@ -12,7 +12,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
     /// </summary>
     public static class PhysicsEngine
     {
-        private const float GravitationalAcceleration = 100f;
+        private const float GravitationalAcceleration = 150f;
         private const float Drag = 2.0f;
         //private const float DragUpeerBound
 
@@ -39,6 +39,42 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             {
                 // Gravity
                 velocity += new Vector2(0, 1) * GravitationalAcceleration * deltaTime;
+
+
+
+                // Anchors to fake rope physics
+                if (entity.Anchors != null)
+                {
+                    foreach (var anchor in entity.Anchors)
+                    {
+                        if (anchor.IsActiveAnchor)
+                        {
+                            //Vector2 postPosition = (entity.Position + (velocity * deltaTime));
+
+                            //float predictedDistance = (anchor.Position - postPosition).Length();
+                            //float currentDistance = (anchor.Position - entity.Position).Length();
+
+
+                            //if (predictedDistance > currentDistance)
+                            //{
+                            //    Vector2 radiusDirection = postPosition - anchor.Position;
+                            //    radiusDirection.Normalize();
+                            //    Vector2 newLocation = radiusDirection * currentDistance;
+                            //    Vector2 angularDirection = newLocation - entity.Position;
+                            //    angularDirection.Normalize();
+                            //    velocity = velocity * angularDirection;
+                            //    break;
+                            //}
+                            //else
+                            //{
+                            //    // Do nothing
+                            //}
+                        }
+                    }
+                }
+
+
+
 
 
                 // drag
@@ -69,6 +105,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                     nextMovement = unitDirection * (distanceFull - distanceMoved);
                 else
                     nextMovement = unitDirection * stepDistance;
+
 
                 // Get all collisions
                 var collisions = CheckPossibleCollisions(entity, nextMovement, possibleCollisions);
@@ -106,6 +143,8 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                     break;
 
                 entity.Position += nextMovement;
+
+
 
                 distanceMoved += nextMovement.Length();
             }

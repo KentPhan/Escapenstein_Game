@@ -21,7 +21,15 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             Latched,
             Retreating,
         }
+
+        public enum HandID
+        {
+            First,
+            Second
+        }
+
         public HandState CurrentState { get; set; }
+        public HandID HandId { get; set; }
 
 
         //Render component
@@ -44,16 +52,17 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         private float _returnSpeed = 50000.0f;
         private float _shootSpeed = 50000.0f;
 
-        private float _maxDistanceOfHand = 300.0f;
+        private float _maxDistanceOfHand = 200.0f;
         //private readonly float _gravitationalAcceleration = 100f;
 
         // TODO Switch this to collision Layer system instead
         public Vector2 Velocity;
 
 
-        public HandEntity(PlayerEntity player)
+        public HandEntity(PlayerEntity player, HandID handId)
         {
             this.CurrentState = HandState.OnPlayer;
+            this.HandId = handId;
             this._player = player;
             this.Velocity = new Vector2();
 
@@ -85,14 +94,12 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             {
                 case HandState.OnPlayer:
                     // If mouse is clicked while on player
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    if (GetMousePressedInput())
                     {
                         this.TargetDestination = GetTargetDestination();
                         this.TargetDirection = this.TargetDestination - this.Position;
                         this.TargetDirection.Normalize();
-                        
-                        var test = new Vector2(-1561, 30213);
-                        test.Normalize();
+
                         _renderComponent.Direction = this.TargetDirection;
                         //float angle = CalculateRotation(TargetDirection);
                         //this._renderComponent.Rotation = angle;
@@ -103,14 +110,16 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                         this.Velocity = Vector2.Zero;
 
                         CurrentState = HandState.Shooting;
-                        //SoundManager play the effect
+
                         SoundManager.Instance.Play(0);
                     }
+
                     this.Position = _player.Position;
                     break;
                 case HandState.Shooting:
                     // if hand is in the middle of movement towards the target
-                    if (Mouse.GetState().LeftButton != ButtonState.Pressed || ((this.Position - _player.Position).Length() >= this._maxDistanceOfHand))
+                    //TODO Get Controller direction point and first trigger press
+                    if (!GetMousePressedInput() || ((this.Position - _player.Position).Length() >= this._maxDistanceOfHand))
                     {
                         ChangeStateToRetreating();
                     }
@@ -129,9 +138,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                         ChangeStateToRetreating();
                         break;
                     }
-                    else if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    else if (GetPressedInput())
                     {
-                        this._player.RappleToHand();
+                        this._player.HoldRappleToHand(this.HandId);
                     }
                     break;
                 case HandState.Retreating:
@@ -166,11 +175,75 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         {
 
             //this._renderComponent.Rotation = angle;
-
+            this.IsActiveAnchor = false;
             this.CurrentState = HandState.Retreating;
             this.CollisionComponent.Layer = CollisionLayers.Ghost;
         }
 
+        /// <summary>
+        /// Gets the pressed input.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private bool GetMousePressedInput()
+        {
+            switch (this.HandId)
+            {
+                case HandID.First:
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                        return true;
+                    break;
+                case HandID.Second:
+                    if (Mouse.GetState().RightButton == ButtonState.Pressed)
+                        return true;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return false;
+        }
+
+        private bool GetPressedInput()
+        {
+
+            switch (this.HandId)
+            {
+                case HandID.First:
+                    if (Keyboard.GetState().IsKeyDown(Keys.A))
+                        return true;
+                    break;
+                case HandID.Second:
+                    if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        return true;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the released input.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private bool GetReleasedInput()
+        {
+            switch (this.HandId)
+            {
+                case HandID.First:
+                    if (Mouse.GetState().LeftButton == ButtonState.Released)
+                        return true;
+                    break;
+                case HandID.Second:
+                    if (Mouse.GetState().RightButton == ButtonState.Released)
+                        return true;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return false;
+        }
 
         public override void Draw(GameTime gameTime)
         {
@@ -213,6 +286,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         public override void CollisionTriggered(CollisionInfo collided)
         {
             this.CurrentState = HandState.Latched;
+            this.IsActiveAnchor = true;
+            //collided.NormalVector
         }
 
         public override object Clone()

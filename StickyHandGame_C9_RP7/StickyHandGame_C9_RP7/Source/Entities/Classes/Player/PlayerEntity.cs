@@ -7,7 +7,7 @@ using StickyHandGame_C9_RP7.Source.Engine;
 using StickyHandGame_C9_RP7.Source.Entities.Classes.Arm;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
-using StickyHandGame_C9_RP7.Source.Cameras;
+using System.Collections.Generic;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 {
@@ -30,15 +30,15 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         // The Hand 
         //private ThrowAbleEntity HandChain;
         private readonly HandEntity _hand;
+        private readonly HandEntity _hand2;
+        private HandEntity.HandID currentRapplingHand;
 
 
         // States
         public enum CharacterState
         {
-            Airbourne,
-            Standing,
+            Standard,
             Rappling
-
         }
         public CharacterState CurrentState { get; private set; }
 
@@ -48,7 +48,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// <param name="hide">if set to <c>true</c> [hide].</param>
         public PlayerEntity(bool hide = false) : base()
         {
-            this.CurrentState = CharacterState.Standing;
+            this.CurrentState = CharacterState.Standard;
             this.Velocity = new Vector2();
 
 
@@ -61,8 +61,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 , RenderManager.zombieAnimatedAttribute.Scale);
 
             // Hand Logic
-            //HandChain = new ThrowAbleEntity(this.Position + HandEntry.HndPositionOffSet, this);
-            _hand = new HandEntity(this);
+            _hand = new HandEntity(this, HandEntity.HandID.First);
+            _hand2 = new HandEntity(this, HandEntity.HandID.Second);
+            this.Anchors = new List<Entity>() { _hand, _hand2 };
 
             // Load Content
             var texture = myAnimationComponent.LoadContent();
@@ -71,8 +72,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             Height = 32f;
 
             this.CollisionComponent = new BoxColliderComponent(this, this.Width, this.Height, CollisionLayers.Player);
-
-            this.CurrentState = CharacterState.Airbourne;
         }
 
         /// <summary>
@@ -81,8 +80,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// <param name="gameTime">The game time.</param>
         public override void Draw(GameTime gameTime)
         {
-            _hand.Draw(gameTime);
+
             myAnimationComponent.Draw(gameTime);
+            _hand.Draw(gameTime);
+            _hand2.Draw(gameTime);
 
             if (GameManager.Instance.DebugMode)
             {
@@ -138,23 +139,26 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             if (this.CurrentState == CharacterState.Rappling)
                 return;
 
-            // Bottom collided with other
-            if (collided.NormalVector.Y == -1.0f)
-            {
-                this.CurrentState = CharacterState.Standing;
-            }
         }
 
         /// <summary>
         /// Applies a velocity to the player.
         /// </summary>
         /// <param name="velocity">The velocity.</param>
-        public void RappleToHand()
+        public void HoldRappleToHand(HandEntity.HandID handId)
         {
             if (this.CurrentState != CharacterState.Rappling)
             {
                 this.CurrentState = CharacterState.Rappling;
+                this.currentRapplingHand = handId;
             }
+        }
+
+        public void AcceleratePlayerToEntity(Entity entity, float timeElapsed)
+        {
+            var direction = (entity.Position - this.Position);
+            direction.Normalize();
+            this.Velocity += direction * _rappleAcceleration * timeElapsed;
         }
 
         /// <summary>
@@ -167,6 +171,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             // Hand
             this._hand.Update(gameTime);
+            this._hand2.Update(gameTime);
 
             var kState = Keyboard.GetState();
 
@@ -179,33 +184,35 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             // Based upon current state
             switch (this.CurrentState)
             {
-                case CharacterState.Standing:
-                    if (_runningJumpingEnabled)
-                    {
-                        JumpCheck(kState);
-                        UpdateLeftAndRightMovement(timeElapsed);
-                    }
-
-                    break;
-                case CharacterState.Airbourne:
-                    // Left and right movement
-                    if (_runningJumpingEnabled)
-                    {
-                        UpdateLeftAndRightMovement(timeElapsed);
-                    }
+                case CharacterState.Standard:
                     break;
                 case CharacterState.Rappling:
                     // For releasing on reaching destination
-                    if (Mouse.GetState().LeftButton == ButtonState.Released)
+                    if (this.currentRapplingHand == HandEntity.HandID.First)
                     {
-                        _hand.CurrentState = HandEntity.HandState.OnPlayer;
-                        this.CurrentState = CharacterState.Airbourne;
+                        if (!Keyboard.GetState().IsKeyDown(Keys.A))
+                        //if (Mouse.GetState().LeftButton == ButtonState.Released)
+                        {
+                            _hand.CurrentState = HandEntity.HandState.OnPlayer;
+                            this.CurrentState = CharacterState.Standard;
+                        }
+                        else
+                        {
+                            AcceleratePlayerToEntity(_hand, timeElapsed);
+                        }
                     }
                     else
                     {
-                        var direction = (_hand.Position - this.Position);
-                        direction.Normalize();
-                        this.Velocity += direction * _rappleAcceleration * timeElapsed;
+                        if (!Keyboard.GetState().IsKeyDown(Keys.S))
+                        //if (Mouse.GetState().RightButton == ButtonState.Released)
+                        {
+                            _hand2.CurrentState = HandEntity.HandState.OnPlayer;
+                            this.CurrentState = CharacterState.Standard;
+                        }
+                        else
+                        {
+                            AcceleratePlayerToEntity(_hand2, timeElapsed);
+                        }
                     }
                     break;
                 default:
@@ -226,38 +233,38 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         }
 
 
-        /// <summary>
-        /// Jumps the check.
-        /// </summary>
-        /// <param name="kState">State of the k.</param>
-        private void JumpCheck(KeyboardState kState)
-        {
-            if (kState.IsKeyDown(Keys.W))
-            {
-                this.Velocity += new Vector2(0, -1) * _jumpforce;
-                this.CurrentState = CharacterState.Airbourne;
-            }
-        }
+        ///// <summary>
+        ///// Jumps the check.
+        ///// </summary>
+        ///// <param name="kState">State of the k.</param>
+        //private void JumpCheck(KeyboardState kState)
+        //{
+        //    if (kState.IsKeyDown(Keys.W))
+        //    {
+        //        this.Velocity += new Vector2(0, -1) * _jumpforce;
+        //        this.CurrentState = CharacterState.Airbourne;
+        //    }
+        //}
 
         /// <summary>
         /// Updates the left and right movement.
         /// </summary>
         /// <param name="timeElapsed">The time elapsed.</param>
-        private void UpdateLeftAndRightMovement(float timeElapsed)
-        {
-            var kState = Keyboard.GetState();
+        //private void UpdateLeftAndRightMovement(float timeElapsed)
+        //{
+        //    var kState = Keyboard.GetState();
 
-            if (kState.IsKeyDown(Keys.A))
-            {
-                this.Velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
-                this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
-            }
+        //    if (kState.IsKeyDown(Keys.A))
+        //    {
+        //        this.Velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
+        //        this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
+        //    }
 
-            if (kState.IsKeyDown(Keys.D))
-            {
-                this.Velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
-                this.myAnimationComponent.myeffect = SpriteEffects.None;
-            }
-        }
+        //    if (kState.IsKeyDown(Keys.D))
+        //    {
+        //        this.Velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
+        //        this.myAnimationComponent.myeffect = SpriteEffects.None;
+        //    }
+        //}
     }
 }
