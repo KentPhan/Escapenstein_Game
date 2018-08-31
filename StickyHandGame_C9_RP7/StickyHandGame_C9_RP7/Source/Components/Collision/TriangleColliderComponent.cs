@@ -28,12 +28,13 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
             this.size = entity.Height;
             this.NormalVector = TriangleColliderComponent.Normals[(int)this.myOritation];
             this.NormalVector.Normalize();
+            base.BoundaryType = CollisionBoundaryType.Triangle;
         }
         public static bool PlayerToTriangle(Vector2 PlayerPosition, TriangleColliderComponent tri)
         {
             Vector2 TriPositoin = tri.Position - tri.NormalVector * tri.size * TriangleColliderComponent.MagicNumber;
             Vector2 Difference = PlayerPosition - TriPositoin;
-            if (Difference.X >= 0 && Difference.Y >= 0)
+            if (Difference.X > 0 && Difference.Y > 0)
             {
                 if (tri.myOritation == Oritation.BR)
                 {
@@ -44,7 +45,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
                     return false;
                 }
             }
-            else if (Difference.X >= 0 && Difference.Y <= 0)
+            else if (Difference.X > 0 && Difference.Y < 0)
             {
                 if (tri.myOritation == Oritation.TR)
                 {
@@ -55,7 +56,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
                     return false;
                 }
             }
-            else if (Difference.X <= 0 && Difference.Y <= 0)
+            else if (Difference.X < 0 && Difference.Y < 0)
             {
                 if (tri.myOritation == Oritation.TL)
                 {
@@ -66,7 +67,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
                     return false;
                 }
             }
-            else if (Difference.X <= 0 && Difference.Y >= 0)
+            else if (Difference.X < 0 && Difference.Y > 0)
             {
                 if (tri.myOritation == Oritation.BL)
                 {

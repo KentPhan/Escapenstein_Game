@@ -4,6 +4,7 @@ using StickyHandGame_C9_RP7.Source.Entities.Components;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace StickyHandGame_C9_RP7.Source.Engine
 {
@@ -197,7 +198,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
             if (movingObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square && otherObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square)
             {
-                Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin);
+                Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin,true);
                 if(currentTuple != null){
                     return currentTuple;
                 }
@@ -206,7 +207,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             {
                 TriangleColliderComponent theotherobject = (TriangleColliderComponent)otherObject;
                 BoxColliderComponent playerobject = (BoxColliderComponent)movingObject;
-                if (TriangleColliderComponent.PlayerToTriangle(origin, (TriangleColliderComponent)otherObject))
+                if (TriangleColliderComponent.PlayerToTriangle(origin, theotherobject))
                 {
                     Vector2 P = origin - otherOrigin;
                     Vector2 N = theotherobject.NormalVector;
@@ -215,12 +216,13 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                     Vector2 L2 = MathmaticHelper.VectorHelper.projPtoN(P, N);
                     Vector2 L1 = MathmaticHelper.VectorHelper.perpPtoN(P, N);
                     if (L2.Length() < L2limites && L1.Length() < L1limites) {
-                        Vector2 CollisionPoint = origin - theotherobject.NormalVector * L2limites;  
-                        return new Tuple<CollisionInfo, CollisionInfo>(new CollisionInfo(otherObject, CollisionPoint, theotherobject.NormalVector*(-1)), new CollisionInfo(movingObject, CollisionPoint, theotherobject.NormalVector));
+                        Vector2 CollisionPoint = origin - theotherobject.NormalVector * L2limites;
+                        Debug.WriteLine(theotherobject.NormalVector.X + " " + theotherobject.NormalVector.Y);
+                        return new Tuple<CollisionInfo, CollisionInfo>(new CollisionInfo(otherObject, CollisionPoint, theotherobject.NormalVector), new CollisionInfo(movingObject, CollisionPoint, theotherobject.NormalVector*(-1)));
                     }
                 }
                 else {
-                    Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin);
+                    Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin,false);
                     if (currentTuple != null)
                     {
                         return currentTuple;
@@ -234,9 +236,18 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
             return null;
         }
-        private static Tuple<CollisionInfo, CollisionInfo> AABBCollision(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, Vector2 origin, Vector2 otherOrigin) {
+        private static Tuple<CollisionInfo, CollisionInfo> AABBCollision(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, Vector2 origin, Vector2 otherOrigin,bool iscube) {
             BoxColliderComponent movingBox = (BoxColliderComponent)movingObject;
-            BoxColliderComponent otherBox = (BoxColliderComponent)otherObject;
+            BoxColliderComponent otherBox;
+            if (iscube)
+            {
+                otherBox = (BoxColliderComponent)otherObject;
+            }
+            else {
+                TriangleColliderComponent temp = (TriangleColliderComponent)otherObject;
+                otherBox = new BoxColliderComponent(temp.Entity, temp.Width, temp.Height, CollisionLayers.Static);
+
+            }
 
             // AABB collision check. Offset box by movement
             if (origin.X + movement.X - (movingBox.Width / 2) < otherOrigin.X + (otherBox.Width / 2) &&

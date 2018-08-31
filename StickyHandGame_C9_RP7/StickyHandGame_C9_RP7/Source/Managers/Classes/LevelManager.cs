@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StickyHandGame_C9_RP7.Source.Components.Collision;
 using StickyHandGame_C9_RP7.Source.Entities.Classes;
 using StickyHandGame_C9_RP7.Source.Entities.Classes.Player;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
@@ -39,7 +40,6 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         Tile_20_NC = 20,
         Tile_21_NC = 21,
         Tile_32_C = 32,
-        Tile_33_C = 33,
         Tile_34_C = 34,
         Tile_35_C = 35,
         Tile_36_C = 36,
@@ -57,6 +57,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         Tile_64_NC_W = 64,
         Tile_65_NC_K = 65,
         //TC for TriangleCollisions
+        Tile_33_TC_TR = 33,
         Tile_91_TC_TL = 91,
         Tile_92_TC_TR = 92,
         Tile_93_TC_BR = 93,
@@ -162,7 +163,26 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
             Vector2 origin = new Vector2(x, y);
 
             string tileName = tile.ToString();
-            if (tileName.Contains("C"))
+            if (tileName.Contains("TC"))
+            {
+                if (tileName.Contains("TR"))
+                {
+                    return new PlatformEntity(tileName, origin, TriangleColliderComponent.Oritation.TR);
+                }
+                if (tileName.Contains("TL"))
+                {
+                    return new PlatformEntity(tileName, origin, TriangleColliderComponent.Oritation.TL);
+                }
+                if (tileName.Contains("BL"))
+                {
+                    return new PlatformEntity(tileName, origin, TriangleColliderComponent.Oritation.BL);
+                }
+                if (tileName.Contains("BR"))
+                {
+                    return new PlatformEntity(tileName, origin, TriangleColliderComponent.Oritation.BR);
+                }
+            }
+            else if (tileName.Contains("C"))
             {
                 if (tileName.Contains("S"))
                 {

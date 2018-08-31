@@ -27,6 +27,21 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
             this.CollisionComponent = new BoxColliderComponent(this, Width, Height, CollisionLayers.Static);
         }
+        public PlatformEntity(string tileName, Vector2 position, TriangleColliderComponent.Oritation oritation, bool hide = false) : base()
+        {
+            this._tileName = tileName;
+            renderComponent = new RenderComponent(tileName, this);
+            this.Position = position;
+
+            // Load Content
+
+            var texture = this.renderComponent.LoadContent();
+            this.Hide = hide;
+            Width = 32;
+            Height = 32;
+
+            this.CollisionComponent = new TriangleColliderComponent(this, Width, Height, CollisionLayers.Static, oritation);
+        }
         public override void Draw(GameTime gameTime)
         {
             if (!Hide)

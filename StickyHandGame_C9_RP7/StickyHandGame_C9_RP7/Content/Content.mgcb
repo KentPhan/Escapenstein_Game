@@ -217,18 +217,6 @@
 /processorParam:TextureFormat=Color
 /build:Tile_32_C.png
 
-#begin Tile_33_C.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Tile_33_C.png
-
 #begin Tile_34_C.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -451,4 +439,16 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Shoot.wav
+
+#begin Tile_33_TC_TR.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Tile_33_TC_TR.png
 
