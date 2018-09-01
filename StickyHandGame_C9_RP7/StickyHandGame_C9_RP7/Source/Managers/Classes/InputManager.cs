@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Cameras;
+using StickyHandGame_C9_RP7.Source.Entities.Core;
 using StickyHandGame_C9_RP7.Source.Managers.Classes;
 
 namespace StickyHandGame_C9_RP7.Source.Managers
@@ -27,13 +29,16 @@ namespace StickyHandGame_C9_RP7.Source.Managers
         }
 
 
+        /// <summary>
+        /// Controllers State
+        /// </summary>
         public enum ControllerState
         {
             KeyboardAndMouse,
             Controller
         }
-
         private ControllerState _cState;
+        private Texture2D _assistLines;
 
 
         private InputManager()
@@ -47,6 +52,8 @@ namespace StickyHandGame_C9_RP7.Source.Managers
             {
                 this._cState = ControllerState.KeyboardAndMouse;
             }
+            this._assistLines = new Texture2D(GameManager.Instance.GraphicsDevice, 1, 1);
+            _assistLines.SetData<Color>(new Color[] { Color.White });
         }
 
 
@@ -136,6 +143,57 @@ namespace StickyHandGame_C9_RP7.Source.Managers
             Vector2 direction = worldPosition - GameManager.Instance.PlayerEntity.Position;
             direction.Normalize();
             return direction;
+        }
+
+
+
+        private float distanceIn = 20.0f;
+        private float distanceOut = 40.0f;
+
+
+        public void DrawAssist(GameTime gameTime)
+        {
+            if (this._cState == ControllerState.Controller)
+            {
+                var player = GameManager.Instance.PlayerEntity;
+                var spriteBatch = GameManager.Instance.SpriteBatch;
+
+                var leftDirection = GetLeftDirection();
+                DrawLine(spriteBatch, player.Position + (leftDirection * distanceIn), player.Position + (leftDirection * distanceOut), Color.Red);
+
+                var rightDirection = GetRightDirection();
+                DrawLine(spriteBatch, player.Position + (rightDirection * distanceIn), player.Position + (rightDirection * distanceOut), Color.Blue);
+            }
+        }
+
+
+        /// <summary>
+        /// Draws the line. Some code I stole from online. From  https://gamedev.stackexchange.com/questions/44015/how-can-i-draw-a-simple-2d-line-in-xna-without-using-3d-primitives-and-shders
+        /// </summary>
+        /// <param name="sb">The sb.</param>
+        /// <param name="start">The start.</param>
+        /// <param name="end">The end.</param>
+        private void DrawLine(SpriteBatch sb, Vector2 start, Vector2 end, Color color)
+        {
+            Vector2 edge = end - start;
+            // calculate angle to rotate line
+            float angle =
+                (float)Math.Atan2(edge.Y, edge.X);
+
+
+            sb.Draw(_assistLines,
+                new Rectangle(// rectangle defines shape of line and position of start of line
+                    (int)start.X,
+                    (int)start.Y,
+                    (int)edge.Length(), //sb will strech the texture to fill this rectangle
+                    1), //width of line, change this to make thicker line
+                null,
+                color, //colour of line
+                angle,     //angle of line (calulated above)
+                new Vector2(0, 0), // point in line about which to rotate
+                SpriteEffects.None,
+                0);
+
         }
 
 

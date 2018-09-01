@@ -73,6 +73,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             _hand.Draw(gameTime);
             _hand2.Draw(gameTime);
 
+            InputManager.Instance.DrawAssist(gameTime);
+
             if (GameManager.Instance.DebugMode)
             {
                 this.CollisionComponent?.DebugDraw(gameTime);
