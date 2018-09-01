@@ -31,16 +31,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         //private ThrowAbleEntity HandChain;
         private readonly HandEntity _hand;
         private readonly HandEntity _hand2;
-        private HandEntity.HandID currentRapplingHand;
 
-
-        // States
-        public enum CharacterState
-        {
-            Standard,
-            Rappling
-        }
-        public CharacterState CurrentState { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerEntity"/> class.
@@ -48,7 +39,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// <param name="hide">if set to <c>true</c> [hide].</param>
         public PlayerEntity(bool hide = false) : base()
         {
-            this.CurrentState = CharacterState.Standard;
+            //this.CurrentState = CharacterState.Standard;
             this.Velocity = new Vector2();
 
 
@@ -136,8 +127,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// <param name="collided">The collided.</param>
         public override void CollisionTriggered(CollisionInfo collided)
         {
-            if (this.CurrentState == CharacterState.Rappling)
-                return;
 
         }
 
@@ -147,14 +136,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// <param name="velocity">The velocity.</param>
         public void HoldRappleToHand(HandEntity.HandID handId)
         {
-            if (this.CurrentState != CharacterState.Rappling)
-            {
-                this.CurrentState = CharacterState.Rappling;
-                this.currentRapplingHand = handId;
-            }
+
         }
 
-        public void AcceleratePlayerToEntity(Entity entity, float timeElapsed)
+        private void AcceleratePlayerToEntity(Entity entity, float timeElapsed)
         {
             var direction = (entity.Position - this.Position);
             direction.Normalize();
@@ -181,42 +166,29 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             if (kState.IsKeyDown(Keys.K))
                 _runningJumpingEnabled = false;
 
-            // Based upon current state
-            switch (this.CurrentState)
+            if (_hand.CurrentState == HandEntity.HandState.Latched)
             {
-                case CharacterState.Standard:
-                    break;
-                case CharacterState.Rappling:
-                    // For releasing on reaching destination
-                    if (this.currentRapplingHand == HandEntity.HandID.First)
-                    {
-                        if (!Keyboard.GetState().IsKeyDown(Keys.A))
-                        //if (Mouse.GetState().LeftButton == ButtonState.Released)
-                        {
-                            _hand.CurrentState = HandEntity.HandState.OnPlayer;
-                            this.CurrentState = CharacterState.Standard;
-                        }
-                        else
-                        {
-                            AcceleratePlayerToEntity(_hand, timeElapsed);
-                        }
-                    }
-                    else
-                    {
-                        if (!Keyboard.GetState().IsKeyDown(Keys.S))
-                        //if (Mouse.GetState().RightButton == ButtonState.Released)
-                        {
-                            _hand2.CurrentState = HandEntity.HandState.OnPlayer;
-                            this.CurrentState = CharacterState.Standard;
-                        }
-                        else
-                        {
-                            AcceleratePlayerToEntity(_hand2, timeElapsed);
-                        }
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                if (!Keyboard.GetState().IsKeyDown(Keys.A))
+                {
+
+                }
+                else
+                {
+                    AcceleratePlayerToEntity(_hand, timeElapsed);
+                }
+            }
+
+
+            if (_hand2.CurrentState == HandEntity.HandState.Latched)
+            {
+                if (!Keyboard.GetState().IsKeyDown(Keys.S))
+                {
+
+                }
+                else
+                {
+                    AcceleratePlayerToEntity(_hand2, timeElapsed);
+                }
             }
 
 

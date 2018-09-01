@@ -133,7 +133,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     //if hand is latched
                     // If mouse is clicked while on player
                     Velocity = Vector2.Zero;
-                    if ((this.Position - _player.Position).Length() >= _maxDistanceOfHand)
+                    if (!GetMousePressedInput() || ((this.Position - _player.Position).Length() >= _maxDistanceOfHand))
                     {
                         ChangeStateToRetreating();
                         break;

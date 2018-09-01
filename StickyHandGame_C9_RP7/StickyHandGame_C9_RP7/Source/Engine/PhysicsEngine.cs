@@ -63,7 +63,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                             //    Vector2 newLocation = radiusDirection * currentDistance;
                             //    Vector2 angularDirection = newLocation - entity.Position;
                             //    angularDirection.Normalize();
-                            //    velocity = velocity * angularDirection;
+                            //    velocity = velocity.Length() * angularDirection;
                             //    break;
                             //}
                             //else
@@ -198,8 +198,9 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
             if (movingObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square && otherObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square)
             {
-                Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin,true);
-                if(currentTuple != null){
+                Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin, true);
+                if (currentTuple != null)
+                {
                     return currentTuple;
                 }
             }
@@ -215,19 +216,20 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                     float L1limites = theotherobject.size * TriangleColliderComponent.MagicNumber;
                     Vector2 L2 = MathmaticHelper.VectorHelper.projPtoN(P, N);
                     Vector2 L1 = MathmaticHelper.VectorHelper.perpPtoN(P, N);
-                    if (L2.Length() < L2limites && L1.Length() < L1limites) {
+                    if (L2.Length() < L2limites && L1.Length() < L1limites)
+                    {
                         Vector2 CollisionPoint = origin - theotherobject.NormalVector * L2limites;
                         Debug.WriteLine(theotherobject.NormalVector.X + " " + theotherobject.NormalVector.Y);
-                        return new Tuple<CollisionInfo, CollisionInfo>(new CollisionInfo(otherObject, CollisionPoint, theotherobject.NormalVector), new CollisionInfo(movingObject, CollisionPoint, theotherobject.NormalVector*(-1)));
+                        return new Tuple<CollisionInfo, CollisionInfo>(new CollisionInfo(otherObject, CollisionPoint, theotherobject.NormalVector), new CollisionInfo(movingObject, CollisionPoint, theotherobject.NormalVector * (-1)));
                     }
                 }
-                else {
+                /*else {
                     Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin,false);
                     if (currentTuple != null)
                     {
                         return currentTuple;
                     }
-                }
+                }*/
             }
             else
             {
@@ -236,14 +238,16 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
             return null;
         }
-        private static Tuple<CollisionInfo, CollisionInfo> AABBCollision(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, Vector2 origin, Vector2 otherOrigin,bool iscube) {
+        private static Tuple<CollisionInfo, CollisionInfo> AABBCollision(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, Vector2 origin, Vector2 otherOrigin, bool iscube)
+        {
             BoxColliderComponent movingBox = (BoxColliderComponent)movingObject;
             BoxColliderComponent otherBox;
             if (iscube)
             {
                 otherBox = (BoxColliderComponent)otherObject;
             }
-            else {
+            else
+            {
                 TriangleColliderComponent temp = (TriangleColliderComponent)otherObject;
                 otherBox = new BoxColliderComponent(temp.Entity, temp.Width, temp.Height, CollisionLayers.Static);
 
