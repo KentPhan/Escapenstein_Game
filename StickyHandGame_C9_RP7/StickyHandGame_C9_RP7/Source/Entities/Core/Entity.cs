@@ -54,6 +54,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Core
         // Anchor stuff
         public List<Entity> Anchors { get; set; }
         public bool IsActiveAnchor = false;
+        public float AnchorDistance { get; set; }
 
 
         protected int id = 0;
@@ -80,6 +81,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Core
             return ++_count;
         }
 
+        /// <summary>
+        /// When a collision is triggered
+        /// </summary>
+        /// <param name="collided">The collided.</param>
         public abstract void CollisionTriggered(CollisionInfo collided);
 
         public abstract object Clone();

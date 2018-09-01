@@ -59,7 +59,6 @@
     <Compile Include="Source\Entities\Classes\EmptyEntity.cs" />
     <Compile Include="Source\Entities\Classes\Player\HandEntity.cs" />
     <Compile Include="Source\Entities\Classes\KeyBinds.cs" />
-    <Compile Include="Source\Entities\Classes\Player\ThrowAbleEntity.cs" />
     <Compile Include="Source\Entities\Classes\TriggerEntity.cs" />
     <Compile Include="Source\Managers\Classes\CameraManager.cs" />
     <Compile Include="Source\Managers\Classes\LevelManager.cs" />

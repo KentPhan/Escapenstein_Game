@@ -13,9 +13,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         {
             this.Position = position;
             this.MyrenderComponent = new RenderComponent("Chain", this);
-            this.MyrenderComponent.Scale = HandEntry.Scale;
+            this.MyrenderComponent.Scale = new Vector2(1.0f, 1.0f);
             //this.MyrenderComponent.Rotation = angle;
-            this.MyrenderComponent.Origin = HandEntry.Ringpivot;
+            this.MyrenderComponent.Origin = new Vector2(16f, 16f);
             this.MyrenderComponent.LoadContent();
         }
 

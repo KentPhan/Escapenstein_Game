@@ -5,6 +5,7 @@ using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace StickyHandGame_C9_RP7.Source.Engine
 {
@@ -13,7 +14,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
     /// </summary>
     public static class PhysicsEngine
     {
-        private const float GravitationalAcceleration = 150f;
+        private const float GravitationalAcceleration = 10f;
         private const float Drag = 2.0f;
         //private const float DragUpeerBound
 
@@ -24,8 +25,10 @@ namespace StickyHandGame_C9_RP7.Source.Engine
         /// <param name="velocity">The velocity.</param>
         /// <param name="deltaTime">The delta time.</param>
         /// <returns>Final position</returns>
-        public static Vector2 MoveTowards(Entity entity, Vector2 velocity, float deltaTime)
+        public static Vector2 MoveTowards(Entity entity, Vector2 velocity, GameTime time)
         {
+            float deltaTime = (float)time.ElapsedGameTime.TotalSeconds;
+
             if (velocity.Length() <= 0)
                 return Vector2.Zero;
 
@@ -39,7 +42,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             if (entity.CollisionComponent.Layer != CollisionLayers.Static)
             {
                 // Gravity
-                velocity += new Vector2(0, 1) * GravitationalAcceleration * deltaTime;
+                velocity += new Vector2(0, 1) * GravitationalAcceleration;
 
 
 
@@ -50,33 +53,24 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                     {
                         if (anchor.IsActiveAnchor)
                         {
-                            //Vector2 postPosition = (entity.Position + (velocity * deltaTime));
+                            //
+                            Vector2 anchorDirection = (anchor.Position - entity.Position);
+                            anchorDirection.Normalize();
+                            Vector2 velocityDirection = velocity;
+                            velocityDirection.Normalize();
 
-                            //float predictedDistance = (anchor.Position - postPosition).Length();
-                            //float currentDistance = (anchor.Position - entity.Position).Length();
+                            var predictedPosition = entity.Position + (velocity * deltaTime);
 
-
-                            //if (predictedDistance > currentDistance)
-                            //{
-                            //    Vector2 radiusDirection = postPosition - anchor.Position;
-                            //    radiusDirection.Normalize();
-                            //    Vector2 newLocation = radiusDirection * currentDistance;
-                            //    Vector2 angularDirection = newLocation - entity.Position;
-                            //    angularDirection.Normalize();
-                            //    velocity = velocity.Length() * angularDirection;
-                            //    break;
-                            //}
-                            //else
-                            //{
-                            //    // Do nothing
-                            //}
+                            // If would move away from anchor. apply vector
+                            if ((anchor.AnchorDistance) <
+                                (anchor.Position - predictedPosition).Length())
+                            {
+                                var test = anchorDirection * velocity.Length();
+                                velocity += test;
+                            }
                         }
                     }
                 }
-
-
-
-
 
                 // drag
                 if (Math.Abs(velocity.X) > 0)

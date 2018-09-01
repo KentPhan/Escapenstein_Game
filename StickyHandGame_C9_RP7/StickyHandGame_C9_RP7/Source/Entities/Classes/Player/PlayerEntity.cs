@@ -18,19 +18,13 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         String[] Names = RenderManager.zombieAnimatedAttribute.Names;
         AnimationComponent myAnimationComponent;
 
-        // PhysicsEngine
-        private const float _jumpforce = 100f;
-        //private const float _rappleAcceleration = 1000f;
-        private const float _rappleSpeed = 3000f;
 
-        private const float _velocityCap = 1000;
-        private const float _runningSpeed = 500f;
+        private const float _rappleAcceleration = 100f;
+        private const float _velocityCap = 500;
         public Vector2 Velocity;
         private Vector2 previousposition;
-        private bool _runningJumpingEnabled = false;
 
         // The Hand 
-        //private ThrowAbleEntity HandChain;
         private readonly HandEntity _hand;
         private readonly HandEntity _hand2;
 
@@ -141,11 +135,11 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
         }
 
-        private void AcceleratePlayerToEntity(Entity entity, float speed, float timeElapsed)
+        private void AcceleratePlayerToEntity(Entity entity, float speed)
         {
             var direction = (entity.Position - this.Position);
             direction.Normalize();
-            this.Velocity += direction * speed * timeElapsed;
+            this.Velocity += direction * speed;
         }
 
         /// <summary>
@@ -155,44 +149,48 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public override void Update(GameTime gameTime)
         {
-            float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             // Hand
             this._hand.Update(gameTime);
             this._hand2.Update(gameTime);
 
             var kState = Keyboard.GetState();
 
-            // For Testing Purposes
-            if (kState.IsKeyDown(Keys.J))
-                _runningJumpingEnabled = true;
-            if (kState.IsKeyDown(Keys.K))
-                _runningJumpingEnabled = false;
 
             if (_hand.CurrentState == HandEntity.HandState.Latched)
             {
-                if (!Keyboard.GetState().IsKeyDown(Keys.A))
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
                 {
-
+                    _hand.IsActiveAnchor = false;
+                    _hand2.IsActiveAnchor = false;
+                    AcceleratePlayerToEntity(_hand, _rappleAcceleration);
+                    _hand.AnchorDistance = (this.Position - _hand.Position).Length();
+                    _hand2.AnchorDistance = (this.Position - _hand2.Position).Length();
                 }
                 else
                 {
-                    AcceleratePlayerToEntity(_hand, _rappleSpeed, timeElapsed);
+                    _hand.IsActiveAnchor = true;
                 }
             }
 
 
             if (_hand2.CurrentState == HandEntity.HandState.Latched)
             {
-                if (!Keyboard.GetState().IsKeyDown(Keys.S))
+                if (Keyboard.GetState().IsKeyDown(Keys.S))
                 {
-
+                    _hand.IsActiveAnchor = false;
+                    _hand2.IsActiveAnchor = false;
+                    AcceleratePlayerToEntity(_hand2, _rappleAcceleration);
+                    _hand.AnchorDistance = (this.Position - _hand.Position).Length();
+                    _hand2.AnchorDistance = (this.Position - _hand2.Position).Length();
                 }
                 else
                 {
-                    AcceleratePlayerToEntity(_hand2, _rappleSpeed, timeElapsed);
+                    if (!Keyboard.GetState().IsKeyDown(Keys.A))
+                    {
+                        _hand2.IsActiveAnchor = true;
+                    }
                 }
             }
-
 
             // Velocity Cap
             if (this.Velocity.Length() > _velocityCap)
@@ -202,43 +200,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 this.Velocity = direction * _velocityCap;
             }
 
-            this.Velocity = PhysicsEngine.MoveTowards(this, this.Velocity, timeElapsed);
+            this.Velocity = PhysicsEngine.MoveTowards(this, this.Velocity, gameTime);
             myAnimationComponent.Update(gameTime);
         }
-
-
-        ///// <summary>
-        ///// Jumps the check.
-        ///// </summary>
-        ///// <param name="kState">State of the k.</param>
-        //private void JumpCheck(KeyboardState kState)
-        //{
-        //    if (kState.IsKeyDown(Keys.W))
-        //    {
-        //        this.Velocity += new Vector2(0, -1) * _jumpforce;
-        //        this.CurrentState = CharacterState.Airbourne;
-        //    }
-        //}
-
-        /// <summary>
-        /// Updates the left and right movement.
-        /// </summary>
-        /// <param name="timeElapsed">The time elapsed.</param>
-        //private void UpdateLeftAndRightMovement(float timeElapsed)
-        //{
-        //    var kState = Keyboard.GetState();
-
-        //    if (kState.IsKeyDown(Keys.A))
-        //    {
-        //        this.Velocity += new Vector2(-1, 0) * _runningSpeed * timeElapsed;
-        //        this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
-        //    }
-
-        //    if (kState.IsKeyDown(Keys.D))
-        //    {
-        //        this.Velocity += new Vector2(1, 0) * _runningSpeed * timeElapsed;
-        //        this.myAnimationComponent.myeffect = SpriteEffects.None;
-        //    }
-        //}
     }
 }

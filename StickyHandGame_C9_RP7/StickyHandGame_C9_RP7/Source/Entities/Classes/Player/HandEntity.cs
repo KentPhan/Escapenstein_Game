@@ -49,8 +49,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         // Physics
         private Vector2 TargetDestination;
         private Vector2 TargetDirection;
-        private float _returnSpeed = 50000.0f;
-        private float _shootSpeed = 50000.0f;
+        private float _returnSpeed = 1000.0f;
+        private float _shootSpeed = 1000.0f;
 
         private float _maxDistanceOfHand = 200.0f;
         //private readonly float _gravitationalAcceleration = 100f;
@@ -67,9 +67,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             this.Velocity = new Vector2();
 
             // Render
-            _renderComponent = new RenderComponent("Character_Hand_Down", this, HandEntry.HandOrigin);
+            _renderComponent = new RenderComponent("Character_Hand_Down", this, new Vector2(16, 16));
             _renderComponent.LoadContent();
-            _renderComponent.Scale = HandEntry.Scale;
+            _renderComponent.Scale = new Vector2(1.0f, 1.0f);
 
             this.chainTexture = GameManager.Instance.Content.Load<Texture2D>("Chain");
 
@@ -88,8 +88,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
         public override void Update(GameTime gameTime)
         {
-            float timeElapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             switch (CurrentState)
             {
                 case HandState.OnPlayer:
@@ -125,7 +123,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     }
                     else
                     {
-                        Velocity = TargetDirection * _shootSpeed * timeElapsed;
+                        Velocity = TargetDirection * _shootSpeed;
                     }
 
                     break;
@@ -157,34 +155,27 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     {
                         var directionReturning = _player.Position - this.Position;
                         directionReturning.Normalize();
-                        this.Velocity = directionReturning * _returnSpeed * timeElapsed;
+                        this.Velocity = directionReturning * _returnSpeed;
                     }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            //// Gravity
-            //this._velocity += new Vector2(0, 1) * _gravitationalAcceleration * timeElapsed;
-            //Console.WriteLine(this.Velocity);
-            Vector2 newPosition = PhysicsEngine.MoveTowards(this, Velocity, timeElapsed);
+
+            PhysicsEngine.MoveTowards(this, Velocity, gameTime);
         }
 
 
-
-        private void ApplyRopeTension()
-        {
-            //Vector2 toRappleDirection = (this.Position - _player.Position);
-            //toRappleDirection.Normalize();
-            //var magnitude = Vector2.Dot(_player.Velocity, toRappleDirection);
-            //toRappleDirection* magnitude;
-
-        }
+        /// <summary>
+        /// Changes the state to retreating.
+        /// </summary>
         private void ChangeStateToRetreating()
         {
 
             //this._renderComponent.Rotation = angle;
             this.IsActiveAnchor = false;
+            this.AnchorDistance = 0.0f;
             this.CurrentState = HandState.Retreating;
             this.CollisionComponent.Layer = CollisionLayers.Ghost;
         }
@@ -212,6 +203,11 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             return false;
         }
 
+        /// <summary>
+        /// Gets the pressed input.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         private bool GetPressedInput()
         {
 
@@ -292,10 +288,13 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             throw new NotImplementedException();
         }
 
+
+
         public override void CollisionTriggered(CollisionInfo collided)
         {
             this.CurrentState = HandState.Latched;
             this.IsActiveAnchor = true;
+            this.AnchorDistance = (_player.Position - this.Position).Length();
             //collided.NormalVector
         }
 
