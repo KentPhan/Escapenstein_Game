@@ -8,6 +8,7 @@ using StickyHandGame_C9_RP7.Source.Entities.Classes.Arm;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Collections.Generic;
+using StickyHandGame_C9_RP7.Source.Managers;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 {
@@ -19,8 +20,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         AnimationComponent myAnimationComponent;
 
 
-        private const float _rappleAcceleration = 100f;
-        private const float _velocityCap = 500;
+        private const float _rappleAcceleration = 50f;
+        private const float _velocityCap = 200;
         public Vector2 Velocity;
         private Vector2 previousposition;
 
@@ -153,12 +154,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             this._hand.Update(gameTime);
             this._hand2.Update(gameTime);
 
-            var kState = Keyboard.GetState();
-
 
             if (_hand.CurrentState == HandEntity.HandState.Latched)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.A))
+                if (InputManager.Instance.GetLeftReelTrigger())
                 {
                     _hand.IsActiveAnchor = false;
                     _hand2.IsActiveAnchor = false;
@@ -175,7 +174,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
             if (_hand2.CurrentState == HandEntity.HandState.Latched)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.S))
+                if (InputManager.Instance.GetRightReelTrigger())
                 {
                     _hand.IsActiveAnchor = false;
                     _hand2.IsActiveAnchor = false;
@@ -185,7 +184,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 }
                 else
                 {
-                    if (!Keyboard.GetState().IsKeyDown(Keys.A))
+                    if (!InputManager.Instance.GetLeftReelTrigger())
                     {
                         _hand2.IsActiveAnchor = true;
                     }

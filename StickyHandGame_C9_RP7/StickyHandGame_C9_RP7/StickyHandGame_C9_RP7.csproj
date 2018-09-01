@@ -72,6 +72,7 @@
     <Compile Include="Source\Engine\PhysicsEngine.cs" />
     <Compile Include="Source\Managers\Classes\SoundManager.cs" />
     <Compile Include="Source\Managers\Core\IManager.cs" />
+    <Compile Include="Source\Managers\Classes\InputManager.cs" />
     <Compile Include="Source\MathmaticHelper\VectorHelper.cs" />
   </ItemGroup>
   <ItemGroup>

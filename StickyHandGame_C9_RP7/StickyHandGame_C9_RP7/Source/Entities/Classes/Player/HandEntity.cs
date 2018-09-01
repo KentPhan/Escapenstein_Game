@@ -9,6 +9,7 @@ using StickyHandGame_C9_RP7.Source.Entities.Classes.Player;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using StickyHandGame_C9_RP7.Source.Managers.Classes;
 using System;
+using StickyHandGame_C9_RP7.Source.Managers;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 {
@@ -47,7 +48,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
 
         // Physics
-        private Vector2 TargetDestination;
         private Vector2 TargetDirection;
         private float _returnSpeed = 1000.0f;
         private float _shootSpeed = 1000.0f;
@@ -92,17 +92,17 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             {
                 case HandState.OnPlayer:
                     // If mouse is clicked while on player
-                    if (GetMousePressedInput())
+                    if (GetShootTrigger())
                     {
-                        this.TargetDestination = GetTargetDestination();
-                        this.TargetDirection = this.TargetDestination - this.Position;
+                        //this.TargetDestination = GetShootDirection();
+                        this.TargetDirection = GetShootDirection();
                         this.TargetDirection.Normalize();
 
                         _renderComponent.Direction = this.TargetDirection;
                         //float angle = CalculateRotation(TargetDirection);
                         //this._renderComponent.Rotation = angle;
 
-                        _player.SetFacing(this.TargetDestination);
+                        _player.SetFacing(GetShootDirection());
 
                         this.Velocity = _player.Velocity;
                         this.Velocity = Vector2.Zero;
@@ -117,7 +117,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                 case HandState.Shooting:
                     // if hand is in the middle of movement towards the target
                     //TODO Get Controller direction point and first trigger press
-                    if (!GetMousePressedInput() || ((this.Position - _player.Position).Length() >= this._maxDistanceOfHand))
+                    if (!GetShootTrigger() || ((this.Position - _player.Position).Length() >= this._maxDistanceOfHand))
                     {
                         ChangeStateToRetreating();
                     }
@@ -131,7 +131,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     //if hand is latched
                     // If mouse is clicked while on player
                     Velocity = Vector2.Zero;
-                    if (!GetMousePressedInput())
+                    if (!GetShootTrigger())
                     {
                         ChangeStateToRetreating();
                         break;
@@ -143,7 +143,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     break;
                 case HandState.Retreating:
                     // If hand is in the middle of returning to the player
-                    if (Vector2.Dot(_player.Position - this.TargetDestination, _player.Position - this.Position) < 0)
+                    if (Vector2.Dot(this.TargetDirection, this.Position - _player.Position) < 0)
                     {
                         this.Velocity = Vector2.Zero;
 
@@ -180,75 +180,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             this.CollisionComponent.Layer = CollisionLayers.Ghost;
         }
 
-        /// <summary>
-        /// Gets the pressed input.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private bool GetMousePressedInput()
-        {
-            switch (this.HandId)
-            {
-                case HandID.First:
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                        return true;
-                    break;
-                case HandID.Second:
-                    if (Mouse.GetState().RightButton == ButtonState.Pressed)
-                        return true;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            return false;
-        }
 
-        /// <summary>
-        /// Gets the pressed input.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private bool GetPressedInput()
-        {
-
-            switch (this.HandId)
-            {
-                case HandID.First:
-                    if (Keyboard.GetState().IsKeyDown(Keys.A))
-                        return true;
-                    break;
-                case HandID.Second:
-                    if (Keyboard.GetState().IsKeyDown(Keys.S))
-                        return true;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Gets the released input.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private bool GetReleasedInput()
-        {
-            switch (this.HandId)
-            {
-                case HandID.First:
-                    if (Mouse.GetState().LeftButton == ButtonState.Released)
-                        return true;
-                    break;
-                case HandID.Second:
-                    if (Mouse.GetState().RightButton == ButtonState.Released)
-                        return true;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            return false;
-        }
 
         public override void Draw(GameTime gameTime)
         {
@@ -304,15 +236,45 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         }
 
         /// <summary>
+        /// Gets the pressed input.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private bool GetShootTrigger()
+        {
+            switch (this.HandId)
+            {
+                case HandID.First:
+                    if (InputManager.Instance.GetLeftShootTrigger())
+                        return true;
+                    break;
+                case HandID.Second:
+                    if (InputManager.Instance.GetRightShootTrigger())
+                        return true;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Gets the target.
         /// </summary>
         /// <returns></returns>
-        private Vector2 GetTargetDestination()
+        private Vector2 GetShootDirection()
         {
-            Point mouseLocation = Mouse.GetState().Position;
-            Vector2 worldVector = Vector2.Transform(new Vector2(mouseLocation.X, mouseLocation.Y), Matrix.Invert(Camera.Instance.Transform));
-            return worldVector;
+            switch (this.HandId)
+            {
+                case HandID.First:
+                    return InputManager.Instance.GetLeftDirection();
+                case HandID.Second:
+                    return InputManager.Instance.GetRightDirection();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
+
 
         public float CalculateRotation(Vector2 direction)
         {
