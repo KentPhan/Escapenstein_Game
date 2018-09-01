@@ -20,7 +20,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
         // PhysicsEngine
         private const float _jumpforce = 100f;
-        private const float _rappleAcceleration = 1000f;
+        //private const float _rappleAcceleration = 1000f;
+        private const float _rappleSpeed = 3000f;
+
         private const float _velocityCap = 1000;
         private const float _runningSpeed = 500f;
         public Vector2 Velocity;
@@ -139,11 +141,11 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
         }
 
-        private void AcceleratePlayerToEntity(Entity entity, float timeElapsed)
+        private void AcceleratePlayerToEntity(Entity entity, float speed, float timeElapsed)
         {
             var direction = (entity.Position - this.Position);
             direction.Normalize();
-            this.Velocity += direction * _rappleAcceleration * timeElapsed;
+            this.Velocity += direction * speed * timeElapsed;
         }
 
         /// <summary>
@@ -174,7 +176,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 }
                 else
                 {
-                    AcceleratePlayerToEntity(_hand, timeElapsed);
+                    AcceleratePlayerToEntity(_hand, _rappleSpeed, timeElapsed);
                 }
             }
 
@@ -187,7 +189,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 }
                 else
                 {
-                    AcceleratePlayerToEntity(_hand2, timeElapsed);
+                    AcceleratePlayerToEntity(_hand2, _rappleSpeed, timeElapsed);
                 }
             }
 

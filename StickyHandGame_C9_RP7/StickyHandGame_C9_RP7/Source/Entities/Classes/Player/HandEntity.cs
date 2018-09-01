@@ -133,14 +133,14 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     //if hand is latched
                     // If mouse is clicked while on player
                     Velocity = Vector2.Zero;
-                    if (!GetMousePressedInput() || ((this.Position - _player.Position).Length() >= _maxDistanceOfHand))
+                    if (!GetMousePressedInput())
                     {
                         ChangeStateToRetreating();
                         break;
                     }
-                    else if (GetPressedInput())
+                    else if (((this.Position - _player.Position).Length() >= _maxDistanceOfHand))
                     {
-                        this._player.HoldRappleToHand(this.HandId);
+                        //Velocity ropeTension
                     }
                     break;
                 case HandState.Retreating:
@@ -171,6 +171,15 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         }
 
 
+
+        private void ApplyRopeTension()
+        {
+            //Vector2 toRappleDirection = (this.Position - _player.Position);
+            //toRappleDirection.Normalize();
+            //var magnitude = Vector2.Dot(_player.Velocity, toRappleDirection);
+            //toRappleDirection* magnitude;
+
+        }
         private void ChangeStateToRetreating()
         {
 
