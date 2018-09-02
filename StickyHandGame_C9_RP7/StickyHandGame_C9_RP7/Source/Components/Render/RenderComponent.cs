@@ -45,9 +45,9 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
             // this function do nothing since the render for a static object might not change
         }
 
-        public virtual void Draw(GameTime gameTime)
+        public virtual void Draw(GameTime gameTime, Color color)
         {
-            GameManager.Instance.SpriteBatch.Draw(texture, new Rectangle((int)entity.Position.X - 16, (int)entity.Position.Y - 16, 32, 32), Color.White);
+            GameManager.Instance.SpriteBatch.Draw(texture, new Rectangle((int)entity.Position.X - 16, (int)entity.Position.Y - 16, 32, 32), color);
 
             //SpriteEffects flip = (Vector2.Dot(new Vector2(1, 0), this.Direction) < 0)
             //    ? SpriteEffects.FlipHorizontally

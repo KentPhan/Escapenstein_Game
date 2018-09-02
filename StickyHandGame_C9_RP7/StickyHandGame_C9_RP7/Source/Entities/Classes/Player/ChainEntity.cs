@@ -31,7 +31,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
         public override void Draw(GameTime gameTime)
         {
-            this.MyrenderComponent.Draw(gameTime);
+            this.MyrenderComponent.Draw(gameTime, Color.White);
         }
 
         public override void Reset()

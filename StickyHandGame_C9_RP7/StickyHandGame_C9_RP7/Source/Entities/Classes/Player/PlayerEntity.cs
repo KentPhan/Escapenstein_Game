@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Components.Collision;
 using StickyHandGame_C9_RP7.Source.Components.Render;
 using StickyHandGame_C9_RP7.Source.Engine;
 using StickyHandGame_C9_RP7.Source.Entities.Classes.Arm;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
+using StickyHandGame_C9_RP7.Source.Managers;
 using System;
 using System.Collections.Generic;
-using StickyHandGame_C9_RP7.Source.Managers;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 {

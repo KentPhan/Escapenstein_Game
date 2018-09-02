@@ -72,7 +72,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
                 if (this._isAnimation)
                     this.animationComponent.Draw(gameTime);
                 else
-                    this.renderComponent.Draw(gameTime);
+                    this.renderComponent.Draw(gameTime, Color.White);
             }
 
         }

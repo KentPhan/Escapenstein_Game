@@ -69,6 +69,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             _renderComponent.LoadContent();
             _renderComponent.Scale = new Vector2(1.0f, 1.0f);
 
+
+
             this.chainTexture = GameManager.Instance.Content.Load<Texture2D>("Chain");
 
             this.Width = 32f;
@@ -192,7 +194,15 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             //{
             //    _renderComponent.LoadContent("Character_Hand_Down");
             //}
-            _renderComponent.Draw(gameTime);
+
+            if (HandId == HandID.First)
+            {
+                _renderComponent.Draw(gameTime, Color.Red);
+            }
+            else
+            {
+                _renderComponent.Draw(gameTime, Color.Azure);
+            }
 
             // Draw chain
             Vector2 startPosition = _player.Position;
