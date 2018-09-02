@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Cameras;
-using StickyHandGame_C9_RP7.Source.Entities.Core;
-using StickyHandGame_C9_RP7.Source.Managers.Classes;
+using System;
 
 namespace StickyHandGame_C9_RP7.Source.Managers
 {
