@@ -156,6 +156,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                     else
                     {
                         var directionReturning = _player.Position - this.Position;
+                        if (directionReturning == Vector2.Zero)
+                            directionReturning = TargetDirection * -1;
                         directionReturning.Normalize();
                         this.Velocity = directionReturning * _returnSpeed;
                     }

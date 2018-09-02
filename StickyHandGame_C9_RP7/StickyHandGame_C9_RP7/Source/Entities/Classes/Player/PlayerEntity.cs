@@ -19,8 +19,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         AnimationComponent myAnimationComponent;
 
 
-        private const float _rappleAcceleration = 50f;
-        private const float _velocityCap = 200;
+        private const float _rappleAcceleration = 200f;
+        private const float _velocityCap = 500;
         public Vector2 Velocity;
         private Vector2 previousposition;
 

@@ -5,7 +5,6 @@ using StickyHandGame_C9_RP7.Source.Entities.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace StickyHandGame_C9_RP7.Source.Engine
 {
@@ -55,7 +54,12 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                         {
                             //
                             Vector2 anchorDirection = (anchor.Position - entity.Position);
+                            if (anchorDirection == Vector2.Zero)
+                                break;
                             anchorDirection.Normalize();
+
+
+
                             Vector2 velocityDirection = velocity;
                             velocityDirection.Normalize();
 
@@ -76,9 +80,11 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 if (Math.Abs(velocity.X) > 0)
                 {
                     Vector2 dragVector = velocity * -1;
-                    dragVector.Normalize();
-                    velocity.X += dragVector.X * Drag;
-
+                    if (dragVector != Vector2.Zero)
+                    {
+                        dragVector.Normalize();
+                        velocity.X += dragVector.X * Drag;
+                    }
                 }
             }
 
@@ -261,6 +267,8 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 Vector2 otherPoint = new Vector2();
 
                 Vector2 direction = (origin - otherOrigin);
+                if (direction == Vector2.Zero)
+                    direction = new Vector2(0, -1);
                 direction.Normalize();
                 // Compare difference in X and Y components. Because they're squares only. Smaller X component means means bottom and top collisions. Smaller Y component means side collisions.
                 // Then do dot products to determine which direction. CosTheta
