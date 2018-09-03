@@ -55,6 +55,7 @@
     <Compile Include="Source\Engine\CollisionInfo.cs" />
     <Compile Include="Source\Engine\CollisionLayerManager.cs" />
     <Compile Include="Source\Entities\Classes\Collidables\DestructablePlatformEntity.cs" />
+    <Compile Include="Source\Entities\Classes\Collidables\HandOnlyPlatformEntity.cs" />
     <Compile Include="Source\Entities\Classes\Player\ChainEntity.cs" />
     <Compile Include="Source\Entities\Classes\EmptyEntity.cs" />
     <Compile Include="Source\Entities\Classes\Player\HandEntity.cs" />
@@ -150,6 +151,8 @@
     </None>
     <None Include="app.manifest" />
     <None Include="Content\Levels\Map_Info_Export..csv" />
+    <None Include="Content\Levels\NewMap.csv" />
+    <None Include="Content\Levels\NewMap2.csv" />
     <None Include="Content\Levels\Test_Map_RPT_ForegroundSmall.csv" />
     <None Include="Content\Levels\Test_Map_RPT_Foreground.csv" />
     <None Include="packages.config" />

@@ -24,7 +24,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
         /// <param name="velocity">The velocity.</param>
         /// <param name="deltaTime">The delta time.</param>
         /// <returns>Final position</returns>
-        public static Vector2 MoveTowards(Entity entity, Vector2 velocity, GameTime time)
+        public static Vector2 MoveTowards(Entity entity, Vector2 velocity, GameTime time, List<CollisionLayers> ignoreCollisions)
         {
             float deltaTime = (float)time.ElapsedGameTime.TotalSeconds;
 
@@ -109,7 +109,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
 
                 // Get all collisions
-                var collisions = CheckPossibleCollisions(entity, nextMovement, possibleCollisions);
+                var collisions = CheckPossibleCollisions(entity, nextMovement, possibleCollisions, ignoreCollisions);
 
                 // For each collision react
                 foreach (var collision in collisions)
@@ -160,8 +160,9 @@ namespace StickyHandGame_C9_RP7.Source.Engine
         /// <param name="entity">The entity.</param>
         /// <param name="movement">The movement.</param>
         /// <param name="possibleCollisions">The possible collisions.</param>
+        /// <param name="ignoreCollisions">The ignore collisions.</param>
         /// <returns></returns>
-        private static List<CollisionInfo> CheckPossibleCollisions(Entity entity, Vector2 movement, List<Entity> possibleCollisions)
+        private static List<CollisionInfo> CheckPossibleCollisions(Entity entity, Vector2 movement, List<Entity> possibleCollisions, List<CollisionLayers> ignoreCollisions)
         {
             List<CollisionInfo> collisions = new List<CollisionInfo>();
 
@@ -171,7 +172,8 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 var check = CheckWouldCollide(
                     entity.CollisionComponent,
                     movement,
-                    otherEntity.CollisionComponent);
+                    otherEntity.CollisionComponent,
+                    ignoreCollisions);
 
                 // if collided
                 if (check != null)
@@ -189,16 +191,25 @@ namespace StickyHandGame_C9_RP7.Source.Engine
         }
 
 
-        private static Tuple<CollisionInfo, CollisionInfo> CheckWouldCollide(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject)
+        /// <summary>
+        /// Checks the would collide.
+        /// </summary>
+        /// <param name="movingObject">The moving object.</param>
+        /// <param name="movement">The movement.</param>
+        /// <param name="otherObject">The other object.</param>
+        /// <param name="ignoreCollisions">The ignore collisions.</param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException">I don't got that collider shit made</exception>
+        private static Tuple<CollisionInfo, CollisionInfo> CheckWouldCollide(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, List<CollisionLayers> ignoreCollisions)
         {
             Vector2 origin = movingObject.Entity.Position + movement;
             Vector2 otherOrigin = otherObject.Entity.Position;
 
-            //TODO Add Fucking Triangles
+
 
             if (movingObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square && otherObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square)
             {
-                Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin, true);
+                Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin, ignoreCollisions);
                 if (currentTuple != null)
                 {
                     return currentTuple;
@@ -206,30 +217,11 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             }
             else if (movingObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square && otherObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Triangle)
             {
-                TriangleColliderComponent theotherobject = (TriangleColliderComponent)otherObject;
-                BoxColliderComponent playerobject = (BoxColliderComponent)movingObject;
-                if (TriangleColliderComponent.PlayerToTriangle(origin, theotherobject))
+                Tuple<CollisionInfo, CollisionInfo> currentTuple = DiagonalCollision(movingObject, movement, otherObject, origin, otherOrigin, ignoreCollisions);
+                if (currentTuple != null)
                 {
-                    Vector2 P = origin - otherOrigin;
-                    Vector2 N = theotherobject.NormalVector;
-                    float L2limites = playerobject.Height * TriangleColliderComponent.MagicNumber;
-                    float L1limites = theotherobject.size * TriangleColliderComponent.MagicNumber;
-                    Vector2 L2 = MathmaticHelper.VectorHelper.projPtoN(P, N);
-                    Vector2 L1 = MathmaticHelper.VectorHelper.perpPtoN(P, N);
-                    if (L2.Length() < L2limites && L1.Length() < L1limites)
-                    {
-                        Vector2 CollisionPoint = origin - theotherobject.NormalVector * L2limites;
-                        Debug.WriteLine(theotherobject.NormalVector.X + " " + theotherobject.NormalVector.Y);
-                        return new Tuple<CollisionInfo, CollisionInfo>(new CollisionInfo(otherObject, CollisionPoint, theotherobject.NormalVector), new CollisionInfo(movingObject, CollisionPoint, theotherobject.NormalVector * (-1)));
-                    }
+                    return currentTuple;
                 }
-                /*else {
-                    Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin,false);
-                    if (currentTuple != null)
-                    {
-                        return currentTuple;
-                    }
-                }*/
             }
             else
             {
@@ -238,20 +230,26 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
             return null;
         }
-        private static Tuple<CollisionInfo, CollisionInfo> AABBCollision(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, Vector2 origin, Vector2 otherOrigin, bool iscube)
+
+
+        /// <summary>
+        /// Aabbs the collision.
+        /// </summary>
+        /// <param name="movingObject">The moving object.</param>
+        /// <param name="movement">The movement.</param>
+        /// <param name="otherObject">The other object.</param>
+        /// <param name="origin">The origin.</param>
+        /// <param name="otherOrigin">The other origin.</param>
+        /// <param name="ignoreCollisions">The ignore collisions.</param>
+        /// <returns></returns>
+        private static Tuple<CollisionInfo, CollisionInfo> AABBCollision(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, Vector2 origin, Vector2 otherOrigin, List<CollisionLayers> ignoreCollisions)
         {
             BoxColliderComponent movingBox = (BoxColliderComponent)movingObject;
-            BoxColliderComponent otherBox;
-            if (iscube)
-            {
-                otherBox = (BoxColliderComponent)otherObject;
-            }
-            else
-            {
-                TriangleColliderComponent temp = (TriangleColliderComponent)otherObject;
-                otherBox = new BoxColliderComponent(temp.Entity, temp.Width, temp.Height, CollisionLayers.Static);
+            BoxColliderComponent otherBox = (BoxColliderComponent)otherObject; ;
 
-            }
+            // Ignore these collision layers
+            if (ignoreCollisions.Contains(otherBox.Layer))
+                return null;
 
             // AABB collision check. Offset box by movement
             if (origin.X + movement.X - (movingBox.Width / 2) < otherOrigin.X + (otherBox.Width / 2) &&
@@ -320,6 +318,42 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
                 return new Tuple<CollisionInfo, CollisionInfo>(new CollisionInfo(otherObject, point, normal), new CollisionInfo(movingObject, otherPoint, otherNormal));
             }
+            return null;
+        }
+
+
+        /// <summary>
+        /// Diagonals the collision.
+        ///
+        /// TODO DOES NOT HANDLE ignore collisions.
+        /// </summary>
+        /// <param name="movingObject">The moving object.</param>
+        /// <param name="movement">The movement.</param>
+        /// <param name="otherObject">The other object.</param>
+        /// <param name="origin">The origin.</param>
+        /// <param name="otherOrigin">The other origin.</param>
+        /// <param name="ignoreCollisions">The ignore collisions.</param>
+        /// <returns></returns>
+        private static Tuple<CollisionInfo, CollisionInfo> DiagonalCollision(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, Vector2 origin, Vector2 otherOrigin, List<CollisionLayers> ignoreCollisions)
+        {
+            TriangleColliderComponent theotherobject = (TriangleColliderComponent)otherObject;
+            BoxColliderComponent playerobject = (BoxColliderComponent)movingObject;
+            if (TriangleColliderComponent.PlayerToTriangle(origin, theotherobject))
+            {
+                Vector2 P = origin - otherOrigin;
+                Vector2 N = theotherobject.NormalVector;
+                float L2limites = playerobject.Height * TriangleColliderComponent.MagicNumber;
+                float L1limites = theotherobject.size * TriangleColliderComponent.MagicNumber;
+                Vector2 L2 = MathmaticHelper.VectorHelper.projPtoN(P, N);
+                Vector2 L1 = MathmaticHelper.VectorHelper.perpPtoN(P, N);
+                if (L2.Length() < L2limites && L1.Length() < L1limites)
+                {
+                    Vector2 CollisionPoint = origin - theotherobject.NormalVector * L2limites;
+                    Debug.WriteLine(theotherobject.NormalVector.X + " " + theotherobject.NormalVector.Y);
+                    return new Tuple<CollisionInfo, CollisionInfo>(new CollisionInfo(otherObject, CollisionPoint, theotherobject.NormalVector), new CollisionInfo(movingObject, CollisionPoint, theotherobject.NormalVector * (-1)));
+                }
+            }
+
             return null;
         }
 

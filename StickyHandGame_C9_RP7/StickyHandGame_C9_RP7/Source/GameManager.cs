@@ -157,18 +157,12 @@ namespace StickyHandGame_C9_RP7
             if (State != GameState.Start)
             {
                 // Draw Tiles
-
                 foreach (Entity e in NonPlayerEntityList)
                 {
                     SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
                     e.Draw(gameTime);
                     SpriteBatch.End();
                 }
-
-
-
-
-
 
                 // Draw Player and Chain
                 SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);

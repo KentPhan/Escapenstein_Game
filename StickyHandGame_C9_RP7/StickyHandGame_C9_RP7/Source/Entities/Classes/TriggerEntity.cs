@@ -27,10 +27,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             this._isAnimation = isAnimation;
             if (isAnimation)
             {
-                animationComponent = new AnimationComponent("Tile_65_NC_K", this,
+                animationComponent = new AnimationComponent(tileName, this,
                     new int[] { 6 },
                     new int[] { 60 },
-                    new string[] { "Tile_65_NC_K" },
+                    new string[] { tileName },
                     32
                     , 32
                     , new Vector2(1, 1));

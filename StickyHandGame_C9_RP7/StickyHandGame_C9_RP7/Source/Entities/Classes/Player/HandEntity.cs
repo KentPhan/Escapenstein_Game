@@ -8,6 +8,7 @@ using StickyHandGame_C9_RP7.Source.Entities.Core;
 using StickyHandGame_C9_RP7.Source.Managers;
 using StickyHandGame_C9_RP7.Source.Managers.Classes;
 using System;
+using System.Collections.Generic;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 {
@@ -50,7 +51,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         private float _returnSpeed = 1000.0f;
         private float _shootSpeed = 1000.0f;
 
-        private float _maxDistanceOfHand = 200.0f;
+        private float _maxDistanceOfHand = 350.0f;
         //private readonly float _gravitationalAcceleration = 100f;
 
         // TODO Switch this to collision Layer system instead
@@ -167,7 +168,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             }
 
 
-            PhysicsEngine.MoveTowards(this, Velocity, gameTime);
+            PhysicsEngine.MoveTowards(this, Velocity, gameTime, new List<CollisionLayers>() { });
         }
 
 
@@ -236,10 +237,18 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
         public override void CollisionTriggered(CollisionInfo collided)
         {
-            this.CurrentState = HandState.Latched;
-            this.IsActiveAnchor = true;
-            this.AnchorDistance = (_player.Position - this.Position).Length();
-            //collided.NormalVector
+
+            if (collided.CollisionComponent.Layer == CollisionLayers.Trigger)
+            {
+                ChangeStateToRetreating();
+            }
+            else
+            {
+                this.CurrentState = HandState.Latched;
+                this.IsActiveAnchor = true;
+                this.AnchorDistance = (_player.Position - this.Position).Length();
+                //collided.NormalVector    
+            }
         }
 
         public override object Clone()

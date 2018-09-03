@@ -13,7 +13,9 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
     {
         public string Path { get; private set; }
 
-        public static Levels Level1 = new Levels(Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\Test_Map_RPT_Foreground.csv");
+        //public static Levels Level1 = new Levels(Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\NewMap.csv");
+        public static Levels Level1 = new Levels(Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\NewMap2.csv");
+        //public static Levels Level1 = new Levels(Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\Test_Map_RPT_Foreground.csv");
 
         private Levels(string filePath)
         {
@@ -57,6 +59,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         Tile_64_NC_W = 64,
         Tile_65_NC_K = 65,
         //TC for TriangleCollisions
+        Tile_81_NC_V = 81,
         Tile_33_TC_TR = 33,
         Tile_91_TC_TL = 91,
         Tile_92_TC_TR = 92,
@@ -195,6 +198,8 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
                         return new TriggerEntity(tileName, origin, TriggerEntity.TriggerType.Restart);
                     else if (tileName.Contains("K"))
                         return new TriggerEntity(tileName, origin, TriggerEntity.TriggerType.Victory, true);
+                    else if (tileName.Contains("V"))
+                        return new TriggerEntity(tileName, origin, TriggerEntity.TriggerType.Restart, true);
                     else
                         return new EmptyEntity(tileName, origin);
                 }

@@ -200,7 +200,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 this.Velocity = direction * _velocityCap;
             }
 
-            this.Velocity = PhysicsEngine.MoveTowards(this, this.Velocity, gameTime);
+            this.Velocity = PhysicsEngine.MoveTowards(this, this.Velocity, gameTime,new List<CollisionLayers>() { });
             myAnimationComponent.Update(gameTime);
         }
     }
