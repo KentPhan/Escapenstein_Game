@@ -116,26 +116,24 @@ namespace StickyHandGame_C9_RP7.Source.Engine
                 {
                     // Found that this worked. With static collisions move the entity a bit away from the colliding object based upon
                     // what side it collided with
-                    if (collision.CollisionComponent.Entity.CollisionComponent.Layer == Layers.Static)
+
+                    // Bounce the item back a bit.
+                    nextMovement += (collision.NormalVector * 0.1f);
+
+                    // On bounce back calculate reflect with less force
+                    Vector2 normal = collision.NormalVector;
+                    Vector2.Reflect(ref velocity, ref normal, out returnVelocity);
+
+                    // If colliding with ground or not, apply different slow down coefficients.
+                    if (normal.Y == -1)
                     {
-                        // Bounce the item back a bit.
-                        nextMovement += (collision.NormalVector * 0.1f);
-
-                        // On bounce back calculate reflect with less force
-                        Vector2 normal = collision.NormalVector;
-                        Vector2.Reflect(ref velocity, ref normal, out returnVelocity);
-
-                        // If colliding with ground or not, apply different slow down coefficients.
-                        if (normal.Y == -1)
-                        {
-                            returnVelocity = new Vector2(returnVelocity.X * 0.9f, returnVelocity.Y * 0.1f);
-                            if (returnVelocity.Length() < 1.0f)
-                                return Vector2.Zero;
-                        }
-                        else
-                        {
-                            returnVelocity = returnVelocity * 0.3f;
-                        }
+                        returnVelocity = new Vector2(returnVelocity.X * 0.9f, returnVelocity.Y * 0.1f);
+                        if (returnVelocity.Length() < 1.0f)
+                            return Vector2.Zero;
+                    }
+                    else
+                    {
+                        returnVelocity = returnVelocity * 0.3f;
                     }
                 }
 
@@ -169,11 +167,15 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             // Check possible collisions with predicted movement
             foreach (Entity otherEntity in possibleCollisions)
             {
+                if (ignoreCollisions != null && ignoreCollisions.Count > 0 && ignoreCollisions.Contains(otherEntity.CollisionComponent.Layer))
+                {
+                    continue;
+                }
+
                 var check = CheckWouldCollide(
                     entity.CollisionComponent,
                     movement,
-                    otherEntity.CollisionComponent,
-                    ignoreCollisions);
+                    otherEntity.CollisionComponent);
 
                 // if collided
                 if (check != null)
@@ -200,16 +202,14 @@ namespace StickyHandGame_C9_RP7.Source.Engine
         /// <param name="ignoreCollisions">The ignore collisions.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException">I don't got that collider shit made</exception>
-        private static Tuple<CollisionInfo, CollisionInfo> CheckWouldCollide(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, List<Layers> ignoreCollisions)
+        private static Tuple<CollisionInfo, CollisionInfo> CheckWouldCollide(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject)
         {
             Vector2 origin = movingObject.Entity.Position + movement;
             Vector2 otherOrigin = otherObject.Entity.Position;
 
-
-
             if (movingObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square && otherObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square)
             {
-                Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin, ignoreCollisions);
+                Tuple<CollisionInfo, CollisionInfo> currentTuple = AABBCollision(movingObject, movement, otherObject, origin, otherOrigin);
                 if (currentTuple != null)
                 {
                     return currentTuple;
@@ -217,7 +217,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             }
             else if (movingObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Square && otherObject.BoundaryType == CollisionComponent.CollisionBoundaryType.Triangle)
             {
-                Tuple<CollisionInfo, CollisionInfo> currentTuple = DiagonalCollision(movingObject, movement, otherObject, origin, otherOrigin, ignoreCollisions);
+                Tuple<CollisionInfo, CollisionInfo> currentTuple = DiagonalCollision(movingObject, movement, otherObject, origin, otherOrigin);
                 if (currentTuple != null)
                 {
                     return currentTuple;
@@ -242,14 +242,10 @@ namespace StickyHandGame_C9_RP7.Source.Engine
         /// <param name="otherOrigin">The other origin.</param>
         /// <param name="ignoreCollisions">The ignore collisions.</param>
         /// <returns></returns>
-        private static Tuple<CollisionInfo, CollisionInfo> AABBCollision(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, Vector2 origin, Vector2 otherOrigin, List<Layers> ignoreCollisions)
+        private static Tuple<CollisionInfo, CollisionInfo> AABBCollision(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, Vector2 origin, Vector2 otherOrigin)
         {
             BoxColliderComponent movingBox = (BoxColliderComponent)movingObject;
             BoxColliderComponent otherBox = (BoxColliderComponent)otherObject; ;
-
-            // Ignore these collision layers
-            if (ignoreCollisions.Contains(otherBox.Layer))
-                return null;
 
             // AABB collision check. Offset box by movement
             if (origin.X + movement.X - (movingBox.Width / 2) < otherOrigin.X + (otherBox.Width / 2) &&
@@ -334,7 +330,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
         /// <param name="otherOrigin">The other origin.</param>
         /// <param name="ignoreCollisions">The ignore collisions.</param>
         /// <returns></returns>
-        private static Tuple<CollisionInfo, CollisionInfo> DiagonalCollision(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, Vector2 origin, Vector2 otherOrigin, List<Layers> ignoreCollisions)
+        private static Tuple<CollisionInfo, CollisionInfo> DiagonalCollision(CollisionComponent movingObject, Vector2 movement, CollisionComponent otherObject, Vector2 origin, Vector2 otherOrigin)
         {
             TriangleColliderComponent theotherobject = (TriangleColliderComponent)otherObject;
             BoxColliderComponent playerobject = (BoxColliderComponent)movingObject;

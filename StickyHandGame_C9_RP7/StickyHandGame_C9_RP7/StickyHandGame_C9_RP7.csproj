@@ -55,7 +55,6 @@
     <Compile Include="Source\Engine\CollisionInfo.cs" />
     <Compile Include="Source\Engine\CollisionLayerManager.cs" />
     <Compile Include="Source\Entities\Classes\Collidables\DestructablePlatformEntity.cs" />
-    <Compile Include="Source\Entities\Classes\Collidables\HandOnlyPlatformEntity.cs" />
     <Compile Include="Source\Entities\Classes\Player\ChainEntity.cs" />
     <Compile Include="Source\Entities\Classes\EmptyEntity.cs" />
     <Compile Include="Source\Entities\Classes\Player\HandEntity.cs" />

@@ -192,6 +192,10 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
                     _playerStart = new Vector2(x, y - 34);
                     GameManager.Instance.PlayerEntity = new PlayerEntity { Position = _playerStart };
                 }
+                else if (tileName.Contains("Tile_5_C"))
+                {
+                    return new PlatformEntity(tileName, origin, Layers.HandOnlyStatic);
+                }
                 else if (tileName.Contains("NC"))
                 {
                     if (tileName.Contains("W"))

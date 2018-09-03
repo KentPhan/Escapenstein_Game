@@ -128,7 +128,7 @@ namespace StickyHandGame_C9_RP7
                     string fullPath = Levels.Level1.Path;
                     NonPlayerEntityList = _levelManager.BuildLevelOffOfCSVFile(fullPath);
                     CollidableNonPlayerEntityList =
-                        NonPlayerEntityList.Where(i => i.CollisionComponent != null && ((i.CollisionComponent.Layer == Layers.Static))).ToList();
+                        NonPlayerEntityList.Where(i => i.CollisionComponent != null && ((i.CollisionComponent.Layer == Layers.Static) || (i.CollisionComponent.Layer == Layers.HandOnlyStatic))).ToList();
 
                     State = GameState.Level1;
                 }

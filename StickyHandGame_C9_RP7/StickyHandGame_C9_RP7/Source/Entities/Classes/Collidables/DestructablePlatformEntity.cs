@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using StickyHandGame_C9_RP7.Source.Engine;
+using StickyHandGame_C9_RP7.Source.Entities.Core;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Collidables
 {
     public class DestructablePlatformEntity : PlatformEntity
     {
-        public DestructablePlatformEntity(string tileName, Vector2 position, bool hide = false) : base(tileName, position, hide)
+        public DestructablePlatformEntity(string tileName, Vector2 position, Layers layer = Layers.Static, bool hide = false) : base(tileName, position, layer, hide)
         {
         }
 
