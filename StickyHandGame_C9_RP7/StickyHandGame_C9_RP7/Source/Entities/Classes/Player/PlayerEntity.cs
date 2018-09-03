@@ -58,7 +58,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             Width = 32f;
             Height = 32f;
 
-            this.CollisionComponent = new BoxColliderComponent(this, this.Width, this.Height, CollisionLayers.Player);
+            this.CollisionComponent = new BoxColliderComponent(this, this.Width, this.Height, Layers.NonStatic, Tags.Player);
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 this.Velocity = direction * _velocityCap;
             }
 
-            this.Velocity = PhysicsEngine.MoveTowards(this, this.Velocity, gameTime,new List<CollisionLayers>() { });
+            this.Velocity = PhysicsEngine.MoveTowards(this, this.Velocity, gameTime, new List<Layers>() { Layers.HandOnlyStatic });
             myAnimationComponent.Update(gameTime);
         }
     }

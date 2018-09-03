@@ -12,7 +12,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Components
         }
 
         public Entity Entity { get; protected set; }
-        public CollisionLayers Layer { get; set; }
+        public Layers Layer { get; set; }
+        public Tags Tag { get; set; }
 
         public CollisionBoundaryType BoundaryType { get; protected set; }
 

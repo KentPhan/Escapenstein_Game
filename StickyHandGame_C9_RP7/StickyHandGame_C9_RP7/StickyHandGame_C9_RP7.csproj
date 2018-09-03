@@ -67,7 +67,7 @@
     <Compile Include="Source\Entities\Classes\Collidables\PlatformEntity.cs" />
     <Compile Include="Source\Entities\Classes\Player\PlayerEntity.cs" />
     <Compile Include="Source\Components\Collision\CollisionComponent.cs" />
-    <Compile Include="Source\Entities\Core\CollisionLayers.cs" />
+    <Compile Include="Source\Entities\Core\LayersAndTags.cs" />
     <Compile Include="Source\Entities\Core\Entity.cs" />
     <Compile Include="Source\GameManager.cs" />
     <Compile Include="Source\Engine\PhysicsEngine.cs" />

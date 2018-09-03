@@ -195,11 +195,11 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
                 else if (tileName.Contains("NC"))
                 {
                     if (tileName.Contains("W"))
-                        return new TriggerEntity(tileName, origin, TriggerEntity.TriggerType.Restart);
+                        return new TriggerEntity(tileName, origin, Tags.Hazard);
                     else if (tileName.Contains("K"))
-                        return new TriggerEntity(tileName, origin, TriggerEntity.TriggerType.Victory, true);
+                        return new TriggerEntity(tileName, origin, Tags.Goal, true);
                     else if (tileName.Contains("V"))
-                        return new TriggerEntity(tileName, origin, TriggerEntity.TriggerType.Restart, true);
+                        return new TriggerEntity(tileName, origin, Tags.Hazard, true);
                     else
                         return new EmptyEntity(tileName, origin);
                 }

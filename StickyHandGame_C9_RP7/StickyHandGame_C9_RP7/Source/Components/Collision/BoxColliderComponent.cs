@@ -24,12 +24,13 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="layer">The layer.</param>
-        public BoxColliderComponent(Entity entity, float width, float height, CollisionLayers layer)
+        public BoxColliderComponent(Entity entity, float width, float height, Layers layer, Tags tag)
         {
             this.Entity = entity;
             this.Width = width;
             this.Height = height;
             this.Layer = layer;
+            this.Tag = tag;
             this.BoundaryType = CollisionBoundaryType.Square;
 
             _debugLines = new Texture2D(GameManager.Instance.GraphicsDevice, 1, 1);

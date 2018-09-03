@@ -16,7 +16,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         public float size;// the height or width since it is half of a cube.
         public float Width { get; private set; }
         public float Height { get; private set; }
-        public TriangleColliderComponent(Entity entity, float width, float height, CollisionLayers layer,Oritation oritation)
+        public TriangleColliderComponent(Entity entity, float width, float height, Layers layer,Oritation oritation)
         {
             this.Width = width;
             this.Height = height;

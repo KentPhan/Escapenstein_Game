@@ -25,7 +25,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             Width = 32;
             Height = 32;
 
-            this.CollisionComponent = new BoxColliderComponent(this, Width, Height, CollisionLayers.Static);
+            this.CollisionComponent = new BoxColliderComponent(this, Width, Height, Layers.Static, Tags.None);
         }
         public PlatformEntity(string tileName, Vector2 position, TriangleColliderComponent.Oritation oritation, bool hide = false) : base()
         {
@@ -40,7 +40,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             Width = 32;
             Height = 32;
 
-            this.CollisionComponent = new TriangleColliderComponent(this, Width, Height, CollisionLayers.Static, oritation);
+            this.CollisionComponent = new TriangleColliderComponent(this, Width, Height, Layers.Static, oritation);
         }
         public override void Draw(GameTime gameTime)
         {

@@ -16,14 +16,14 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Core
         public int Width;
         public int Height;
         public Vector2 Scale;
-        public CollisionLayers collisionLayer;
-        public EntityAttribute(int X, int Y, Vector2 Scale, CollisionLayers cl)
+        public Layers Layer;
+        public EntityAttribute(int X, int Y, Vector2 Scale, Layers cl)
         {
             this.Scale = Scale;
             this.Width = (int)(X * Scale.X);
             this.Height = (int)(Y * Scale.Y);
             this.Origin = new Vector2((X * Scale.X) / 2, (Y * Scale.Y) / 2);
-            this.collisionLayer = cl;
+            this.Layer = cl;
         }
     }
     public struct AnimatedEntityAttribute

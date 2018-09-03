@@ -77,7 +77,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             this.Width = 32f;
             this.Height = 32f;
 
-            this.CollisionComponent = new BoxColliderComponent(this, this.Width / 2.0f, this.Height / 2.0f, CollisionLayers.PlayerHand);
+            this.CollisionComponent = new BoxColliderComponent(this, this.Width / 2.0f, this.Height / 2.0f, Layers.NonStatic, Tags.PlayerHand);
         }
 
 
@@ -152,7 +152,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
                         this.Position = _player.Position;
                         this.CurrentState = HandState.OnPlayer;
-                        this.CollisionComponent.Layer = CollisionLayers.PlayerHand;
+                        this.CollisionComponent.Layer = Layers.NonStatic;
                     }
                     else
                     {
@@ -168,7 +168,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             }
 
 
-            PhysicsEngine.MoveTowards(this, Velocity, gameTime, new List<CollisionLayers>() { });
+            PhysicsEngine.MoveTowards(this, Velocity, gameTime, new List<Layers>() { });
         }
 
 
@@ -182,7 +182,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             this.IsActiveAnchor = false;
             this.AnchorDistance = 0.0f;
             this.CurrentState = HandState.Retreating;
-            this.CollisionComponent.Layer = CollisionLayers.Ghost;
+            this.CollisionComponent.Layer = Layers.Ghost;
         }
 
 
@@ -238,7 +238,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         public override void CollisionTriggered(CollisionInfo collided)
         {
 
-            if (collided.CollisionComponent.Layer == CollisionLayers.Trigger)
+            if (collided.CollisionComponent.Tag == Tags.Hazard)
             {
                 ChangeStateToRetreating();
             }
