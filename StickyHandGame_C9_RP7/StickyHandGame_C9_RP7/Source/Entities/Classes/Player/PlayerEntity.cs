@@ -26,7 +26,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
         // The Hand 
         private readonly HandEntity _hand;
-        private readonly HandEntity _hand2;
+        //private readonly HandEntity _hand2;
 
 
         /// <summary>
@@ -49,8 +49,8 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
             // Hand Logic
             _hand = new HandEntity(this, HandEntity.HandID.First);
-            _hand2 = new HandEntity(this, HandEntity.HandID.Second);
-            this.Anchors = new List<Entity>() { _hand, _hand2 };
+            //_hand2 = new HandEntity(this, HandEntity.HandID.Second);
+            this.Anchors = new List<Entity>() { _hand };
 
             // Load Content
             var texture = myAnimationComponent.LoadContent();
@@ -70,7 +70,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
             myAnimationComponent.Draw(gameTime);
             _hand.Draw(gameTime);
-            _hand2.Draw(gameTime);
+            //_hand2.Draw(gameTime);
 
             InputManager.Instance.DrawAssist(gameTime);
 
@@ -161,10 +161,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 if (InputManager.Instance.GetLeftReelTrigger())
                 {
                     _hand.IsActiveAnchor = false;
-                    _hand2.IsActiveAnchor = false;
+                    //_hand2.IsActiveAnchor = false;
                     AcceleratePlayerToEntity(_hand, _rappleAcceleration);
                     _hand.AnchorDistance = (this.Position - _hand.Position).Length();
-                    _hand2.AnchorDistance = (this.Position - _hand2.Position).Length();
+                    //_hand2.AnchorDistance = (this.Position - _hand2.Position).Length();
                 }
                 else
                 {
@@ -173,24 +173,24 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             }
 
 
-            if (_hand2.CurrentState == HandEntity.HandState.Latched)
-            {
-                if (InputManager.Instance.GetRightReelTrigger())
-                {
-                    _hand.IsActiveAnchor = false;
-                    _hand2.IsActiveAnchor = false;
-                    AcceleratePlayerToEntity(_hand2, _rappleAcceleration);
-                    _hand.AnchorDistance = (this.Position - _hand.Position).Length();
-                    _hand2.AnchorDistance = (this.Position - _hand2.Position).Length();
-                }
-                else
-                {
-                    if (!InputManager.Instance.GetLeftReelTrigger())
-                    {
-                        _hand2.IsActiveAnchor = true;
-                    }
-                }
-            }
+            //if (_hand2.CurrentState == HandEntity.HandState.Latched)
+            //{
+            //    if (InputManager.Instance.GetRightReelTrigger())
+            //    {
+            //        _hand.IsActiveAnchor = false;
+            //        _hand2.IsActiveAnchor = false;
+            //        AcceleratePlayerToEntity(_hand2, _rappleAcceleration);
+            //        _hand.AnchorDistance = (this.Position - _hand.Position).Length();
+            //        _hand2.AnchorDistance = (this.Position - _hand2.Position).Length();
+            //    }
+            //    else
+            //    {
+            //        if (!InputManager.Instance.GetLeftReelTrigger())
+            //        {
+            //            _hand2.IsActiveAnchor = true;
+            //        }
+            //    }
+            //}
 
             // Velocity Cap
             if (this.Velocity.Length() > _velocityCap)
