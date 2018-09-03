@@ -12,7 +12,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         private string _tileName;
 
 
-        public PlatformEntity(string tileName, Vector2 position, Layers layer = Layers.Static, bool hide = false) : base()
+        public PlatformEntity(string tileName, Vector2 position, Layers layer = Layers.Static, Tags tag = Tags.None, bool hide = false) : base()
         {
             this._tileName = tileName;
             renderComponent = new RenderComponent(tileName, this);
@@ -25,7 +25,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             Width = 32;
             Height = 32;
 
-            this.CollisionComponent = new BoxColliderComponent(this, Width, Height, layer, Tags.None);
+            this.CollisionComponent = new BoxColliderComponent(this, Width, Height, layer, tag);
         }
         public PlatformEntity(string tileName, Vector2 position, TriangleColliderComponent.Oritation oritation, bool hide = false) : base()
         {
@@ -75,7 +75,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
         public override object Clone()
         {
-            var cloned = new PlatformEntity(this._tileName, this.Position, this.CollisionComponent.Layer, true);
+            var cloned = new PlatformEntity(this._tileName, this.Position, this.CollisionComponent.Layer, this.CollisionComponent.Tag, true);
             cloned.Position = this.Position;
             return cloned;
         }

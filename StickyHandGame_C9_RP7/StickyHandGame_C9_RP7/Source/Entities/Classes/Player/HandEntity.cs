@@ -238,7 +238,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
         public override void CollisionTriggered(CollisionInfo collided)
         {
 
-            if (collided.CollisionComponent.Tag == Tags.Hazard)
+            if (collided.CollisionComponent.Tag == Tags.Hazard || collided.CollisionComponent.Tag == Tags.CantLatch)
             {
                 ChangeStateToRetreating();
             }

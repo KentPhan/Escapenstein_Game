@@ -194,7 +194,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
                 }
                 else if (tileName.Contains("Tile_5_C"))
                 {
-                    return new PlatformEntity(tileName, origin, Layers.HandOnlyStatic);
+                    return new PlatformEntity(tileName, origin, Layers.Static, Tags.CantLatch);
                 }
                 else if (tileName.Contains("NC"))
                 {
@@ -209,7 +209,6 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
                 }
                 return new PlatformEntity(tileName, origin);
             }
-
             return null;
         }
 

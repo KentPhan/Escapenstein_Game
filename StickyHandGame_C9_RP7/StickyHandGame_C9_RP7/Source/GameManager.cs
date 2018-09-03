@@ -184,7 +184,6 @@ namespace StickyHandGame_C9_RP7
 
         public void RestartGame()
         {
-
             this.State = GameState.Start;
         }
     }

@@ -6,7 +6,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Collidables
 {
     public class DestructablePlatformEntity : PlatformEntity
     {
-        public DestructablePlatformEntity(string tileName, Vector2 position, Layers layer = Layers.Static, bool hide = false) : base(tileName, position, layer, hide)
+        public DestructablePlatformEntity(string tileName, Vector2 position, Layers layer = Layers.Static, Tags tag = Tags.None, bool hide = false) : base(tileName, position, layer, tag, hide)
         {
         }
 
