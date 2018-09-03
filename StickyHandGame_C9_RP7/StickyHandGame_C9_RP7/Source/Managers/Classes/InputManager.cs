@@ -72,7 +72,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers
                 case ControllerState.Controller:
                     return getGamePadState().Buttons.LeftShoulder == ButtonState.Pressed;
                 default:
-                    return (Keyboard.GetState().IsKeyDown(Keys.A));
+                    return (Keyboard.GetState().IsKeyDown(Keys.Space));
             }
             return false;
         }

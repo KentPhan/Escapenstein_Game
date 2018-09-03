@@ -153,7 +153,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         {
             // Hand
             this._hand.Update(gameTime);
-            this._hand2.Update(gameTime);
+            //this._hand2.Update(gameTime);
 
 
             if (_hand.CurrentState == HandEntity.HandState.Latched)
