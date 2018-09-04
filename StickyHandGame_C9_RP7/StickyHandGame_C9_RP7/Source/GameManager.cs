@@ -37,9 +37,9 @@ namespace StickyHandGame_C9_RP7
             _instance = this;
             Content.RootDirectory = "Content";
             Graphics = new GraphicsDeviceManager(GameManager.Instance);
-            Graphics.PreferredBackBufferWidth = 2000;
-            Graphics.PreferredBackBufferHeight = 1000;
-            //Graphics.IsFullScreen = true;
+            Graphics.PreferredBackBufferWidth = 1920;
+            Graphics.PreferredBackBufferHeight = 1080;
+            Graphics.IsFullScreen = true;
             mysoundManager = SoundManager.Instance;
         }
 
