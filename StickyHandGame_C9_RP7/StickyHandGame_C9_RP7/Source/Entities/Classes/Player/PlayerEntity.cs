@@ -86,6 +86,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         public override void Reset()
         {
             this.Velocity = Vector2.Zero;
+            _hand.CurrentState = HandEntity.HandState.OnPlayer;
         }
 
 

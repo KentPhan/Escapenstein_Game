@@ -15,6 +15,7 @@
         Hazard,
         Player,
         PlayerHand,
+        PlayerStart,
         CantLatch,
         Goal,
 

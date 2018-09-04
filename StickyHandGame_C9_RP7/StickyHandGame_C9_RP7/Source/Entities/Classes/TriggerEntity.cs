@@ -76,9 +76,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         public override void CollisionTriggered(CollisionInfo collided)
         {
             if (this.CollisionComponent.Tag == Tags.Hazard && collided.CollisionComponent.Tag == Tags.Player)
-                LevelManager.Instance.ResetPlayerPosition();
+                LevelManager.Instance.ResetCurrentPlayerPosition();
             if (this.CollisionComponent.Tag == Tags.Goal && collided.CollisionComponent.Tag == Tags.Player)
-                GameManager.Instance.RestartGame();
+                LevelManager.Instance.RestartGame();
         }
 
         public override object Clone()

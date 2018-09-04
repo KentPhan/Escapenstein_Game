@@ -2,6 +2,7 @@
 using StickyHandGame_C9_RP7.Source.Components.Collision;
 using StickyHandGame_C9_RP7.Source.Entities.Components;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
+using StickyHandGame_C9_RP7.Source.Managers.Classes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -94,7 +95,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             float distanceMoved = 0.0f;
             float stepDistance = 0.04f;
 
-            var possibleCollisions = GameManager.Instance.CollidableNonPlayerEntityList;
+            var possibleCollisions = LevelManager.Instance.GetCurrentPhysicalLevel();
             Vector2 nextMovement;
             Vector2 returnVelocity = velocity;
 
@@ -167,7 +168,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             // Check possible collisions with predicted movement
             foreach (Entity otherEntity in possibleCollisions)
             {
-                if (ignoreCollisions != null && ignoreCollisions.Count > 0 && ignoreCollisions.Contains(otherEntity.CollisionComponent.Layer))
+                if (otherEntity.CollisionComponent == null || (ignoreCollisions != null && ignoreCollisions.Count > 0 && ignoreCollisions.Contains(otherEntity.CollisionComponent.Layer)))
                 {
                     continue;
                 }

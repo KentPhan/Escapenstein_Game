@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Cameras;
+using StickyHandGame_C9_RP7.Source.Managers.Classes;
 using System;
 
 namespace StickyHandGame_C9_RP7.Source.Managers
@@ -134,7 +135,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers
         {
             Point mouseLocation = Mouse.GetState().Position;
             Vector2 worldPosition = Vector2.Transform(new Vector2(mouseLocation.X, mouseLocation.Y), Matrix.Invert(Camera.Instance.Transform));
-            Vector2 direction = worldPosition - GameManager.Instance.PlayerEntity.Position;
+            Vector2 direction = worldPosition - LevelManager.Instance.GetCurrentPlayerInLevel().Position;
             direction.Normalize();
             return direction;
         }
@@ -149,7 +150,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers
         {
             if (this._cState == ControllerState.Controller)
             {
-                var player = GameManager.Instance.PlayerEntity;
+                var player = LevelManager.Instance.GetCurrentPlayerInLevel();
                 var spriteBatch = GameManager.Instance.SpriteBatch;
 
                 var leftDirection = GetLeftDirection();
