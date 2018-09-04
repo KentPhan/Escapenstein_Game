@@ -29,7 +29,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
         {
             float deltaTime = (float)time.ElapsedGameTime.TotalSeconds;
 
-            if (velocity.Length() <= 0)
+            if (velocity.Length() <= 0.0001f)
                 return Vector2.Zero;
 
             // TODO do something smarter with Layers later

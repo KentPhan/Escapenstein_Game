@@ -16,7 +16,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         int[] framNumber = RenderManager.zombieAnimatedAttribute.framNumber;
         int[] playSpeed = RenderManager.zombieAnimatedAttribute.playSpeed;
         String[] Names = RenderManager.zombieAnimatedAttribute.Names;
-        AnimationComponent myAnimationComponent;
+        private readonly AnimationComponent _idleAnimationComponent;
+        private readonly RenderComponent _noArmsRenderComponent;
+        private readonly RenderComponent _airNoArmsRenderComponent;
+        private bool _isGrounded;
 
 
         private const float _rappleAcceleration = 200f;
@@ -39,13 +42,18 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             this.Velocity = new Vector2();
 
 
-            myAnimationComponent = new AnimationComponent("Idle", this,
+            _idleAnimationComponent = new AnimationComponent("Idle", this,
                 framNumber,
                 playSpeed,
                 Names,
                 RenderManager.zombieAnimatedAttribute.Width
                 , RenderManager.zombieAnimatedAttribute.Height
                 , RenderManager.zombieAnimatedAttribute.Scale);
+            _noArmsRenderComponent = new RenderComponent("Character_Body_NoArms", this);
+            _noArmsRenderComponent.LoadContent();
+            _airNoArmsRenderComponent = new RenderComponent("Character_Grapple_InAir", this);
+            _airNoArmsRenderComponent.LoadContent();
+            _isGrounded = true;
 
             // Hand Logic
             _hand = new HandEntity(this, HandEntity.HandID.First);
@@ -53,7 +61,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             this.Anchors = new List<Entity>() { _hand };
 
             // Load Content
-            var texture = myAnimationComponent.LoadContent();
+            var texture = _idleAnimationComponent.LoadContent();
             this.Hide = hide;
             Width = 32f;
             Height = 32f;
@@ -67,8 +75,21 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// <param name="gameTime">The game time.</param>
         public override void Draw(GameTime gameTime)
         {
+            switch (_hand.CurrentState)
+            {
+                case HandEntity.HandState.OnPlayer:
+                    _idleAnimationComponent.Draw(gameTime);
+                    break;
+                case HandEntity.HandState.Shooting:
+                case HandEntity.HandState.Latched:
+                case HandEntity.HandState.Retreating:
+                    if (_isGrounded)
+                        this._noArmsRenderComponent.Draw(gameTime, Color.White);
+                    else
+                        this._airNoArmsRenderComponent.Draw(gameTime, Color.White);
+                    break;
+            }
 
-            myAnimationComponent.Draw(gameTime);
             _hand.Draw(gameTime);
             //_hand2.Draw(gameTime);
 
@@ -95,9 +116,19 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             Vector2 directionLooking = targetLooking;
             Vector2 right = new Vector2(1, 0);
             if (Vector2.Dot(right, directionLooking) > 0)
-                this.myAnimationComponent.myeffect = SpriteEffects.None;
+            {
+                this._idleAnimationComponent.myeffect = SpriteEffects.None;
+                this._noArmsRenderComponent.Effects = SpriteEffects.None;
+                this._airNoArmsRenderComponent.Effects = SpriteEffects.None;
+            }
+
             else
-                this.myAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
+            {
+                this._idleAnimationComponent.myeffect = SpriteEffects.FlipHorizontally;
+                this._noArmsRenderComponent.Effects = SpriteEffects.FlipHorizontally;
+                this._airNoArmsRenderComponent.Effects = SpriteEffects.FlipHorizontally;
+            }
+
 
         }
 
@@ -126,20 +157,15 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         /// <param name="collided">The collided.</param>
         public override void CollisionTriggered(CollisionInfo collided)
         {
-
-        }
-
-        /// <summary>
-        /// Applies a velocity to the player.
-        /// </summary>
-        /// <param name="velocity">The velocity.</param>
-        public void HoldRappleToHand(HandEntity.HandID handId)
-        {
-
+            if (Vector2.Dot(collided.NormalVector, new Vector2(0.0f, 1.0f)) > 0)
+                _isGrounded = false;
+            else
+                _isGrounded = true;
         }
 
         private void AcceleratePlayerToEntity(Entity entity, float speed)
         {
+            _isGrounded = false;
             var direction = (entity.Position - this.Position);
             direction.Normalize();
             this.Velocity += direction * speed;
@@ -202,7 +228,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             }
 
             this.Velocity = PhysicsEngine.MoveTowards(this, this.Velocity, gameTime, new List<Layers>() { Layers.HandOnlyStatic });
-            myAnimationComponent.Update(gameTime);
+
+
+            _idleAnimationComponent.Update(gameTime);
         }
     }
 }

@@ -66,7 +66,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
             this.Velocity = new Vector2();
 
             // Render
-            _renderComponent = new RenderComponent("Character_Hand_Down", this, new Vector2(16, 16));
+            _renderComponent = new RenderComponent("Character_Hand_Down", this);
             _renderComponent.LoadContent();
             _renderComponent.Scale = new Vector2(1.0f, 1.0f);
 
@@ -187,23 +187,32 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
 
         public override void Draw(GameTime gameTime)
         {
-            //if (this.CurrentState == HandState.Latched)
-            //{
-            //    _renderComponent.LoadContent("Character_Hand_Reach");
-            //}
-            //else
-            //{
-            //    _renderComponent.LoadContent("Character_Hand_Down");
-            //}
-
-            if (HandId == HandID.First)
+            if (this.CurrentState == HandState.Latched)
             {
-                _renderComponent.Draw(gameTime, Color.Red);
+                _renderComponent.LoadContent("Character_Hand_Down");
+                _renderComponent.Draw(gameTime, Color.White);
+            }
+            else if (this.CurrentState == HandState.Shooting || this.CurrentState == HandState.Retreating)
+            {
+                _renderComponent.LoadContent("Character_Hand_Open");
+                _renderComponent.Rotation = CalculateRotation(this.TargetDirection);
+                _renderComponent.Draw(gameTime, Color.White);
             }
             else
             {
-                _renderComponent.Draw(gameTime, Color.Azure);
+                // dont draw
             }
+
+
+
+            //if (HandId == HandID.First)
+            //{
+            //    _renderComponent.Draw(gameTime, Color.Red);
+            //}
+            //else
+            //{
+            //    _renderComponent.Draw(gameTime, Color.Azure);
+            //}
 
             // Draw chain
             Vector2 startPosition = _player.Position;
@@ -245,10 +254,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                 this.CurrentState = HandState.Latched;
                 this.IsActiveAnchor = true;
                 this.AnchorDistance = (_player.Position - this.Position).Length();
-
-                float angle = CalculateRotation(collided.NormalVector * -1);
-                this._renderComponent.Rotation = angle - ((float)Math.PI / 2);
-                //collided.NormalVector
+                this._renderComponent.Rotation = CalculateRotation(collided.NormalVector * -1) - ((float)Math.PI / 2);
             }
         }
 
