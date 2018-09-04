@@ -196,6 +196,26 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         {
             _currentLevel.MovePlayerToStartPosition();
         }
+
+        /// <summary>
+        /// Spawns the temporary entity.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="entity">The entity.</param>
+        public void SpawnTempEntity(int id, Entity entity)
+        {
+            _currentLevel.TempEntities.Add(id, entity);
+        }
+
+        /// <summary>
+        /// Destroys the temporary entity.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        public void DestroyTempEntity(Entity entity)
+        {
+            _currentLevel.ToDelete.Add(entity);
+        }
+
         #endregion
 
     }

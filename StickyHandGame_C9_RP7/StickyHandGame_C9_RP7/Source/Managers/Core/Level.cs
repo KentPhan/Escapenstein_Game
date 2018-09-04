@@ -28,6 +28,8 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
 
         public readonly List<Entity> ForegroundEntities;
         public readonly List<Entity> BackgroundEntities;
+        public readonly Dictionary<int, Entity> TempEntities;
+        public readonly List<Entity> ToDelete;
         public readonly Texture2D BackgroundTexture;
         public readonly Rectangle BackgroundFrame;
 
@@ -66,22 +68,29 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
 
         private Level(string foregroundPath, string backgroundPath, string backBackGroundName, LevelEnum levelEnum)
         {
+            // Set up BackBackGround
             this.BackBackGroundName = backBackGroundName;
             this.BackgroundTexture = GameManager.Instance.Content.Load<Texture2D>($@"BackBackground\{BackBackGroundName}");
             this.BackgroundFrame = new Rectangle(0, 0, GameManager.Instance.GraphicsDevice.Viewport.Width, GameManager.Instance.GraphicsDevice.Viewport.Height);
 
+            // Set up Paths
             this.ForegroundPath = Environment.CurrentDirectory + foregroundPath;
             this.BackgroundPath = Environment.CurrentDirectory + backgroundPath;
 
+            // Load Foreground Entities
             this.ForegroundEntities = BuildLevelMapOffOfCSVFile(this.ForegroundPath);
 
+            // Get Player Start Position
             this.PlayerStart = this.ForegroundEntities.First(entity => entity?.CollisionComponent?.Tag == Tags.PlayerStart);
-
-
             this.PlayerEntity = new PlayerEntity();
             MovePlayerToStartPosition();
 
+            // Load Background Entities
             this.BackgroundEntities = BuildLevelMapOffOfCSVFile(this.BackgroundPath);
+
+            // Create List of Temp Entites
+            this.TempEntities = new Dictionary<int, Entity>();
+            this.ToDelete = new List<Entity>();
 
             this.Enum = levelEnum;
         }
@@ -104,6 +113,19 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
             foreach (Entity e in ForegroundEntities)
             {
                 e.Update(gameTime);
+            }
+
+
+            // Temp Updates
+            foreach (Entity mustDie in ToDelete)
+            {
+                TempEntities.Remove(mustDie.Id);
+            }
+
+            ToDelete.Clear();
+            foreach (KeyValuePair<int, Entity> e in TempEntities)
+            {
+                e.Value.Update(gameTime);
             }
         }
 
@@ -150,11 +172,18 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
                 GameManager.Instance.SpriteBatch.End();
             }
 
-
             // Draw Player and Chain
             GameManager.Instance.SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, LevelManager.Instance.CurrentCamera.Transform);
             PlayerEntity.Draw(gameTime);
             GameManager.Instance.SpriteBatch.End();
+
+            // Draw Temps
+            foreach (KeyValuePair<int, Entity> e in TempEntities)
+            {
+                GameManager.Instance.SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, LevelManager.Instance.CurrentCamera.Transform);
+                e.Value.Draw(gameTime);
+                GameManager.Instance.SpriteBatch.End();
+            }
 
         }
 

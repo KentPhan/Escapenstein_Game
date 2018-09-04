@@ -57,7 +57,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Core
         public float AnchorDistance { get; set; }
 
 
-        protected int id = 0;
+        public readonly int Id = 0;
         private static int _count = 0;
         public Vector2 Position;
         public float Width;
@@ -66,7 +66,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Core
 
         protected Entity()
         {
-            this.id = Entity.GetId();
+            this.Id = Entity.GetId();
             Position = new Vector2(0, 0);
             Width = 0;
             Height = 0;

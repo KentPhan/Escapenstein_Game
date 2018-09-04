@@ -8,6 +8,7 @@ using StickyHandGame_C9_RP7.Source.Entities.Core;
 using StickyHandGame_C9_RP7.Source.Managers;
 using System;
 using System.Collections.Generic;
+using StickyHandGame_C9_RP7.Source.Managers.Classes;
 
 namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 {
@@ -19,7 +20,9 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
         private readonly AnimationComponent _idleAnimationComponent;
         private readonly RenderComponent _noArmsRenderComponent;
         private readonly RenderComponent _airNoArmsRenderComponent;
+
         private bool _isGrounded;
+        private bool _alreadySpawnedDust;
 
 
         private const float _rappleAcceleration = 200f;
@@ -49,11 +52,13 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 RenderManager.zombieAnimatedAttribute.Width
                 , RenderManager.zombieAnimatedAttribute.Height
                 , RenderManager.zombieAnimatedAttribute.Scale);
+
             _noArmsRenderComponent = new RenderComponent("Character_Body_NoArms", this);
             _noArmsRenderComponent.LoadContent();
             _airNoArmsRenderComponent = new RenderComponent("Character_Grapple_InAir", this);
             _airNoArmsRenderComponent.LoadContent();
             _isGrounded = true;
+            _alreadySpawnedDust = false;
 
             // Hand Logic
             _hand = new HandEntity(this, HandEntity.HandID.First);
@@ -61,7 +66,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
             this.Anchors = new List<Entity>() { _hand };
 
             // Load Content
-            var texture = _idleAnimationComponent.LoadContent();
+            _idleAnimationComponent.LoadContent();
             this.Hide = hide;
             Width = 32f;
             Height = 32f;
@@ -161,11 +166,23 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
                 _isGrounded = false;
             else
                 _isGrounded = true;
+
+            if (!_alreadySpawnedDust && Vector2.Dot(collided.NormalVector, new Vector2(0.0f, -1.0f)) > 0)
+            {
+                Entity dust = new EmptyEntity(
+                    collided.PointOfCollision + new Vector2(0, 16.0f),
+                    "Effects_Dust_Ground",
+                    0.5f,
+                    true);
+                LevelManager.Instance.SpawnTempEntity(dust.Id, dust);
+                _alreadySpawnedDust = true;
+            }
         }
 
         private void AcceleratePlayerToEntity(Entity entity, float speed)
         {
             _isGrounded = false;
+            _alreadySpawnedDust = false;
             var direction = (entity.Position - this.Position);
             direction.Normalize();
             this.Velocity += direction * speed;
