@@ -19,13 +19,11 @@
         Tile_19_NC = 19,
         Tile_20_NC = 20,
         Tile_21_NC = 21,
-        Tile_32_C = 32,
-        Tile_34_C = 34,
-        Tile_35_C = 35,
-        Tile_36_C = 36,
-        Tile_37_C = 37,
-        Tile_38_C = 38,
-        Tile_39_C = 39,
+
+
+
+
+
         Tile_48_C = 48,
         Tile_49_C = 49,
         Tile_50_C = 50,
@@ -37,9 +35,22 @@
         Tile_64_NC_W = 64,
         Tile_65_NC_K = 65,
         Tile_80_C_G = 80,
-        //TC for TriangleCollisions
+
         Tile_81_NC_V = 81,
+
+        //TC for TriangleCollisions
+        Tile_32_TC_TL = 32,
         Tile_33_TC_TR = 33,
+        Tile_34_TC_BL = 34,
+        Tile_35_TC_BR = 35,
+
+        Tile_36_TC_TL = 36,
+        Tile_37_TC_TR = 37,
+        Tile_38_TC_BL = 38,
+        Tile_39_TC_BR = 39,
+
+        // TODO NOT ALL TRIANGLES HAVE BEEN MAPPED
+
         Tile_91_TC_TL = 91,
         Tile_92_TC_TR = 92,
         Tile_93_TC_BR = 93,

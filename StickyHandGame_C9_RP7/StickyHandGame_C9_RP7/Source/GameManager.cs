@@ -24,7 +24,7 @@ namespace StickyHandGame_C9_RP7
         // High level crap
         public GraphicsDeviceManager Graphics;
         public SpriteBatch SpriteBatch;
-        public bool DebugMode = true;
+        public bool DebugMode = false;
         public Texture2D titleImage;
         SoundManager mysoundManager;
 

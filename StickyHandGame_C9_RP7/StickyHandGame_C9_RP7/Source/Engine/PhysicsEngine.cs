@@ -93,7 +93,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             unitDirection.Normalize();
             float distanceFull = (velocity * deltaTime).Length();
             float distanceMoved = 0.0f;
-            float stepDistance = 0.1f;
+            float stepDistance = 0.09f;
 
             var possibleCollisions = LevelManager.Instance.GetCurrentPhysicalLevel();
             Vector2 nextMovement;

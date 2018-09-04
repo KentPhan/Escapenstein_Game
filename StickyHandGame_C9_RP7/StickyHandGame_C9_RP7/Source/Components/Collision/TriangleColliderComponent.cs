@@ -7,8 +7,8 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
 {
     public class TriangleColliderComponent : CollisionComponent
     {
-        public enum Oritation {TR =0,TL=1,BL=2,BR=3}
-        public static Vector2[] Normals = new Vector2[] {new Vector2(1,-1), new Vector2(1,1), new Vector2(-1,1), new Vector2(-1,-1) };
+        public enum Oritation { TR = 0, TL = 1, BL = 2, BR = 3 }
+        public static Vector2[] Normals = new Vector2[] { new Vector2(1, -1), new Vector2(1, 1), new Vector2(-1, 1), new Vector2(-1, -1) };
         public static float MagicNumber = 0.707106f;
         public Vector2 Position;
         public Oritation myOritation;
@@ -16,7 +16,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         public float size;// the height or width since it is half of a cube.
         public float Width { get; private set; }
         public float Height { get; private set; }
-        public TriangleColliderComponent(Entity entity, float width, float height, Layers layer,Oritation oritation)
+        public TriangleColliderComponent(Entity entity, float width, float height, Layers layer, Oritation oritation)
         {
             this.Width = width;
             this.Height = height;
@@ -32,8 +32,8 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
         }
         public static bool PlayerToTriangle(Vector2 PlayerPosition, TriangleColliderComponent tri)
         {
-            Vector2 TriPositoin = tri.Position - tri.NormalVector * tri.size * TriangleColliderComponent.MagicNumber;
-            Vector2 Difference = PlayerPosition - TriPositoin;
+            Vector2 TriPosition = tri.Position - tri.NormalVector * tri.size * TriangleColliderComponent.MagicNumber;
+            Vector2 Difference = PlayerPosition - TriPosition;
             if (Difference.X > 0 && Difference.Y > 0)
             {
                 if (tri.myOritation == Oritation.BR)
@@ -78,7 +78,8 @@ namespace StickyHandGame_C9_RP7.Source.Components.Collision
                     return false;
                 }
             }
-            else {
+            else
+            {
                 return false;
             }
         }

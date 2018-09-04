@@ -13,6 +13,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
         private bool _isAnimation;
         public RenderComponent renderComponent;
         public AnimationComponent animationComponent;
+        private bool _alreadyTriggered = false;
 
         public TriggerEntity(string tileName, Vector2 position, Tags type, bool isAnimation = false) : base()
         {
@@ -41,6 +42,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
             Height = 32;
 
             _isAnimation = isAnimation;
+            _alreadyTriggered = false;
 
             this.CollisionComponent = new BoxColliderComponent(this, Width, Height, Layers.Static, type);
         }
@@ -75,10 +77,20 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes
 
         public override void CollisionTriggered(CollisionInfo collided)
         {
-            if (this.CollisionComponent.Tag == Tags.Hazard && collided.CollisionComponent.Tag == Tags.Player)
-                LevelManager.Instance.ResetCurrentPlayerPosition();
-            if (this.CollisionComponent.Tag == Tags.Goal && collided.CollisionComponent.Tag == Tags.Player)
-                LevelManager.Instance.NextLevel();
+            if (!_alreadyTriggered)
+            {
+                if (this.CollisionComponent.Tag == Tags.Hazard && collided.CollisionComponent.Tag == Tags.Player)
+                {
+                    LevelManager.Instance.ResetCurrentPlayerPosition();
+                    _alreadyTriggered = true;
+                }
+                else if (this.CollisionComponent.Tag == Tags.Goal && collided.CollisionComponent.Tag == Tags.Player)
+                {
+                    LevelManager.Instance.NextLevel();
+                    _alreadyTriggered = true;
+                }
+            }
+
         }
 
         public override object Clone()
