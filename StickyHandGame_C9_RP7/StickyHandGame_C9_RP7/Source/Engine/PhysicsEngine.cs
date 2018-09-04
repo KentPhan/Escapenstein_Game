@@ -93,7 +93,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
             unitDirection.Normalize();
             float distanceFull = (velocity * deltaTime).Length();
             float distanceMoved = 0.0f;
-            float stepDistance = 0.04f;
+            float stepDistance = 0.1f;
 
             var possibleCollisions = LevelManager.Instance.GetCurrentPhysicalLevel();
             Vector2 nextMovement;
@@ -101,6 +101,7 @@ namespace StickyHandGame_C9_RP7.Source.Engine
 
             while (distanceMoved < distanceFull)
             {
+
 
                 // if step movement would be greater than full movement, limit to full movement
                 if ((distanceMoved + stepDistance) > distanceFull)
