@@ -14,6 +14,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
         public Vector2 Scale = new Vector2(1, 1);
         public Vector2 Direction;
         public Vector2 Origin;
+        public float Rotation;
         public RenderComponent(String assetName, Entity entity)
         {
             this.assetName = assetName;
@@ -24,6 +25,7 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
             this.assetName = assetName;
             this.entity = entity;
             this.Origin = origin;
+            this.Rotation = 0.0f;
         }
 
         public Texture2D LoadContent(string nameOverride = null)
@@ -33,10 +35,6 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
             else
                 texture = GameManager.Instance.Content.Load<Texture2D>(assetName);
             Debug.Assert(texture != null, "null texture");
-            if (Origin == null)
-            {
-                Origin = new Vector2(texture.Width, texture.Height);
-            }
             return texture;
         }
 
@@ -47,7 +45,8 @@ namespace StickyHandGame_C9_RP7.Source.Components.Render
 
         public virtual void Draw(GameTime gameTime, Color color)
         {
-            GameManager.Instance.SpriteBatch.Draw(texture, new Rectangle((int)entity.Position.X - 16, (int)entity.Position.Y - 16, 32, 32), color);
+            //GameManager.Instance.SpriteBatch.Draw(texture, new Rectangle((int)entity.Position.X - 16, (int)entity.Position.Y - 16, 32, 32), color);
+            GameManager.Instance.SpriteBatch.Draw(texture, new Rectangle((int)entity.Position.X, (int)entity.Position.Y, 32, 32), new Rectangle(0, 0, 32, 32), color, Rotation, new Vector2(16.0f, 16.0f), SpriteEffects.None, 0.0f);
 
             //SpriteEffects flip = (Vector2.Dot(new Vector2(1, 0), this.Direction) < 0)
             //    ? SpriteEffects.FlipHorizontally

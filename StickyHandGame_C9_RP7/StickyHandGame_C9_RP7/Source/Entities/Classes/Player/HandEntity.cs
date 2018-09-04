@@ -102,8 +102,6 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                         this.TargetDirection.Normalize();
 
                         _renderComponent.Direction = this.TargetDirection;
-                        //float angle = CalculateRotation(TargetDirection);
-                        //this._renderComponent.Rotation = angle;
 
                         _player.SetFacing(GetShootDirection());
 
@@ -247,7 +245,10 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Arm
                 this.CurrentState = HandState.Latched;
                 this.IsActiveAnchor = true;
                 this.AnchorDistance = (_player.Position - this.Position).Length();
-                //collided.NormalVector    
+
+                float angle = CalculateRotation(collided.NormalVector * -1);
+                this._renderComponent.Rotation = angle - ((float)Math.PI / 2);
+                //collided.NormalVector
             }
         }
 

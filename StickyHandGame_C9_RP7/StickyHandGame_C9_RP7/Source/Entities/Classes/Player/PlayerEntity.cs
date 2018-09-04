@@ -92,7 +92,7 @@ namespace StickyHandGame_C9_RP7.Source.Entities.Classes.Player
 
         public void SetFacing(Vector2 targetLooking)
         {
-            Vector2 directionLooking = targetLooking - this.Position;
+            Vector2 directionLooking = targetLooking;
             Vector2 right = new Vector2(1, 0);
             if (Vector2.Dot(right, directionLooking) > 0)
                 this.myAnimationComponent.myeffect = SpriteEffects.None;
