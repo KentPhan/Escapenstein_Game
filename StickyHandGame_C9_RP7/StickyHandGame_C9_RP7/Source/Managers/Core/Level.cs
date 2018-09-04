@@ -24,9 +24,12 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
     {
         public readonly string BackgroundPath;
         public readonly string ForegroundPath;
+        public readonly string BackBackgroundName;
 
         public readonly List<Entity> ForegroundEntities;
         public readonly List<Entity> BackgroundEntities;
+        public readonly Texture2D BackgroundTexture;
+        public readonly Rectangle BackgroundFrame;
 
         public readonly Entity PlayerEntity;
 
@@ -36,18 +39,20 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
 
         //public static Levels Level1 = new Levels(Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\NewMap.csv");
         //public static Levels Level1 = new Levels(Environment.CurrentDirectory + @"..\..\..\..\..\Content\Levels\Test_Map_RPT_Foreground.csv");
-        public static Level Start() => new Level(LevelEnum.Start);
+        public static Level Start() => new Level(LevelEnum.Start, "TitleScreen");
 
-        public static Level Level_1() => new Level(@"\Content\Foreground\Level1_Foreground.csv", @"\Content\Background\Level1_Background.csv", LevelEnum.Level1);
-        public static Level Level_2() => new Level(@"\Content\Foreground\Level2_Foreground.csv", @"\Content\Background\Level2_Background.csv", LevelEnum.Level2);
-        public static Level Credits() => new Level(LevelEnum.Credits);
+        public static Level Level_1() => new Level(@"\Content\Foreground\Level1_Foreground.csv", @"\Content\Background\Level1_Background.csv", "Background", LevelEnum.Level1);
+        public static Level Level_2() => new Level(@"\Content\Foreground\Level2_Foreground.csv", @"\Content\Background\Level2_Background.csv", "Background", LevelEnum.Level2);
+        public static Level Credits() => new Level(LevelEnum.Credits, "Credits");
 
 
 
-        private Level(LevelEnum levelEnum)
+        private Level(LevelEnum levelEnum, string backBackgroundPath)
         {
             this.Enum = levelEnum;
+            this.BackBackgroundName = backBackgroundPath;
 
+            this.BackgroundTexture = GameManager.Instance.Content.Load<Texture2D>("BackBackground\\")
 
             if (Enum == LevelEnum.Start)
             {
@@ -59,10 +64,11 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
             }
         }
 
-        private Level(string foregroundPath, string backgroundPath, LevelEnum levelEnum)
+        private Level(string foregroundPath, string backgroundPath, string backBackGroundPath, LevelEnum levelEnum)
         {
             this.ForegroundPath = Environment.CurrentDirectory + foregroundPath;
             this.BackgroundPath = Environment.CurrentDirectory + backgroundPath;
+            this.BackBackgroundName = Environment.CurrentDirectory + backBackGroundPath;
 
             this.ForegroundEntities = BuildLevelMapOffOfCSVFile(this.ForegroundPath);
 
@@ -115,6 +121,8 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
             }
 
             // Draw Background TODO
+            GameManager.Instance.SpriteBatch.Draw(background, mainFrame, Color.White);
+
 
             if (ForegroundEntities == null || BackgroundEntities == null)
             {
