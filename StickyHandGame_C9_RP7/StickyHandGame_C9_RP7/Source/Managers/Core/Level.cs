@@ -16,6 +16,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
     {
         Start,
         Level1,
+        Level2,
         Credits
     }
 
@@ -38,6 +39,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
         public static Level Start() => new Level(LevelEnum.Start);
 
         public static Level Level_1() => new Level(@"\Content\Foreground\Level1_Foreground.csv", @"\Content\Background\Level1_Background.csv", LevelEnum.Level1);
+        public static Level Level_2() => new Level(@"\Content\Foreground\Level2_Foreground.csv", @"\Content\Background\Level2_Background.csv", LevelEnum.Level2);
         public static Level Credits() => new Level(LevelEnum.Credits);
 
 
@@ -242,6 +244,10 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
                 else if (tileName.Contains("Tile_5_C"))
                 {
                     return new PlatformEntity(tileName, origin, Layers.Static, Tags.CantLatch);
+                }
+                else if (tileName.Contains("G"))
+                {
+                    return new PlatformEntity(tileName, origin, Layers.HandOnlyStatic, Tags.None);
                 }
                 else if (tileName.Contains("NC"))
                 {

@@ -518,3 +518,9 @@
 /processorParam:TextureFormat=Color
 /build:Tile_80_C_G.png
 
+#begin Foreground/Level2_Foreground.csv
+/copy:Foreground/Level2_Foreground.csv
+
+#begin Background/Level2_Background.csv
+/copy:Background/Level2_Background.csv
+

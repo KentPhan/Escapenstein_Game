@@ -60,15 +60,23 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
             }
             else if (_currentLevel.Enum == LevelEnum.Credits)
             {
-
+                if (Keyboard.GetState().IsKeyDown(Keys.R))
+                    _currentLevel = Level.Start();
             }
             else
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.R))
                     _currentLevel = Level.Start();
 
+                if (Keyboard.GetState().IsKeyDown(Keys.D1))
+                    _currentLevel = Level.Level_1();
+
+                if (Keyboard.GetState().IsKeyDown(Keys.D2))
+                    _currentLevel = Level.Level_2();
+
                 _currentLevel.Update(gameTime);
             }
+
 
             CameraManager.Instance.Update();
         }

@@ -36,6 +36,7 @@
         Tile_55_C = 55,
         Tile_64_NC_W = 64,
         Tile_65_NC_K = 65,
+        Tile_80_C_G = 80,
         //TC for TriangleCollisions
         Tile_81_NC_V = 81,
         Tile_33_TC_TR = 33,
