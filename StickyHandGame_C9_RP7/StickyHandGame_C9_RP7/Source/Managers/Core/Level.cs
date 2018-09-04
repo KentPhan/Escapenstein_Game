@@ -24,7 +24,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
     {
         public readonly string BackgroundPath;
         public readonly string ForegroundPath;
-        public readonly string BackBackgroundName;
+        public readonly string BackBackGroundName;
 
         public readonly List<Entity> ForegroundEntities;
         public readonly List<Entity> BackgroundEntities;
@@ -47,28 +47,31 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
 
 
 
-        private Level(LevelEnum levelEnum, string backBackgroundPath)
+        private Level(LevelEnum levelEnum, string backBackGroundName)
         {
             this.Enum = levelEnum;
-            this.BackBackgroundName = backBackgroundPath;
-
-            this.BackgroundTexture = GameManager.Instance.Content.Load<Texture2D>("BackBackground\\")
+            this.BackBackGroundName = backBackGroundName;
 
             if (Enum == LevelEnum.Start)
             {
-
+                this.BackgroundTexture = GameManager.Instance.Content.Load<Texture2D>($@"BackBackground\{BackBackGroundName}");
             }
             else if (Enum == LevelEnum.Credits)
             {
-
+                this.BackgroundTexture = GameManager.Instance.Content.Load<Texture2D>($@"BackBackground\{BackBackGroundName}");
             }
+
+            this.BackgroundFrame = new Rectangle(0, 0, GameManager.Instance.GraphicsDevice.Viewport.Width, GameManager.Instance.GraphicsDevice.Viewport.Height);
         }
 
-        private Level(string foregroundPath, string backgroundPath, string backBackGroundPath, LevelEnum levelEnum)
+        private Level(string foregroundPath, string backgroundPath, string backBackGroundName, LevelEnum levelEnum)
         {
+            this.BackBackGroundName = backBackGroundName;
+            this.BackgroundTexture = GameManager.Instance.Content.Load<Texture2D>($@"BackBackground\{BackBackGroundName}");
+            this.BackgroundFrame = new Rectangle(0, 0, GameManager.Instance.GraphicsDevice.Viewport.Width, GameManager.Instance.GraphicsDevice.Viewport.Height);
+
             this.ForegroundPath = Environment.CurrentDirectory + foregroundPath;
             this.BackgroundPath = Environment.CurrentDirectory + backgroundPath;
-            this.BackBackgroundName = Environment.CurrentDirectory + backBackGroundPath;
 
             this.ForegroundEntities = BuildLevelMapOffOfCSVFile(this.ForegroundPath);
 
@@ -111,43 +114,45 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Core
         public void Draw(GameTime gameTime)
         {
 
-
+            // Draw BackBackground
             if (this.Enum == LevelEnum.Start || this.Enum == LevelEnum.Credits)
             {
-                GameManager.Instance.SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
-                GameManager.Instance.SpriteBatch.DrawString(GameManager.Instance.Font, "Press Enter To Start", new Vector2(-80, 0), Color.Black);
+                GameManager.Instance.SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, null);
+                GameManager.Instance.SpriteBatch.Draw(this.BackgroundTexture, this.BackgroundFrame, Color.White);
                 GameManager.Instance.SpriteBatch.End();
                 return;
             }
-
-            // Draw Background TODO
-            GameManager.Instance.SpriteBatch.Draw(background, mainFrame, Color.White);
-
+            else
+            {
+                GameManager.Instance.SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, null);
+                GameManager.Instance.SpriteBatch.Draw(this.BackgroundTexture, this.BackgroundFrame, Color.White);
+                GameManager.Instance.SpriteBatch.End();
+            }
 
             if (ForegroundEntities == null || BackgroundEntities == null)
             {
                 return;
             }
 
-            // Draw Tiles
+            // Draw Back Tiles
             foreach (Entity e in BackgroundEntities)
             {
-                GameManager.Instance.SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
+                GameManager.Instance.SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, LevelManager.Instance.CurrentCamera.Transform);
                 e.Draw(gameTime);
                 GameManager.Instance.SpriteBatch.End();
             }
 
-            // Draw Tiles
+            // Draw Fore Tiles
             foreach (Entity e in ForegroundEntities)
             {
-                GameManager.Instance.SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
+                GameManager.Instance.SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, LevelManager.Instance.CurrentCamera.Transform);
                 e.Draw(gameTime);
                 GameManager.Instance.SpriteBatch.End();
             }
 
 
             // Draw Player and Chain
-            GameManager.Instance.SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, CameraManager.Instance.camera.Transform);
+            GameManager.Instance.SpriteBatch.Begin(SpriteSortMode.BackToFront, null, null, null, null, null, LevelManager.Instance.CurrentCamera.Transform);
             PlayerEntity.Draw(gameTime);
             GameManager.Instance.SpriteBatch.End();
 

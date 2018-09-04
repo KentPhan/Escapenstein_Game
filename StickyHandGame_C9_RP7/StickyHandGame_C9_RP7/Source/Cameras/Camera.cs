@@ -1,66 +1,59 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using StickyHandGame_C9_RP7.Source.Managers.Classes;
 
 namespace StickyHandGame_C9_RP7.Source.Cameras
 {
+    public enum CameraType
+    {
+        Screen,
+        Follow
+    }
+
+
     public class Camera
     {
-        public static Matrix Trans;
+        // Type
+        public CameraType Type { get; private set; }
+
+
+        // Zoom
         public float Zoom { get; set; }
+
+        public readonly float MaxZoom = 3.0f;
+
+        public readonly float MinZoom = 1.00f;
+
+
         public Vector2 Position { get; set; }
-        public Rectangle Bounds { get; protected set; }
-        public Rectangle VisibleArea { get; protected set; }
         public Matrix Transform { get; protected set; }
 
-        private float currentMouseWheelValue, previousMouseWheelValue, zoom, previousZoom;
-        private static Camera instance;
-        public static Camera Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new Camera(GameManager.Instance.GraphicsDevice.Viewport);
-                }
-                return instance;
+        private float currentMouseWheelValue, previousMouseWheelValue;
 
-            }
-        }
-        private Camera(Viewport viewport)
+
+        public Camera(Viewport viewport, CameraType type)
         {
-            Bounds = viewport.Bounds;
             Zoom = 3f;
             Position = Vector2.Zero;
+            this.Type = type;
         }
 
 
-        private void UpdateVisibleArea()
+        private void UpdateMatrix(Rectangle bounds)
         {
-            var inverseViewMatrix = Matrix.Invert(Transform);
-
-            var tl = Vector2.Transform(Vector2.Zero, inverseViewMatrix);
-            var tr = Vector2.Transform(new Vector2(Bounds.X, 0), inverseViewMatrix);
-            var bl = Vector2.Transform(new Vector2(0, Bounds.Y), inverseViewMatrix);
-            var br = Vector2.Transform(new Vector2(Bounds.Width, Bounds.Height), inverseViewMatrix);
-
-            var min = new Vector2(
-                MathHelper.Min(tl.X, MathHelper.Min(tr.X, MathHelper.Min(bl.X, br.X))),
-                MathHelper.Min(tl.Y, MathHelper.Min(tr.Y, MathHelper.Min(bl.Y, br.Y))));
-            var max = new Vector2(
-                MathHelper.Max(tl.X, MathHelper.Max(tr.X, MathHelper.Max(bl.X, br.X))),
-                MathHelper.Max(tl.Y, MathHelper.Max(tr.Y, MathHelper.Max(bl.Y, br.Y))));
-            VisibleArea = new Rectangle((int)min.X, (int)min.Y, (int)(max.X - min.X), (int)(max.Y - min.Y));
-        }
+            switch (Type)
+            {
+                case CameraType.Screen:
+                    break;
+                case CameraType.Follow:
+                    Transform = Matrix.CreateTranslation(new Vector3(-Position.X, -Position.Y, 0)) * // Translation to player
+                                Matrix.CreateScale(Zoom) * // Zoom
+                                Matrix.CreateTranslation(new Vector3(bounds.Width * 0.5f, bounds.Height * 0.5f, 0));// Translation to center of camera
+                    break;
+            }
 
 
-        private void UpdateMatrix()
-        {
-            Transform = Matrix.CreateTranslation(new Vector3(-Position.X, -Position.Y, 0)) *
-                    Matrix.CreateScale(Zoom) *
-                    Matrix.CreateTranslation(new Vector3(Bounds.Width * 0.5f, Bounds.Height * 0.5f, 0));
-
-            UpdateVisibleArea();
         }
 
         public void MoveCamera(Vector2 movePosition)
@@ -70,93 +63,52 @@ namespace StickyHandGame_C9_RP7.Source.Cameras
             Position = newPosition;
         }
 
-        public void AdjustZoom(float zoomAmount)
+
+        private void AdjustZoom(float zoomAmount)
         {
             Zoom += zoomAmount;
-            if (Zoom < .35f)
+            if (Zoom < MinZoom)
             {
-                Zoom = .35f;
+                Zoom = MinZoom;
             }
-            if (Zoom > 2f)
+            if (Zoom > MaxZoom)
             {
-                Zoom = 2f;
+                Zoom = MaxZoom;
             }
         }
 
+
         public void UpdateCamera(Viewport bounds)
         {
-            Bounds = bounds.Bounds;
-            UpdateMatrix();
-
-            Vector2 cameraMovement = Vector2.Zero;
-            int moveSpeed;
-
-            if (Zoom > .8f)
-            {
-                moveSpeed = 15;
-            }
-            else if (Zoom < .8f && Zoom >= .6f)
-            {
-                moveSpeed = 20;
-            }
-            else if (Zoom < .6f && Zoom > .35f)
-            {
-                moveSpeed = 25;
-            }
-            else if (Zoom <= .35f)
-            {
-                moveSpeed = 30;
-            }
-            else
-            {
-                moveSpeed = 10;
-            }
 
 
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
+            switch (this.Type)
             {
-                cameraMovement.Y = -moveSpeed;
+                case CameraType.Screen:
+                    UpdateMatrix(bounds.Bounds);
+                    this.Position = new Vector2(0, 0);
+                    break;
+                case CameraType.Follow:
+                    UpdateMatrix(bounds.Bounds);
+                    this.Position = LevelManager.Instance.GetCurrentPlayerInLevel().Position;
+
+                    // Mouse scroll zoom
+                    previousMouseWheelValue = currentMouseWheelValue;
+                    currentMouseWheelValue = Mouse.GetState().ScrollWheelValue;
+
+                    if (currentMouseWheelValue > previousMouseWheelValue)
+                    {
+                        AdjustZoom(.05f);
+                    }
+
+                    if (currentMouseWheelValue < previousMouseWheelValue)
+                    {
+                        AdjustZoom(-.05f);
+                    }
+                    break;
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                cameraMovement.Y = moveSpeed;
-            }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                cameraMovement.X = -moveSpeed;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                cameraMovement.X = moveSpeed;
-            }
-
-            previousMouseWheelValue = currentMouseWheelValue;
-            currentMouseWheelValue = Mouse.GetState().ScrollWheelValue;
-
-            if (currentMouseWheelValue > previousMouseWheelValue)
-            {
-                AdjustZoom(.05f);
-                //Console.WriteLine(moveSpeed);
-            }
-
-            if (currentMouseWheelValue < previousMouseWheelValue)
-            {
-                AdjustZoom(-.05f);
-                //Console.WriteLine(moveSpeed);
-            }
-
-            previousZoom = zoom;
-            zoom = Zoom;
-            if (previousZoom != zoom)
-            {
-                //Console.WriteLine(zoom);
-
-            }
-
-            MoveCamera(cameraMovement);
         }
 
     }

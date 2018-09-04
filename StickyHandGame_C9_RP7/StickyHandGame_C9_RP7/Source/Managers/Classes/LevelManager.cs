@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Input;
 using StickyHandGame_C9_RP7.Source.Entities.Core;
 using StickyHandGame_C9_RP7.Source.Managers.Core;
 using System.Collections.Generic;
+using StickyHandGame_C9_RP7.Source.Cameras;
 
 namespace StickyHandGame_C9_RP7.Source.Managers.Classes
 {
@@ -27,18 +28,19 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         }
         private LevelManager()
         {
-
-        }
-
-        public void Initialize()
-        {
             _currentLevel = Level.Start();
+            this.CurrentCamera = new Camera(GameManager.Instance.GraphicsDevice.Viewport, CameraType.Screen);
         }
 
         /// <summary>
         /// The current level
         /// </summary>
         private Level _currentLevel;
+
+        public Camera CurrentCamera { get; private set; }
+
+        private KeyboardState _previousState;
+        private KeyboardState _currentState;
 
         /// <summary>
         /// Level Update
@@ -48,37 +50,50 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         /// <param name="gameTime">The game time.</param>
         public void LevelUpdate(GameTime gameTime)
         {
+            if (_currentState != null)
+                _previousState = _currentState;
+            else
+                _previousState = Keyboard.GetState();
+            _currentState = Keyboard.GetState();
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 GameManager.Instance.Exit();
 
-            if (_currentLevel.Enum == LevelEnum.Start)
+            switch (_currentLevel.Enum)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-                {
-                    _currentLevel = Level.Level_1();
-                }
+                case LevelEnum.Start:
+                    {
+                        if (_currentState.IsKeyUp(Keys.Enter) && _previousState.IsKeyDown(Keys.Enter))
+                        {
+                            NextLevel();
+                        }
+                        break;
+                    }
+                case LevelEnum.Credits:
+                    {
+                        if (_currentState.IsKeyUp(Keys.Enter) && _previousState.IsKeyDown(Keys.Enter))
+                            NextLevel();
+                        break;
+                    }
+                default:
+                    {
+                        if (_currentState.IsKeyDown(Keys.OemTilde))
+                            SwitchToLevel(LevelEnum.Start);
+
+                        if (_currentState.IsKeyDown(Keys.D1))
+                            SwitchToLevel(LevelEnum.Level1);
+
+                        if (_currentState.IsKeyDown(Keys.D2))
+                            SwitchToLevel(LevelEnum.Level2);
+
+                        if (_currentState.IsKeyDown(Keys.D3))
+                            SwitchToLevel(LevelEnum.Credits);
+
+                        _currentLevel.Update(gameTime);
+                        break;
+                    }
             }
-            else if (_currentLevel.Enum == LevelEnum.Credits)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.R))
-                    _currentLevel = Level.Start();
-            }
-            else
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.R))
-                    _currentLevel = Level.Start();
-
-                if (Keyboard.GetState().IsKeyDown(Keys.D1))
-                    _currentLevel = Level.Level_1();
-
-                if (Keyboard.GetState().IsKeyDown(Keys.D2))
-                    _currentLevel = Level.Level_2();
-
-                _currentLevel.Update(gameTime);
-            }
-
-
-            CameraManager.Instance.Update();
+            CurrentCamera.UpdateCamera(GameManager.Instance.GraphicsDevice.Viewport);
         }
 
         public void LevelDraw(GameTime gameTime)
@@ -87,9 +102,72 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         }
 
 
+        /// <summary>
+        /// Switches to level.
+        /// </summary>
+        /// <param name="level">The level.</param>
+        private void SwitchToLevel(LevelEnum level)
+        {
+            switch (level)
+            {
+                case LevelEnum.Start:
+                    this.CurrentCamera = new Camera(GameManager.Instance.GraphicsDevice.Viewport, CameraType.Screen);
+                    _currentLevel = Level.Start();
+                    break;
+                case LevelEnum.Level1:
+                    this.CurrentCamera = new Camera(GameManager.Instance.GraphicsDevice.Viewport, CameraType.Follow);
+                    _currentLevel = Level.Level_1();
+                    break;
+                case LevelEnum.Level2:
+                    this.CurrentCamera = new Camera(GameManager.Instance.GraphicsDevice.Viewport, CameraType.Follow);
+                    _currentLevel = Level.Level_2();
+                    break;
+                case LevelEnum.Credits:
+                    this.CurrentCamera = new Camera(GameManager.Instance.GraphicsDevice.Viewport, CameraType.Screen);
+                    _currentLevel = Level.Credits();
+                    break;
+            }
+        }
+
+
+        #region Public accessors and Triggers        
+
+        /// <summary>
+        /// Go to next level
+        /// </summary>
+        public void NextLevel()
+        {
+            switch (_currentLevel.Enum)
+            {
+                case LevelEnum.Start:
+                    SwitchToLevel(LevelEnum.Level1);
+                    break;
+                case LevelEnum.Level1:
+                    SwitchToLevel(LevelEnum.Level2);
+                    break;
+                case LevelEnum.Level2:
+                    SwitchToLevel(LevelEnum.Credits);
+                    break;
+                case LevelEnum.Credits:
+                    SwitchToLevel(LevelEnum.Start);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Triggers the credits.
+        /// </summary>
+        public void TriggerCredits()
+        {
+            SwitchToLevel(LevelEnum.Credits);
+        }
+
+        /// <summary>
+        /// Restarts the game.
+        /// </summary>
         public void RestartGame()
         {
-            this._currentLevel = Level.Start();
+            SwitchToLevel(LevelEnum.Start);
         }
 
         /// <summary>
@@ -102,6 +180,10 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         }
 
 
+        /// <summary>
+        /// Gets the current player in level.
+        /// </summary>
+        /// <returns></returns>
         public Entity GetCurrentPlayerInLevel()
         {
             return _currentLevel.PlayerEntity;
@@ -114,7 +196,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers.Classes
         {
             _currentLevel.MovePlayerToStartPosition();
         }
+        #endregion
 
     }
 }
-

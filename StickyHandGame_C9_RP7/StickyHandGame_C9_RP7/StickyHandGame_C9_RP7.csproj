@@ -60,7 +60,6 @@
     <Compile Include="Source\Entities\Classes\Player\HandEntity.cs" />
     <Compile Include="Source\Entities\Classes\KeyBinds.cs" />
     <Compile Include="Source\Entities\Classes\TriggerEntity.cs" />
-    <Compile Include="Source\Managers\Classes\CameraManager.cs" />
     <Compile Include="Source\Managers\Classes\LevelManager.cs" />
     <Compile Include="Source\Managers\Classes\RenderManager.cs" />
     <Compile Include="Source\Entities\Classes\Collidables\PlatformEntity.cs" />

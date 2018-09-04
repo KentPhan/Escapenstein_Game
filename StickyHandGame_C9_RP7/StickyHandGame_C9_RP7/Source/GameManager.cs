@@ -53,7 +53,6 @@ namespace StickyHandGame_C9_RP7
         {
             // TODO: Add your initialization logic here
             _levelManager = LevelManager.Instance;
-            _levelManager.Initialize();
             base.Initialize();
         }
 
@@ -65,7 +64,6 @@ namespace StickyHandGame_C9_RP7
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            CameraManager.Instance.LoadContent();
 
             Font = Content.Load<SpriteFont>("Main");
             IsMouseVisible = true;

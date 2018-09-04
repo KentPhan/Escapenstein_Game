@@ -134,7 +134,7 @@ namespace StickyHandGame_C9_RP7.Source.Managers
         private Vector2 GetMouseDirection()
         {
             Point mouseLocation = Mouse.GetState().Position;
-            Vector2 worldPosition = Vector2.Transform(new Vector2(mouseLocation.X, mouseLocation.Y), Matrix.Invert(Camera.Instance.Transform));
+            Vector2 worldPosition = Vector2.Transform(new Vector2(mouseLocation.X, mouseLocation.Y), Matrix.Invert(LevelManager.Instance.CurrentCamera.Transform));
             Vector2 direction = worldPosition - LevelManager.Instance.GetCurrentPlayerInLevel().Position;
             direction.Normalize();
             return direction;
